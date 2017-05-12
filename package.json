@@ -1,0 +1,28 @@
+{
+  "name": "writemao",
+  "version": "1.0.0",
+  "description": "Writing instruction",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bferster/WriteMao.git"
+  },
+  "author": "Bill Ferster",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bferster/WriteMao/issues"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.23.0",
+    "babel-preset-env": "^1.1.8"
+  },
+  "babel": {
+    "presets": [
+      "es2015"
+    ]
+  },
+  "homepage": "https://github.com/bferster/WriteMao#readme"
+}
