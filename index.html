@@ -19,6 +19,11 @@
 		 body { 			font-family:Verdana,Geneva,sans-serif;font-size:13px;  box-sizing:border-box;
 							padding:0px;margin:0px;background-color: #ddd;
 							}
+		.ct-event {			width:80px; height:80px;  margin-bottom: 4px; cursor: pointer;
+							}
+		.ct-count {			cursor: zoom-out;
+							}
+
 		.ui-dialog-buttonpane.ui-widget-content.ui-helper-clearfix { border:none }
 		.ui-dialog { border-radius:12px;box-shadow:2px 2px 6px #ccc }
 		.ui-button { border-radius:30px;outline:none }
@@ -27,10 +32,26 @@
 </style>
 </head>
 <body>
-	
-	<div class="container">
-		Hello
+	<br><br>
+	<div id="eventButtons" class="container">
+		<div id="ev-1" class="btn btn-success ct-event "><span id="evl-1"></span><span class="ct-count" id="evc-1"><br></span></div> 
+		<div id="ev-2" class="btn btn-success ct-event "><span id="evl-2"></span><span class="ct-count" id="evc-2"><br></span></div> 
+		<div id="ev-3" class="btn btn-success ct-event "><span id="evl-3"></span><span class="ct-count" id="evc-3"><br></span></div> 
+		<div id="ev-4" class="btn btn-success ct-event "><span id="evl-4"></span><span class="ct-count" id="evc-4"><br></span></div><br> 
+		<div id="ev-5" class="btn btn-info ct-event "><span id="evl-5"></span><span class="ct-count" id="evc-5"><br></span></div> 
+		<div id="ev-6" class="btn btn-info ct-event "><span id="evl-6"></span><span class="ct-count" id="evc-6"><br></span></div> 
+		<div id="ev-7" class="btn btn-info ct-event "><span id="evl-7"></span><span class="ct-count" id="evc-7"><br></span></div> 
+		<div id="ev-8" class="btn btn-info ct-event "><span id="evl-8"></span><span class="ct-count" id="evc-8"><br></span></div><br> 
+		<div id="ev-9" class="btn btn-warning ct-event "><span id="evl-9"></span><span class="ct-count" id="evc-9"><br></span></div> 
+		<div id="ev-10" class="btn btn-warning ct-event "><span id="evl-10"></span><span class="ct-count" id="evc-10"><br></span></div> 
+		<div id="ev-11" class="btn btn-warning ct-event "><span id="evl-11"></span><span class="ct-count" id="evc-11"><br></span></div> 
+		<div id="ev-12" class="btn btn-warning ct-event "><span id="evl-12"></span><span class="ct-count" id="evc-12"><br></span></div> 
 	</div>
+
+
+
+
+
 
 <script>
 
@@ -39,6 +60,10 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 var app=null;
+var curTime=0;
+
+
+
 
 $(window).resize(function() {                                         	// ON WINDOW RESIZE
 	if (app && app.allowResize)												// If app loaded and allowing resizing
@@ -48,8 +73,69 @@ $(window).resize(function() {                                         	// ON WIN
 $(document).ready(function() {								           	// ON PAGE LOADED
 	var url=window.location.search.substring(1);						   	// Get query string
 //	app=new App();                                                      	// Alloc app
-    });									
+	InitHandlers();
+    });	
+
+	function InitHandlers() {
+
+		var i;
+		var labs=["Deep<br>Q QTR","Rote<br>Q OTR","Choral<br>Resp","So/Be<br>OTR",
+				  "Acad<br>FB", "Behav<br>FB","Gen<br>FB","Stud<br>Ask Q",
+				  "# Stud<br>Ask Q","Cust<br>1","Cust<br>2","Cust<br>3"
+				 ];
+		var dataLabs=["Deep Q OTR","Rote Q OTR","Choral Response","Social Behavioral OTR",
+					  "Academic Specific FB","Behavior Specific FB","Generic FB Statement","Student Ask Q",
+					  "Num Student Ask Q","Custom","Custom","Custom"
+					 ];
+		  
 		
+		for (i=1;i<13;++i) {												// For each event button
+			$("#evl-"+i).html(labs[i-1]+"<br>");							// Set label
+
+			$("#ev-"+i).on("click", function(e) {							// On event button click
+				var id=e.currentTarget.id.substr(3);						// Get id			
+				var c=1;													// First one												
+				var s=$("#evc-"+id).text();									// Get count from label
+				if (s)	c=s.substr(1,s.length-2)-0+1						// If not first, get and increment
+				$("#evc-"+id).html("("+c+")");								// Show new count
+				Sound("click");												// Click sound	
+				var p1="Custom";											// Assume custom
+				if (id < 5)			p1="OTR";								// Set category
+				else if (id < 8)	p1="FB";
+				else if (id < 10)	p1="Student Q";
+				SaveEvent(curTime,p1,dataLabs[id],"","");					// Save event
+				});
+
+			$("#evc-"+i).on("click", function(e) {							// On event button click
+				e.stopPropagation();										// Stop propagation
+				var id=e.currentTarget.id.substr(4);						// Get id			
+				var s=$("#evc-"+id).text();									// Get count from label
+				var c=s.substr(1,s.length-2)-1								// If not first, get and decrement
+				if (c)														// Something to show
+					$("#evc-"+id).html("("+c+")");							// Show new count
+				else														// No counts
+					$("#evc-"+id).html("");									// Clear display
+				Sound("delete");											// Delete sound	
+				if (id < 5)			p1="OTR";								// Set category
+				else if (id < 8)	p1="FB";
+				else if (id < 10)	p1="Student Q";
+				SaveEvent(curTime,p1,dataLabs[id],"NEGATE","");				// Save event
+				});
+
+		}
+
+
+	
+	}
+
+	function SaveEvent(time, p1, p2, p3, p4)
+	{
+		trace(time+","+p1+","+p2+","+p3+","+p4);
+	}
+
+
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // HELPERS
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -100,7 +186,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		else	
 			snd=new Audio("img/"+sound+".mp3");									// Use mp3
 		if (!mute)	{															// If not initing or muting	
-			snd.volume=50/100;											// Set volume
+			snd.volume=50/100;													// Set volume
 			snd.play();															// Play it
 			}
 		}
