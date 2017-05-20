@@ -16,13 +16,33 @@
 	<link REL="SHORTCUT ICON" HREF="img/favicon.ico">
 	<title>CTScan</title>
 	<style type="text/css">
-		 body { 			font-family:Verdana,Geneva,sans-serif;font-size:13px;  box-sizing:border-box;
-							padding:0px;margin:0px;background-color: #ddd;
+		 body { 			font-family: Verdana,Geneva,sans-serif; font-size:13px;  box-sizing:border-box;
+							padding: 0px; margin: 0px;
 							}
+		.ct-obsPanel {		background-color:#ddd; border-radius: 6px;
+							}
+		.ct-obsCat {		font-size: 20px; font-weight: bold; color: #000; margin-top: 8px; margin-bottom: 6px;
+							}
+		.ct-obsTime {		font-size: 20px; border-radius: 6px; background-color: #fff; text-align:center; width: 120px;
+							border: 1px solid #ccc; display: inline-block;
+							}
+		.ct-obsStart {		font-size: 20px; cursor: pointer; vertical-align: -6px; width: 18px; margin-left: 8px;
+							}
+		.ct-obsPrac {		cursor: pointer; vertical-align: -6px; margin-left: 67px; 
+							}
+		.ct-obsPracText {	font-size: 14px; color: #000099; font-weight: bold; margin-top: 4px; margin-bottom: 8px;
+
+							}
+		.ct-obsPracOps {	font-size: 13px;
+							}
+
 		.ct-event {			width:80px; height:80px;  margin-bottom: 4px; cursor: pointer;
 							}
 		.ct-count {			cursor: zoom-out;
 							}
+		.ct-count:hover {	color: #333;
+							}
+
 
 		.ui-dialog-buttonpane.ui-widget-content.ui-helper-clearfix { border:none }
 		.ui-dialog { border-radius:12px;box-shadow:2px 2px 6px #ccc }
@@ -33,20 +53,44 @@
 </head>
 <body>
 	<br><br>
-	<div id="eventButtons" class="container">
-		<div id="ev-1" class="btn btn-success ct-event "><span id="evl-1"></span><span class="ct-count" id="evc-1"><br></span></div> 
-		<div id="ev-2" class="btn btn-success ct-event "><span id="evl-2"></span><span class="ct-count" id="evc-2"><br></span></div> 
-		<div id="ev-3" class="btn btn-success ct-event "><span id="evl-3"></span><span class="ct-count" id="evc-3"><br></span></div> 
-		<div id="ev-4" class="btn btn-success ct-event "><span id="evl-4"></span><span class="ct-count" id="evc-4"><br></span></div><br> 
-		<div id="ev-5" class="btn btn-info ct-event "><span id="evl-5"></span><span class="ct-count" id="evc-5"><br></span></div> 
-		<div id="ev-6" class="btn btn-info ct-event "><span id="evl-6"></span><span class="ct-count" id="evc-6"><br></span></div> 
-		<div id="ev-7" class="btn btn-info ct-event "><span id="evl-7"></span><span class="ct-count" id="evc-7"><br></span></div> 
-		<div id="ev-8" class="btn btn-info ct-event "><span id="evl-8"></span><span class="ct-count" id="evc-8"><br></span></div><br> 
-		<div id="ev-9" class="btn btn-warning ct-event "><span id="evl-9"></span><span class="ct-count" id="evc-9"><br></span></div> 
-		<div id="ev-10" class="btn btn-warning ct-event "><span id="evl-10"></span><span class="ct-count" id="evc-10"><br></span></div> 
-		<div id="ev-11" class="btn btn-warning ct-event "><span id="evl-11"></span><span class="ct-count" id="evc-11"><br></span></div> 
-		<div id="ev-12" class="btn btn-warning ct-event "><span id="evl-12"></span><span class="ct-count" id="evc-12"><br></span></div> 
+	<div id="obsPanel" class="container ct-obsPanel">
+		<div class="row">
+			<div id="obsCat" class="col-12 ct-obsCat">Phonics Instruction</div>
+		</div>
+	
+		<div id="obsTime" class="row"> 
+			<div class="col-12">
+				<div id=" obs-time" class="ct-obsTime">00:12</div>
+				<img id="obsStart" src="img/playbut.png" class="ct-obsStart">
+					<div  id="obsPrac" class="btn-group">
+					<button type="button" class="btn-sm btn-primary dropdown-toggle ct-obsPrac" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Set practice</button>
+					<div id="obsPracOpts" class="dropdown-menu ct-obsPracOps"></div>
+				</div>			
+				<button id="obsDone" type="button" class="btn-sm float-right btn-danger">Done</button>
+			</div>
+		</div>	
+		<div class="row ct-obsPracText">
+			<div  id="obsPracText" class="col-12">No practice set yet...</div>
+		</div>
+
+		<div id="obsEvt" class="row">
+			<div class="col-12">
+			<div id="ev-1" class="btn btn-success ct-event "><span id="evl-1"></span><span class="ct-count" id="evc-1"><br></span></div> 
+			<div id="ev-2" class="btn btn-success ct-event "><span id="evl-2"></span><span class="ct-count" id="evc-2"><br></span></div> 
+			<div id="ev-3" class="btn btn-success ct-event "><span id="evl-3"></span><span class="ct-count" id="evc-3"><br></span></div> 
+			<div id="ev-4" class="btn btn-success ct-event "><span id="evl-4"></span><span class="ct-count" id="evc-4"><br></span></div><br> 
+			<div id="ev-5" class="btn btn-info ct-event "><span id="evl-5"></span><span class="ct-count" id="evc-5"><br></span></div> 
+			<div id="ev-6" class="btn btn-info ct-event "><span id="evl-6"></span><span class="ct-count" id="evc-6"><br></span></div> 
+			<div id="ev-7" class="btn btn-info ct-event "><span id="evl-7"></span><span class="ct-count" id="evc-7"><br></span></div> 
+			<div id="ev-8" class="btn btn-info ct-event "><span id="evl-8"></span><span class="ct-count" id="evc-8"><br></span></div><br> 
+			<div id="ev-9" class="btn btn-warning ct-event "><span id="evl-9"></span><span class="ct-count" id="evc-9"><br></span></div> 
+			<div id="ev-10" class="btn btn-warning ct-event "><span id="evl-10"></span><span class="ct-count" id="evc-10"><br></span></div> 
+			<div id="ev-11" class="btn btn-warning ct-event "><span id="evl-11"></span><span class="ct-count" id="evc-11"><br></span></div> 
+			<div id="ev-12" class="btn btn-warning ct-event "><span id="evl-12"></span><span class="ct-count" id="evc-12"><br></span></div> 
+		</div>
 	</div>
+
+	</div> <!-- ObsPanel --> 
 
 
 
@@ -61,6 +105,7 @@
 
 var app=null;
 var curTime=0;
+var inPlay=false;
 
 
 
@@ -87,7 +132,26 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 					  "Academic Specific FB","Behavior Specific FB","Generic FB Statement","Student Ask Q",
 					  "Num Student Ask Q","Custom","Custom","Custom"
 					 ];
-		  
+
+		var dataPrac=["Alphabet activities","Blending/segmenting compound words",
+					 "Blending/segmenting onset-rime","Blending/segmenting phonemes",
+					 "Blending/segmenting syllables","Counting/Clapping syllables",
+					 "Deleting/substituting phonemes","Identifying letters",
+					 "Learning sounds ","Learning spelling words","Matching sounds to letters",
+					 "Nonsense words","Reading words","Strategy to sound out unknown words",
+					 "Word family activities","Word study (learning word patterns)","Writing letters"
+					 ];
+		
+		for (i=0;i<dataPrac.length;++i)	{										// For each practice
+			$("#obsPracOpts").append('<li id="obsdp-'+i+'"class="dropdown-item">'+dataPrac[i]+'</li>')
+			$("#obsdp-"+i).on("click", function(e) {							// On practice click
+				var id=e.currentTarget.id.substr(6);							// Get id
+			$("#obsPracText").text(dataPrac[id]);								// Set new practice text
+
+
+			});
+		}
+		
 		
 		for (i=1;i<13;++i) {												// For each event button
 			$("#evl-"+i).html(labs[i-1]+"<br>");							// Set label
@@ -103,7 +167,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				if (id < 5)			p1="OTR";								// Set category
 				else if (id < 8)	p1="FB";
 				else if (id < 10)	p1="Student Q";
-				SaveEvent(curTime,p1,dataLabs[id],"","");					// Save event
+				SaveEvent(curTime,p1,dataLabs[id-1],"","");					// Save event
 				});
 
 			$("#evc-"+i).on("click", function(e) {							// On event button click
@@ -124,8 +188,34 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 
 		}
 
+		$("#obsStart").on("click", function(e) {							// On start/pause button click
+			inPlay=!inPlay;													// Toggle state
+			SetPlayMode(inPlay);											// Set play mode
+			});
+		
 
-	
+
+
+
+
+	}
+
+
+	function SetPlayMode(mode) {
+		if (inPlay)	{
+			$("#obsStart").prop("src","/img/pausebut.png");					// Pause but		
+			Sound("click");													// Click sound	
+			}
+		else {		
+			$("#obsStart").prop("src","/img/playbut.png");					// Play but		
+			Sound("delete");												// Delete sound	
+		}
+
+
+	}
+
+	function ShowTime()
+	{
 	}
 
 	function SaveEvent(time, p1, p2, p3, p4)
