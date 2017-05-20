@@ -9,17 +9,18 @@
 	<link rel="stylesheet" href="css/jquery-ui.min.css"></link>
 	<script src="lib/jquery.min.js"></script>
 	<script src="lib/jquery-ui.min.js"></script>
-	<script src="lib/tether.min.js"></script>
-	<script src="lib/bootstrap.min.js"></script>
 	<!-- script src="lib/jquery.ui.touch-punch.min.js"></script -->
  	<script src="app.js"></script>
 	<link REL="SHORTCUT ICON" HREF="img/favicon.ico">
 	<title>CTScan</title>
 	<style type="text/css">
-		 body { 			font-family: Verdana,Geneva,sans-serif; font-size:13px;  box-sizing:border-box;
-							padding: 0px; margin: 0px;
+		 body { 			font-family: Verdana,Geneva,sans-serif; font-size:13px; box-sizing: border-box;
+							padding: 0px; margin: 0px; 
+
 							}
-		.ct-obsPanel {		background-color:#ddd; border-radius: 6px;
+		.ct-obsPanel {		background-color:#ddd; border-radius: 6px; margin:12px; padding: 12px; width:50%; width: 360px;
+		margin-left: auto;
+  margin-right: auto;
 							}
 		.ct-obsCat {		font-size: 20px; font-weight: bold; color: #000; margin-top: 8px; margin-bottom: 6px;
 							}
@@ -31,16 +32,21 @@
 		.ct-obsPrac {		cursor: pointer; vertical-align: -6px; margin-left: 67px; 
 							}
 		.ct-obsPracText {	font-size: 14px; color: #000099; font-weight: bold; margin-top: 4px; margin-bottom: 8px;
-
 							}
 		.ct-obsPracOps {	font-size: 13px;
 							}
-
 		.ct-event {			width:80px; height:80px;  margin-bottom: 4px; cursor: pointer;
 							}
 		.ct-count {			cursor: zoom-out;
 							}
 		.ct-count:hover {	color: #333;
+							}
+		.ct-mediaNotes 	{	margin-top: 8px; margin-bottom: 6px; 
+							}
+		.ct-mediaRow1 	{	width: 168px; 
+							}
+		.ct-notes 	{		width: 336px; border-radius:4px; padding-left:8px;border: 1px solid #999;
+		 					margin-top: 8px;
 							}
 
 
@@ -52,29 +58,19 @@
 </style>
 </head>
 <body>
-	<br><br>
-	<div id="obsPanel" class="container ct-obsPanel">
-		<div class="row">
-			<div id="obsCat" class="col-12 ct-obsCat">Phonics Instruction</div>
-		</div>
-	
-		<div id="obsTime" class="row"> 
-			<div class="col-12">
-				<div id=" obs-time" class="ct-obsTime">00:12</div>
-				<img id="obsStart" src="img/playbut.png" class="ct-obsStart">
-					<div  id="obsPrac" class="btn-group">
-					<button type="button" class="btn-sm btn-primary dropdown-toggle ct-obsPrac" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Set practice</button>
-					<div id="obsPracOpts" class="dropdown-menu ct-obsPracOps"></div>
-				</div>			
-				<button id="obsDone" type="button" class="btn-sm float-right btn-danger">Done</button>
-			</div>
+	<div id="obsPanel" class="ct-obsPanel">
+		<div id="obsCat" class="ct-obsCat">Phonics Instruction</div>
+		<div id="obsTime" class=""> 
+			<div id=" obs-time" class="ct-obsTime">00:12</div>
+			<img id="obsStart" src="img/playbut.png" class="ct-obsStart">
+				<div  id="obsPrac" class="btn-group">
+				<button type="button" class="btn-sm btn-primary dropdown-toggle ct-obsPrac" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Set practice</button>
+				<div id="obsPracOpts" class="dropdown-menu ct-obsPracOps"></div>
+			</div>			
 		</div>	
-		<div class="row ct-obsPracText">
-			<div  id="obsPracText" class="col-12">No practice set yet...</div>
-		</div>
+		<div class="ct-obsPracText" id="obsPracText" >No practice set yet...</div>
 
-		<div id="obsEvt" class="row">
-			<div class="col-12">
+		<div id="obsEvt">
 			<div id="ev-1" class="btn btn-success ct-event "><span id="evl-1"></span><span class="ct-count" id="evc-1"><br></span></div> 
 			<div id="ev-2" class="btn btn-success ct-event "><span id="evl-2"></span><span class="ct-count" id="evc-2"><br></span></div> 
 			<div id="ev-3" class="btn btn-success ct-event "><span id="evl-3"></span><span class="ct-count" id="evc-3"><br></span></div> 
@@ -87,15 +83,21 @@
 			<div id="ev-10" class="btn btn-warning ct-event "><span id="evl-10"></span><span class="ct-count" id="evc-10"><br></span></div> 
 			<div id="ev-11" class="btn btn-warning ct-event "><span id="evl-11"></span><span class="ct-count" id="evc-11"><br></span></div> 
 			<div id="ev-12" class="btn btn-warning ct-event "><span id="evl-12"></span><span class="ct-count" id="evc-12"><br></span></div> 
+			</div>
+		<div id="obsMedia" class="ct-mediaNotes">
+			<table>
+				<tr><td class="ct-mediaRow1"><input id="md-1" type="checkbox"> Diagram/Graph</input></td>
+				<td><input id="md-2" type="checkbox"> Object/Manipulative</input></td></tr>
+				<tr><td class="ct-mediaRow1"><input id="md-3" type="checkbox"> Graphic Organizer</input></td>
+				<td><input id="md-4" type="checkbox"> Picture</input></td></tr>
+				<tr><td class="ct-mediaRow1"><input id="md-5" type="checkbox"> Movie</input></td>
+				<td><input id="md-6" type="checkbox"> Text</input></td></tr>
+			</table>
+			<input id="obsNote" class="ct-notes" type="text" placeholder="Type note. Press enter to save"></input><br>
+			<input class="ct-notes" type="text" placeholder="Type new topic/vocab word. Press enter to save"></input>
 		</div>
-	</div>
-
 	</div> <!-- ObsPanel --> 
-
-
-
-
-
+		<button id="obsDone" type="button" class="btn-sm btn-danger">Done</button>
 
 <script>
 
@@ -106,9 +108,6 @@
 var app=null;
 var curTime=0;
 var inPlay=false;
-
-
-
 
 $(window).resize(function() {                                         	// ON WINDOW RESIZE
 	if (app && app.allowResize)												// If app loaded and allowing resizing
@@ -141,17 +140,24 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 					 "Nonsense words","Reading words","Strategy to sound out unknown words",
 					 "Word family activities","Word study (learning word patterns)","Writing letters"
 					 ];
-		
-		for (i=0;i<dataPrac.length;++i)	{										// For each practice
+		var dataMedia=["Diagram/Graph","Object/Manipulative","Graphic Organizer","Picture","Movie","Text"
+					  ];
+
+
+		for (i=0;i<dataPrac.length;++i)	{									// For each practice
 			$("#obsPracOpts").append('<li id="obsdp-'+i+'"class="dropdown-item">'+dataPrac[i]+'</li>')
-			$("#obsdp-"+i).on("click", function(e) {							// On practice click
-				var id=e.currentTarget.id.substr(6);							// Get id
-			$("#obsPracText").text(dataPrac[id]);								// Set new practice text
-
-
+			$("#obsdp-"+i).on("click", function(e) {						// On practice click
+				var id=e.currentTarget.id.substr(6);						// Get id
+			$("#obsPracText").text(dataPrac[id]);							// Set new practice text
 			});
-		}
-		
+			}
+		for (i=1;i<7;++i) {													// For each media
+			$("#md-"+i).on("click", function(e) {							// On box click
+				var act=$(this).prop("checked") ? "active" : "inactive";	// Active
+				var id=e.currentTarget.id.substr(3)-1;						// Get id			
+				SaveEvent(curTime,"Visual Aid",dataMedia[id],act,0);		// Save event
+				});
+			}
 		
 		for (i=1;i<13;++i) {												// For each event button
 			$("#evl-"+i).html(labs[i-1]+"<br>");							// Set label
@@ -167,7 +173,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				if (id < 5)			p1="OTR";								// Set category
 				else if (id < 8)	p1="FB";
 				else if (id < 10)	p1="Student Q";
-				SaveEvent(curTime,p1,dataLabs[id-1],"","");					// Save event
+				SaveEvent(curTime,p1,dataLabs[id-1],"",0);					// Save event
 				});
 
 			$("#evc-"+i).on("click", function(e) {							// On event button click
@@ -183,7 +189,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				if (id < 5)			p1="OTR";								// Set category
 				else if (id < 8)	p1="FB";
 				else if (id < 10)	p1="Student Q";
-				SaveEvent(curTime,p1,dataLabs[id],"NEGATE","");				// Save event
+				SaveEvent(curTime,p1,dataLabs[id],"NEGATE",0);				// Save event
 				});
 
 		}
@@ -193,6 +199,9 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			SetPlayMode(inPlay);											// Set play mode
 			});
 		
+		$("#obsNote").on("changed", function(e) {								// On Note enty
+trace(122)
+			});
 
 
 
