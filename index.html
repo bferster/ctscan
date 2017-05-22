@@ -15,8 +15,11 @@
 		 body { 			font-family: Verdana,Geneva,sans-serif; font-size:13px; box-sizing: border-box;
 							padding: 0px; margin: 0px; 
 							}
+		.ct-splash { 		position: absolute; top:50px; left: calc(50% - 100px); 
+							font-size: 20px; text-align: center; font-weight: bold;
+							}
 		.ct-obsPanel {		background-color:#ddd; border-radius: 6px; margin: 24px; padding: 12px; width: 336px;
-							margin-left: auto; margin-right: auto; 
+							margin-left: auto; margin-right: auto; opacity: 0; 
 							}
 		.ct-obsCat {		font-size: 20px; font-weight: bold; color: #000; margin-bottom: 8px; user-select: none;
 							}
@@ -80,6 +83,12 @@
 </style>
 </head>
 <body>
+	<div id="splashDiv" class="ct-splash"><img src="img/ctlogo400.png" width="200"><br>
+		<br>Classroom Teaching<br>Scan<br><br>
+		<span style="font-size:14px;font-weight:normal">
+			Michael J. Kennedy<br>Wendy J. Rodgers<br>John Romig<br><b>University of Virginia</b><br><br>v2.0
+		</span>
+	</div>
 	<div id="obsPanel" class="ct-obsPanel">
 		<div id="obsCat" class="ct-obsCat">Vocabulary Instruction</div>
 		<div id="obsTimerText" class="ct-obsTime">00:00</div>
@@ -129,12 +138,18 @@
 var curTime=0;															// Saves time in task
 var timingInterval=null;												// Timing interval
 var inPlay=false;														// Play flag
-var curCat=0
+var curCat=0;															// Current category
 			
 $(document).ready(function() {								           	// ON PAGE LOADED
-	var url=window.location.search.substring(1);						   	// Get query string
+	var url=window.location.search.substring(1);						// Get query string
 	InitHandlers();
-    });	
+	setTimeout(function() {												// Set delay timer
+		$("#splashDiv").animate({ opacity:0 },400);						// Hide logo
+		$("#obsPanel").animate({ opacity:1},1500, function() {			// Show interface
+			$("#splashDiv").hide();										// Hide splash
+			});
+		},2000);			
+	});	
 
 	function InitHandlers() {
 
@@ -172,7 +187,6 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 						];
 
 		var dataMedia=["Diagram/Graph","Object/Manipulative","Graphic Organizer","Picture","Movie","Text" ];
-
 
 		for (i=1;i<7;++i) {													// For each media
 			$("#md-"+i).on("click", function(e) {							// On box click
@@ -251,6 +265,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 					val+="->"+subs[curSub];									// Add to val
 				SaveEvent(curTime,"Teacher actions",menus[curCat].title,val,0);	// Save event
 				$("#obsPracText").text(ShortenString(title,40));			// Set new practice text
+				$("#obsPracText").prop("title",subs[curSub]);				// Set new sub-practice as tool-tip
 				});
 			
 			var curPrac=-1, curSub=-1;	
