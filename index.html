@@ -60,11 +60,11 @@
 		.ct-mediaRow1 	{	width: 168px; 
 							}
 		.ct-notes 	{		width: 266px; border-radius:4px; padding-left:8px; border: 1px solid #999;
-		 					margin-top: 8px;
+		 					margin-top: 8px; margin-bottom: 6px;
 							}
-		.ct-notesBut {		cursor: pointer; color:#fff; text-align: center; border-radius: 6px; display: inline-block;
+		.ct-notesBut {		cursor: pointer; color:#000; text-align: center; border-radius: 6px; display: inline-block;
 							margin-top: 2px; margin-left:4px; user-select: none; font-size: 10px; 
-							background-color: #3498db; padding-bottom: 2px; padding-left: 6px; padding-right: 6px;
+							padding-bottom: 2px; padding-left: 6px; padding-right: 6px; border: 1px solid #999;
 							}
 
 		@media only screen and (max-height: 525px) {	.ct-obsPanel {	margin-top: 0; margin-bottom: 0   }		}
@@ -102,22 +102,20 @@
 			<div id="ev-12" style="background-color:#3db1ff" class="ct-obsEvtBut"><span id="evl-12"></span><span class="ct-count" id="evc-12"><br></span></div> 
 		</div>
 
-		<div id="obsMedia" class="ct-mediaNotes">
-			<table>
-				<tr><td class="ct-mediaRow1"><input id="md-1" type="checkbox"> Diagram/Graph</input></td>
-				<td><input id="md-2" type="checkbox"> Object/Manipulative</input></td></tr>
-				<tr><td class="ct-mediaRow1"><input id="md-3" type="checkbox"> Graphic Organizer</input></td>
-				<td><input id="md-4" type="checkbox"> Picture</input></td></tr>
-				<tr><td class="ct-mediaRow1"><input id="md-5" type="checkbox"> Movie</input></td>
-				<td><input id="md-6" type="checkbox"> Text</input></td></tr>
-			</table>
-			<textarea id="obsNote" class="ct-notes" type="text" placeholder="Type new note here"></textarea>
-			<div style="display:inline-block;vertical-align:4px;font-size:10px">
-				<input id="obsNotePri" type="checkbox">Pvt?</input><br>
-				<div id="obsNoteSend" class="ct-notesBut">Send</div>
-				</div>
-			<input class="ct-notes" type="text" placeholder="Type new topic/vocab word. Press enter to save"></input>
-		</div>
+		<table style="margin-top:4px">
+			<tr><td class="ct-mediaRow1"><input id="md-1" type="checkbox"> Diagram/Graph</input></td>
+			<td><input id="md-2" type="checkbox"> Object/Manipulative</input></td></tr>
+			<tr><td class="ct-mediaRow1"><input id="md-3" type="checkbox"> Graphic Organizer</input></td>
+			<td><input id="md-4" type="checkbox"> Picture</input></td></tr>
+			<tr><td class="ct-mediaRow1"><input id="md-5" type="checkbox"> Movie</input></td>
+			<td><input id="md-6" type="checkbox"> Text</input></td></tr>
+		</table>
+		<textarea id="obsNote" class="ct-notes" type="text" placeholder="Type new note here"></textarea>
+		<div style="display:inline-block;vertical-align:10px;font-size:10px">
+			<input id="obsNotePri" type="checkbox">Pvt?</input><br>
+			<div id="obsNoteSend" class="ct-notesBut">Send</div>
+			</div>
+		<div id="obsNewPrac" style='width:120px;background-color:#999' class="ct-obsNewPrac">Topic/Vocab term</div>
 
 	</div> <!-- ObsPanel --> 
 
@@ -130,7 +128,7 @@
 var curTime=0;															// Saves time in task
 var timingInterval=null;												// Timing interval
 var inPlay=false;														// Play flag
-var curCat="Vocabulary Instruction";									// Current category
+var curCat=0
 			
 $(document).ready(function() {								           	// ON PAGE LOADED
 	var url=window.location.search.substring(1);						   	// Get query string
@@ -149,7 +147,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 					  "Num Student Ask Q","Custom","Custom","Custom"
 					 ];
 
-		var dataPrac=[	"Alternate meanings *Alt meanings &Cues Instruction,Clear Language,Differentiates Contexts",
+		var menus=[{ title:"Vocabulary Instruction", ops:[ "Alternate meanings *Alt meanings &Cues Instruction,Clear Language,Differentiates Contexts",
 						"Analogy *Analogy &Cues Instruction,Clear Language,Extended Comparison",
 						"Application - prompt student to apply *Application &Cues Instruction,Clear Language,Strong Relevance,Provides Feedback",
 						"Asks to state definition *Asks definition &Cues Instruction,Clear Language,Requires Interpretation,Provides Feedback",
@@ -169,10 +167,10 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 						"Strategy - using morph parts (explain/intro) *Strategy - morph &Cues Instruction,Clear Language,Defines Parts then Reunites Word,Think-Aloud,Provides Feedback",
 						"Strategy - models use *strategy - models &Cues Instruction,Clear Language,Provides Prompts,Monitors Use,ProvidesFeedback",
 						"Strategy - prompts use *Strategy - prompts &Cues Instruction,Clear Language,Provides Rationale"
+						]}
 						];
 
-		var dataMedia=["Diagram/Graph","Object/Manipulative","Graphic Organizer","Picture","Movie","Text"
-					  ];
+		var dataMedia=["Diagram/Graph","Object/Manipulative","Graphic Organizer","Picture","Movie","Text" ];
 
 
 		for (i=1;i<7;++i) {													// For each media
@@ -231,9 +229,9 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 
 		$("#obsNewPrac").on("click", function(e) {							// On change practice
 			var str="<div id='pracList' class='ct-obsPracList'>";			// List holder
-			for (i=0;i<dataPrac.length;++i)	{								// For each practice
-				var title=dataPrac[i].match(/^(.*)\ \*/)[1];				// Extract title
-				var subs=dataPrac[i].match(/&(.*)/)[1].split(",");			// Extract subs
+			for (i=0;i<menus[curCat].ops.length;++i)	{					// For each practice
+				var title=menus[curCat].ops[i].match(/^(.*)\ \*/)[1];		// Extract title
+				var subs=menus[curCat].ops[i].match(/&(.*)/)[1].split(",");	// Extract subs
 				str+="<div id='opl-"+i+"'class='ct-obsPracItem'>"+title+"</div>";	// Add title
 				if (subs.length) {											// If sub practices
 					str+="<div id='ops-"+i+"' class='ct-obsPracSubs'>";		// Add subs header
@@ -245,12 +243,12 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			str+="</div>";
 
 			DialogBox("Choose new practice",str, function() {				// Run dialog
-				var title=dataPrac[curPrac].match(/^(.*)\ \*/)[1];			// Extract title
-				var val=dataPrac[curPrac].match(/\*(.*)\ &/)[1];			// Extract value
-				var subs=dataPrac[curPrac].match(/&(.*)/)[1].split(",");	// Extract subs
+				var title=menus[curCat].ops[curPrac].match(/^(.*)\ \*/)[1]; // Extract title
+				var val=menus[curCat].ops[curPrac].match(/\*(.*)\ &/)[1];	// Extract value
+				var subs=menus[curCat].ops[curPrac].match(/&(.*)/)[1].split(",");	// Extract subs
 				if (subs.length)											// If subs
 					val+="->"+subs[curSub];									// Add to val
-				SaveEvent(curTime,"Teacher actions",curCat,val,0);			// Save event
+				SaveEvent(curTime,"Teacher actions",menus[curCat].title,val,0);	// Save event
 				$("#obsPracText").text(title);								// Set new practice text
 				});
 			
