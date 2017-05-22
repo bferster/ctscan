@@ -87,6 +87,7 @@
 		<div id="obsNewPrac" class="ct-obsNewPrac">New Practice</div>
 		<div id="obsDone" class="ct-obsDone">Done</div>
 		<div class="ct-obsPracText" id="obsPracText" >No practice set yet...</div>
+	
 		<div id="obsEvt">
 			<div id="ev-1"  style="background-color:#e67e22" class="ct-obsEvtBut"><span id="evl-1"></span><span class="ct-count" id="evc-1"><br></span></div> 
 			<div id="ev-2"  style="background-color:#e67e22" class="ct-obsEvtBut"><span id="evl-2"></span><span class="ct-count" id="evc-2"><br></span></div> 
@@ -249,7 +250,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				if (subs.length)											// If subs
 					val+="->"+subs[curSub];									// Add to val
 				SaveEvent(curTime,"Teacher actions",menus[curCat].title,val,0);	// Save event
-				$("#obsPracText").text(title);								// Set new practice text
+				$("#obsPracText").text(ShortenString(title,40));			// Set new practice text
 				});
 			
 			var curPrac=-1, curSub=-1;	
@@ -353,6 +354,13 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			console.log(msg);
 	}
 
+	function ShortenString(str, len)									// SHORTEN A STRING TO LENGTH
+	{
+		if (str && str.length > len)										// Too long
+			str=str.substr(0,(len-3)/2)+"..."+str.slice((len-3)/-2);		// Shorten	
+		return str;															// Return string
+	}
+
 	function Sound(sound, mute)												// PLAY SOUND
 	{
 		var snd=new Audio();													// Init audio object
@@ -365,6 +373,26 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			snd.play();															// Play it
 			}
 		}
+
+	function SetCookie(cname, cvalue, exdays)								// SET COOKIE
+	{
+		var d=new Date();
+		d.setTime(d.getTime()+(exdays*24*60*60*1000));
+		var expires = "expires="+d.toGMTString();
+		document.cookie = cname + "=" + cvalue + "; " + expires;
+	}
+	
+	function GetCookie(cname) 												// GET COOKIE
+	{
+		var name=cname+"=",c;
+		var ca=document.cookie.split(';');
+		for (var i=0;i<ca.length;i++)  {
+		  c=ca[i].trim();
+		  if (c.indexOf(name) == 0) 
+		  	return c.substring(name.length,c.length);
+		  }
+		return "";
+	}
 		
 </script>
 </body>
