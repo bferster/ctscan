@@ -154,220 +154,219 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 	InitObs();															// Init observation screen
 	});	
 
-	function GetIntroData()												// GET INTRO DATA FROM USER
-	{
-		var str="<table width='100%'>";
-		str+="<tr><td>Teacher&nbsp;ID:</td><td><input class='ct-is' id='intro-id' type='Text'></input></td></tr>";
-		str+="<tr><td>Observer&nbsp;name:</td><td><input class='ct-is' id='intro-name' type='Text'></input></td></tr>";
-		str+="<tr><td>Observer&nbsp;email:</td><td><input class='ct-is' id='intro-email' type='Text'></input></td></tr>";
-		str+="<tr><td>Class:</td><td><select id='intro-grade' class='ct-is' style='width:auto'>";
-		str+="<option>K</option><option>1</option><option>2</option><option>3</option><option>4</option>";
-		str+="<option>5</option><option>6</option><option>7</option><option>8</option><option>8</option>";
-		str+="<option>10</option><option>11</option><option>12</option></select>&nbsp;<select id='intro-sub' class='ct-is' style='width:auto'>";
-		str+="<option>English</option><option>Math</option><option>Reading</option><option>History</option><option>Science</option></select>";
-		str+="<tr><td>Date:</td><td><input class='ct-is' id='intro-date' type='date'></td></tr>";
-		str+="<tr><td>Block/Time:</td><td><input class='ct-is' id='intro-block' type='text'></td></tr>";
-		str+="<tr><td>Video&nbsp;source:</td><td><input class='ct-is' id='intro-video' placeholder='URL of video, if not live' type='Text'></input></td></tr>";
-		str+="<tr><td>Remind&nbsp;every:</td><td><select id='intro-tot' class='ct-is' style='width:auto'>";
-		str+="<option>0</option><option>1</option><option selected>2</option><option>5</option><option>10</option></select> min(s) time on task</td></tr>";
-		str+="<tr><td>Category:</td><td><select id='intro-cat' class='ct-is'></td></tr>";
-		str+="<tr><td>Which Teacher:</td><td><select id='intro-which' class='ct-is''><option>General Ed</option><option>Special Ed</option></td></tr>";
-		str+="<tr><td>Talking&nbsp;to?</td><td><select id='intro-talk' class='ct-is''><option>Whole group</option><option>Small group</option>";
-		str+="<option>Individual</option><option>Other adult</option><option>No one</option></td></tr>";
-		str+="<tr><td>Co-teaching&nbsp;mode:</td><td><select id='intro-model' class='ct-is''><option>NONE</option><option>Alternative</option>";
-		str+="<option>1-teach/1-observe</option><option>1-teach/1-assist</option><option>Parallel</option><option>Stations</option><option>Team</option></td></tr>";
-		str+="</table>"
+function GetIntroData()												// GET INTRO DATA FROM USER
+{
+	var str="<table width='100%'>";
+	str+="<tr><td>Teacher&nbsp;ID:</td><td><input class='ct-is' id='intro-id' type='Text'></input></td></tr>";
+	str+="<tr><td>Observer&nbsp;name:</td><td><input class='ct-is' id='intro-name' type='Text'></input></td></tr>";
+	str+="<tr><td>Observer&nbsp;email:</td><td><input class='ct-is' id='intro-email' type='Text'></input></td></tr>";
+	str+="<tr><td>Class:</td><td><select id='intro-grade' class='ct-is' style='width:auto'>";
+	str+="<option>K</option><option>1</option><option>2</option><option>3</option><option>4</option>";
+	str+="<option>5</option><option>6</option><option>7</option><option>8</option><option>8</option>";
+	str+="<option>10</option><option>11</option><option>12</option></select>&nbsp;<select id='intro-sub' class='ct-is' style='width:auto'>";
+	str+="<option>English</option><option>Math</option><option>Reading</option><option>History</option><option>Science</option></select>";
+	str+="<tr><td>Date:</td><td><input class='ct-is' id='intro-date' type='date'></td></tr>";
+	str+="<tr><td>Block/Time:</td><td><input class='ct-is' id='intro-block' type='text'></td></tr>";
+	str+="<tr><td>Video&nbsp;source:</td><td><input class='ct-is' id='intro-video' placeholder='URL of video, if not live' type='Text'></input></td></tr>";
+	str+="<tr><td>Remind&nbsp;every:</td><td><select id='intro-tot' class='ct-is' style='width:auto'>";
+	str+="<option>0</option><option>1</option><option selected>2</option><option>5</option><option>10</option></select> min(s) time on task</td></tr>";
+	str+="<tr><td>Category:</td><td><select id='intro-cat' class='ct-is'></td></tr>";
+	str+="<tr><td>Which Teacher:</td><td><select id='intro-which' class='ct-is''><option>General Ed</option><option>Special Ed</option></td></tr>";
+	str+="<tr><td>Talking&nbsp;to?</td><td><select id='intro-talk' class='ct-is''><option>Whole group</option><option>Small group</option>";
+	str+="<option>Individual</option><option>Other adult</option><option>No one</option></td></tr>";
+	str+="<tr><td>Co-teaching&nbsp;mode:</td><td><select id='intro-model' class='ct-is''><option>NONE</option><option>Alternative</option>";
+	str+="<option>1-teach/1-observe</option><option>1-teach/1-assist</option><option>Parallel</option><option>Stations</option><option>Team</option></td></tr>";
+	str+="</table>"
 
-		DialogBox("Setup",str, function() {								// Run dialog
-			SaveEvent(0,"TeacherID",$("#intro-id").val(),"",0);			// Save events
-			SaveEvent(0,"ObserverName",$("#intro-name").val(),"",0);			
-			SaveEvent(0,"ObserverEmail",$("#intro-email").val(),"",0);			
-			SaveEvent(0,"Grade",$("#intro-grade").val(),"",0);			
-			SaveEvent(0,"Subject",$("#intro-sub").val(),"",0);			
-			SaveEvent(0,"Date",$("#intro-date").val(),"",0);			
-			SaveEvent(0,"Block",$("#intro-block").val(),"",0);			
-			SaveEvent(0,"Setting",$("#intro-video").val() ? $("#intro-video").val() : "Live" ,"",0);			
-			SaveEvent(0,"Teacher status","Which Teacher", $("#intro-which").val(), 0);			
-			SaveEvent(0,"Teacher status","Talking to", $("#intro-talk").val(), 0);			
-			SaveEvent(0,"Teacher status","Model", $("#intro-model").val(), 0);			
-			if ($("#intro-tot").val() > 0) {							// If tot time set
-				totTimingInterval=setInterval( function() {				// Start tot timer
-	 					GetTimeOnTask();
-	 					},$("#intro-tot").val()*600)						// Set time
-				}
-			
-	function GetTimeOnTask()
-	{
-		$("#alertBoxDiv").remove();											// Remove any old ones
-		$("body").append("<div class='qm-unselectable' id='alertBoxDiv'></div>");														
-		var str="<p><img src='img/ctlogo32.png' style='vertical-align:-8px'/>&nbsp;&nbsp;";								
-		str+="<span class='ct-obsCat'>Set time on task</span><p>";
-		str+="<div style='font-size:12px;margin:14px'>Choose percentage of time on task</div>";
-			$("#alertBoxDiv").append(str);	
-		$("#alertBoxDiv").dialog({ width:300, buttons: {
-									}});	
-		}
-
-
-			
-			});
-		
-		var cats=[	"Phonics Instruction","Fluency Instruction","Vocabulary Instruction","Reading Comprehension Instruction",
-					"Writing Instruction","Mathematics Instruction","General Content Instruction","Observing/Assessing Students",
-					"Classroom Management","Non-instructional activity","Observer uncertain" ];
-
-		for (i=0;i<cats.length;++i)
-			$("#intro-cat").append("<option>"+cats[i]+"</option>");
-	
-		}
-
-
-
-
-
-
-
-
-
-
-	function InitObs() {
-
-		var i;
-		var labs=["Deep<br>Q QTR","Rote<br>Q OTR","Choral<br>Resp","Soc/Behav<br>OTR",
-				  "Acad<br>FB", "Behav<br>FB","Generic<br>FB","Student<br>Ask Q",
-				  "# Student<br>Ask Q","Custom<br>1","Custom<br>2","Custom<br>3"
-				 ];
-		var dataLabs=["Deep Q OTR","Rote Q OTR","Choral Response","Social Behavioral OTR",
-					  "Academic Specific FB","Behavior Specific FB","Generic FB Statement","Student Ask Q",
-					  "Num Student Ask Q","Custom","Custom","Custom"
-					 ];
-
-		var menus=[{ title:"Vocabulary Instruction", ops:[ "Alternate meanings *Alt meanings &Cues Instruction,Clear Language,Differentiates Contexts",
-						"Analogy *Analogy &Cues Instruction,Clear Language,Extended Comparison",
-						"Application - prompt student to apply *Application &Cues Instruction,Clear Language,Strong Relevance,Provides Feedback",
-						"Asks to state definition *Asks definition &Cues Instruction,Clear Language,Requires Interpretation,Provides Feedback",
-						"Connection made to other content *Connection &Cues Instruction,Clear Language,Strong Relevance,Understood by Students,Monitors Understanding",
-						"Context to define - teacher provided *Context, define &Cues Instruction,Clear Language,Explicit Identification of Cues,Think-Aloud",
-						"Context - prompt student to use *Context, prompt &Cues Instruction,Clear Language,Direct Context,Monitors Understanding,Provides Feedback",
-						"Definition - formal *Definition, formal &Cues Instruction,Clear Language,Explicitly Explains Parts of Def",
-						"Definition - Student-friendly *Definition, student &Cues Instruction,Clear Language,Monitors Understanding",
-						"Demonstration *Demo &Cues Instruction,Clear Language,Sequential Presentation,Think-Aloud,Chunked Appropriately",
-						"Discussion of term *Discussion &Appropriate and authentic context, Call on sts all over room, Ask open-ended questions, Encourages student talk and use of evidence, Incorporates student responses into discussion",
-						"Example(s) of term meaning *Example &Cues Instruction,Clear Language,Explicit Explanation,Monitors Understanding",
-						"Facilitates student demo/presentation *Facil st pres &Cues Instruction,Clear Language,Provides Feedback",
-						"Morphological parts of word - highlighted *Morph parts & Cues Instruction,Clear Language,Think-Aloud,Monitors Understanding",
-						"Non-example of term meaning *Non-example, term &Cues Instruction,Clear Language,Distinguishes Similarities,Explicit Explanation,Monitors Understanding",
-						"Semantic relationships *Semantics &Cues Instruction,Clear Language,Monitors Understanding",
-						"Strategy - remember definition (explain/intro) *Strategy - remember &Cues Instruction,Clear Language,Think-Aloud,Several Examples,Provides Feedback",
-						"Strategy - using morph parts (explain/intro) *Strategy - morph &Cues Instruction,Clear Language,Defines Parts then Reunites Word,Think-Aloud,Provides Feedback",
-						"Strategy - models use *strategy - models &Cues Instruction,Clear Language,Provides Prompts,Monitors Use,ProvidesFeedback",
-						"Strategy - prompts use *Strategy - prompts &Cues Instruction,Clear Language,Provides Rationale"
-						]}
-						];
-
-		var dataMedia=["Diagram/Graph","Object/Manipulative","Graphic Organizer","Picture","Movie","Text" ];
-
-		for (i=1;i<7;++i) {													// For each media
-			$("#md-"+i).on("click", function(e) {							// On box click
-				var act=$(this).prop("checked") ? "active" : "inactive";	// Active
-				var id=e.currentTarget.id.substr(3)-1;						// Get id			
-				SaveEvent(curTime,"Visual Aid",dataMedia[id],act,0);		// Save event
-				});
+	DialogBox("Setup",str, function() {									// Run dialog
+		SaveEvent(0,"TeacherID",$("#intro-id").val(),"",0);				// Save events
+		SaveEvent(0,"ObserverName",$("#intro-name").val(),"",0);			
+		SaveEvent(0,"ObserverEmail",$("#intro-email").val(),"",0);			
+		SaveEvent(0,"Grade",$("#intro-grade").val(),"",0);			
+		SaveEvent(0,"Subject",$("#intro-sub").val(),"",0);			
+		SaveEvent(0,"Date",$("#intro-date").val(),"",0);			
+		SaveEvent(0,"Block",$("#intro-block").val(),"",0);			
+		SaveEvent(0,"Setting",$("#intro-video").val() ? $("#intro-video").val() : "Live" ,"",0);			
+		SaveEvent(0,"Teacher status","Which Teacher", $("#intro-which").val(), 0);			
+		SaveEvent(0,"Teacher status","Talking to", $("#intro-talk").val(), 0);			
+		SaveEvent(0,"Teacher status","Model", $("#intro-model").val(), 0);			
+		if ($("#intro-tot").val() > 0) {								// If tot time set
+			totTimingInterval=setInterval( function() {					// Start tot timer
+					GetTimeOnTask();
+					},$("#intro-tot").val()*6000)						// Set time
 			}
-		
-		for (i=1;i<13;++i) {												// For each event button
-			$("#evl-"+i).html(labs[i-1]+"<br>");							// Set label
+		});
 
-			$("#ev-"+i).on("click", function(e) {							// On event button click
-				var id=e.currentTarget.id.substr(3);						// Get id			
-				var c=1;													// First one												
-				var s=$("#evc-"+id).text();									// Get count from label
-				if (s)	c=s.substr(1,s.length-2)-0+1						// If not first, get and increment
-				$("#evc-"+id).html("("+c+")");								// Show new count
-				Sound("click");												// Click sound	
-				var p1="Custom";											// Assume custom
-				if (id < 5)			p1="OTR";								// Set category
-				else if (id < 8)	p1="FB";
-				else if (id < 10)	p1="Student Q";
-				SaveEvent(curTime,p1,dataLabs[id-1],"",0);					// Save event
-				});
+	var cats=[	"Phonics Instruction","Fluency Instruction","Vocabulary Instruction","Reading Comprehension Instruction",
+				"Writing Instruction","Mathematics Instruction","General Content Instruction","Observing/Assessing Students",
+				"Classroom Management","Non-instructional activity","Observer uncertain" ];
 
-			$("#evc-"+i).on("click", function(e) {							// On event button click
-				e.stopPropagation();										// Stop propagation
-				var id=e.currentTarget.id.substr(4);						// Get id			
-				var s=$("#evc-"+id).text();									// Get count from label
-				var c=s.substr(1,s.length-2)-1								// If not first, get and decrement
-				if (c)														// Something to show
-					$("#evc-"+id).html("("+c+")");							// Show new count
-				else														// No counts
-					$("#evc-"+id).html("<br>");								// Clear display
-				Sound("delete");											// Delete sound	
-				if (id < 5)			p1="OTR";								// Set category
-				else if (id < 8)	p1="FB";
-				else if (id < 10)	p1="Student Q";
-				SaveEvent(curTime,p1,dataLabs[id],"NEGATE",0);				// Save event
-				});
+	for (i=0;i<cats.length;++i)
+		$("#intro-cat").append("<option>"+cats[i]+"</option>");
+}
+
+function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
+{
+	var i;
+	$("#alertBoxDiv").remove();											// Remove any old ones
+	$("body").append("<div class='qm-unselectable' id='alertBoxDiv'></div>");														
+	var str="<p><img src='img/ctlogo32.png' style='vertical-align:-8px'/>&nbsp;&nbsp;";								
+	str+="<span class='ct-obsCat'>Set time on task</span><p>";
+	str+="<div style='font-size:12px;margin:14px;text-align:center'><br><br>";
+	for (i=0;i<110;i+=10) 
+		str+="<div id='tot-"+i+"' style='width:120px;background-color:rgb(0,"+Math.floor(i*2)+",0);margin-bottom:4px;' class='ct-obsNewPrac'>"+i+" percent</div><br>"
+	str+="<br><div id='tot-999' style='width:120px;background-color:#e67e22;margin-bottom:4px;' class='ct-obsNewPrac'>Skip</div>"
+	str+="</select></div>";
+	$("#alertBoxDiv").append(str);	
+	$("#alertBoxDiv").dialog({ 	 width:$("#obsPanel").width()+16, height:$("#obsPanel").height()+24 });	
+	$("#alertBoxDiv").dialog("option","position",{ my:"middle", at:"middle", of:obsPanel });
+	
+	$("[id^=tot-]").on("click", function(e) {			
+		var id=e.currentTarget.id.substr(4);							// Get id			
+		if (id != 999)													// If not skipping
+			SaveEvent(curTime,"Student status","Percent engaged",id,0);	// Save event
+		$("#alertBoxDiv").remove();  									// Close it
+		});
+}
+
+function InitObs() 													// INIT OBSERVATION PANEL
+{
+	var i;
+	var labs=["Deep<br>Q QTR","Rote<br>Q OTR","Choral<br>Resp","Soc/Behav<br>OTR",
+				"Acad<br>FB", "Behav<br>FB","Generic<br>FB","Student<br>Ask Q",
+				"# Student<br>Ask Q","Custom<br>1","Custom<br>2","Custom<br>3"
+				];
+	var dataLabs=["Deep Q OTR","Rote Q OTR","Choral Response","Social Behavioral OTR",
+					"Academic Specific FB","Behavior Specific FB","Generic FB Statement","Student Ask Q",
+					"Num Student Ask Q","Custom","Custom","Custom"
+					];
+
+	var menus=[{ title:"Vocabulary Instruction", ops:[ "Alternate meanings *Alt meanings &Cues Instruction,Clear Language,Differentiates Contexts",
+					"Analogy *Analogy &Cues Instruction,Clear Language,Extended Comparison",
+					"Application - prompt student to apply *Application &Cues Instruction,Clear Language,Strong Relevance,Provides Feedback",
+					"Asks to state definition *Asks definition &Cues Instruction,Clear Language,Requires Interpretation,Provides Feedback",
+					"Connection made to other content *Connection &Cues Instruction,Clear Language,Strong Relevance,Understood by Students,Monitors Understanding",
+					"Context to define - teacher provided *Context, define &Cues Instruction,Clear Language,Explicit Identification of Cues,Think-Aloud",
+					"Context - prompt student to use *Context, prompt &Cues Instruction,Clear Language,Direct Context,Monitors Understanding,Provides Feedback",
+					"Definition - formal *Definition, formal &Cues Instruction,Clear Language,Explicitly Explains Parts of Def",
+					"Definition - Student-friendly *Definition, student &Cues Instruction,Clear Language,Monitors Understanding",
+					"Demonstration *Demo &Cues Instruction,Clear Language,Sequential Presentation,Think-Aloud,Chunked Appropriately",
+					"Discussion of term *Discussion &Appropriate and authentic context, Call on sts all over room, Ask open-ended questions, Encourages student talk and use of evidence, Incorporates student responses into discussion",
+					"Example(s) of term meaning *Example &Cues Instruction,Clear Language,Explicit Explanation,Monitors Understanding",
+					"Facilitates student demo/presentation *Facil st pres &Cues Instruction,Clear Language,Provides Feedback",
+					"Morphological parts of word - highlighted *Morph parts & Cues Instruction,Clear Language,Think-Aloud,Monitors Understanding",
+					"Non-example of term meaning *Non-example, term &Cues Instruction,Clear Language,Distinguishes Similarities,Explicit Explanation,Monitors Understanding",
+					"Semantic relationships *Semantics &Cues Instruction,Clear Language,Monitors Understanding",
+					"Strategy - remember definition (explain/intro) *Strategy - remember &Cues Instruction,Clear Language,Think-Aloud,Several Examples,Provides Feedback",
+					"Strategy - using morph parts (explain/intro) *Strategy - morph &Cues Instruction,Clear Language,Defines Parts then Reunites Word,Think-Aloud,Provides Feedback",
+					"Strategy - models use *strategy - models &Cues Instruction,Clear Language,Provides Prompts,Monitors Use,ProvidesFeedback",
+					"Strategy - prompts use *Strategy - prompts &Cues Instruction,Clear Language,Provides Rationale"
+					]}
+					];
+
+	var dataMedia=["Diagram/Graph","Object/Manipulative","Graphic Organizer","Picture","Movie","Text" ];
+
+	for (i=1;i<7;++i) {													// For each media
+		$("#md-"+i).on("click", function(e) {							// On box click
+			var act=$(this).prop("checked") ? "active" : "inactive";	// Active
+			var id=e.currentTarget.id.substr(3)-1;						// Get id			
+			SaveEvent(curTime,"Visual Aid",dataMedia[id],act,0);		// Save event
+			});
 		}
+	
+	for (i=1;i<13;++i) {												// For each event button
+		$("#evl-"+i).html(labs[i-1]+"<br>");							// Set label
 
-		$("#obsStart").on("click", function(e) {							// On start/pause button click
-			inPlay=!inPlay;													// Toggle state
-			SetPlayMode(inPlay);											// Set play mode
+		$("#ev-"+i).on("click", function(e) {							// On event button click
+			var id=e.currentTarget.id.substr(3);						// Get id			
+			var c=1;													// First one												
+			var s=$("#evc-"+id).text();									// Get count from label
+			if (s)	c=s.substr(1,s.length-2)-0+1						// If not first, get and increment
+			$("#evc-"+id).html("("+c+")");								// Show new count
+			Sound("click");												// Click sound	
+			var p1="Custom";											// Assume custom
+			if (id < 5)			p1="OTR";								// Set category
+			else if (id < 8)	p1="FB";
+			else if (id < 10)	p1="Student Q";
+			SaveEvent(curTime,p1,dataLabs[id-1],"",0);					// Save event
 			});
-		
-		$("#obsNoteSend").on("click", function(e) {							// On Note send
-			var pri=$("#obsNotePri").prop("checked") ? "true" : "false";	// Privacy
-			SaveEvent(curTime,"Note",$("#obsNote").val(),pri,0);			// Save event
-			$("#obsNote").val("");											// Clear textarea
-			Sound("click");													// Click sound	
-			});
 
-		$("#obsNewPrac").on("click", function(e) {							// On change practice
-			var str="<div id='pracList' class='ct-obsPracList'>";			// List holder
-			for (i=0;i<menus[curCat].ops.length;++i)	{					// For each practice
-				var title=menus[curCat].ops[i].match(/^(.*)\ \*/)[1];		// Extract title
-				var subs=menus[curCat].ops[i].match(/&(.*)/)[1].split(",");	// Extract subs
-				str+="<div id='opl-"+i+"'class='ct-obsPracItem'>"+title+"</div>";	// Add title
-				if (subs.length) {											// If sub practices
-					str+="<div id='ops-"+i+"' class='ct-obsPracSubs'>";		// Add subs header
-					for (j=0;j<subs.length;++j)								// For each sub practice
-						str+="<div class='ct-obsPracItem' id='oss-"+j+"'>&nbsp;&nbsp;&nbsp;&nbsp;&bull;&nbsp;"+subs[j]+"</div>"
-					str+="</div>";
-					}
-				}
-			str+="</div>";
-
-			DialogBox("Choose new practice",str, function() {				// Run dialog
-				if (curPrac == -1)											// Nothing set
-					return;													// Quit
-				var title=menus[curCat].ops[curPrac].match(/^(.*)\ \*/)[1]; // Extract title
-				var val=menus[curCat].ops[curPrac].match(/\*(.*)\ &/)[1];	// Extract value
-				var subs=menus[curCat].ops[curPrac].match(/&(.*)/)[1].split(",");	// Extract subs
-				if (subs.length)											// If subs
-					val+="->"+subs[curSub];									// Add to val
-				SaveEvent(curTime,"Teacher actions",menus[curCat].title,val,0);	// Save event
-				$("#obsPracText").text(ShortenString(title,40));			// Set new practice text
-				$("#obsPracText").prop("title",subs[curSub]);				// Set new sub-practice as tool-tip
-				});
-			
-			var curPrac=-1, curSub=-1;	
-				$(".ct-obsPracItem").on("click", function(e) {				// On event button click
-					var id=e.currentTarget.id.substr(4);					// Get id			
-					if (e.currentTarget.id.substr(0,3) == "opl") {			// Clicked on main item
-						$(".ct-obsPracItem").css("font-weight","normal");	// Un-hilite
-						$("[id^=ops]").css("display","none");				// Close all subs, if any
-						if ($("#ops-"+id)[0]) 								// If it has subs
-							$("#ops-"+id).css("display","inline-block");	// Open it
-						curPrac=id;											// Save practice
-						}
-					else if (e.currentTarget.id.substr(0,3) == "oss") {		// Clicked on sub item
-						$("[id^=oss]").css("font-weight","normal");			// Un-hilite chosen sub
-						curSub=id;	
-						}
-					$(this).css("font-weight","bold");						// Highlight chosen
-					});	
-			Sound("click");													// Click sound	
+		$("#evc-"+i).on("click", function(e) {							// On event button click
+			e.stopPropagation();										// Stop propagation
+			var id=e.currentTarget.id.substr(4);						// Get id			
+			var s=$("#evc-"+id).text();									// Get count from label
+			var c=s.substr(1,s.length-2)-1								// If not first, get and decrement
+			if (c)														// Something to show
+				$("#evc-"+id).html("("+c+")");							// Show new count
+			else														// No counts
+				$("#evc-"+id).html("<br>");								// Clear display
+			Sound("delete");											// Delete sound	
+			if (id < 5)			p1="OTR";								// Set category
+			else if (id < 8)	p1="FB";
+			else if (id < 10)	p1="Student Q";
+			SaveEvent(curTime,p1,dataLabs[id],"NEGATE",0);				// Save event
 			});
 	}
+
+	$("#obsStart").on("click", function(e) {							// On start/pause button click
+		inPlay=!inPlay;													// Toggle state
+		SetPlayMode(inPlay);											// Set play mode
+		});
+	
+	$("#obsNoteSend").on("click", function(e) {							// On Note send
+		var pri=$("#obsNotePri").prop("checked") ? "true" : "false";	// Privacy
+		SaveEvent(curTime,"Note",$("#obsNote").val(),pri,0);			// Save event
+		$("#obsNote").val("");											// Clear textarea
+		Sound("click");													// Click sound	
+		});
+
+	$("#obsNewPrac").on("click", function(e) {							// On change practice
+		var str="<div id='pracList' class='ct-obsPracList'>";			// List holder
+		for (i=0;i<menus[curCat].ops.length;++i)	{					// For each practice
+			var title=menus[curCat].ops[i].match(/^(.*)\ \*/)[1];		// Extract title
+			var subs=menus[curCat].ops[i].match(/&(.*)/)[1].split(",");	// Extract subs
+			str+="<div id='opl-"+i+"'class='ct-obsPracItem'>"+title+"</div>";	// Add title
+			if (subs.length) {											// If sub practices
+				str+="<div id='ops-"+i+"' class='ct-obsPracSubs'>";		// Add subs header
+				for (j=0;j<subs.length;++j)								// For each sub practice
+					str+="<div class='ct-obsPracItem' id='oss-"+j+"'>&nbsp;&nbsp;&nbsp;&nbsp;&bull;&nbsp;"+subs[j]+"</div>"
+				str+="</div>";
+				}
+			}
+		str+="</div>";
+
+		DialogBox("Choose new practice",str, function() {				// Run dialog
+			if (curPrac == -1)											// Nothing set
+				return;													// Quit
+			var title=menus[curCat].ops[curPrac].match(/^(.*)\ \*/)[1]; // Extract title
+			var val=menus[curCat].ops[curPrac].match(/\*(.*)\ &/)[1];	// Extract value
+			var subs=menus[curCat].ops[curPrac].match(/&(.*)/)[1].split(",");	// Extract subs
+			if (subs.length)											// If subs
+				val+="->"+subs[curSub];									// Add to val
+			SaveEvent(curTime,"Teacher actions",menus[curCat].title,val,0);	// Save event
+			$("#obsPracText").text(ShortenString(title,40));			// Set new practice text
+			$("#obsPracText").prop("title",subs[curSub]);				// Set new sub-practice as tool-tip
+			});
+		
+		var curPrac=-1, curSub=-1;	
+			$(".ct-obsPracItem").on("click", function(e) {				// On event button click
+				var id=e.currentTarget.id.substr(4);					// Get id			
+				if (e.currentTarget.id.substr(0,3) == "opl") {			// Clicked on main item
+					$(".ct-obsPracItem").css("font-weight","normal");	// Un-hilite
+					$("[id^=ops]").css("display","none");				// Close all subs, if any
+					if ($("#ops-"+id)[0]) 								// If it has subs
+						$("#ops-"+id).css("display","inline-block");	// Open it
+					curPrac=id;											// Save practice
+					}
+				else if (e.currentTarget.id.substr(0,3) == "oss") {		// Clicked on sub item
+					$("[id^=oss]").css("font-weight","normal");			// Un-hilite chosen sub
+					curSub=id;	
+					}
+				$(this).css("font-weight","bold");						// Highlight chosen
+				});	
+		Sound("click");													// Click sound	
+		});
+}
 
 	function SetPlayMode(mode) {
 		if (inPlay)	{
@@ -404,7 +403,6 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			$("#obsTimerText").text(mins+":"+secs);								// Set display
 			}
 	}
-
 
 	function SaveEvent(time, p1, p2, p3, p4)
 	{
