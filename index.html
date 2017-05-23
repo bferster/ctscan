@@ -67,11 +67,12 @@
 							}
 		.ct-notesBut {		cursor: pointer; color:#fff; text-align: center; border-radius: 6px; display: inline-block;
 							margin-top: 2px; margin-left:4px; user-select: none; font-size: 10px; 
-							padding-bottom: 2px; padding-left: 6px; padding-right: 6px; background-color:#bbb
+							padding-bottom: 2px; padding-left: 6px; padding-right: 6px; background-color:#aaa
+							}
+		.ct-is 	{			width:100%; border-radius:4px; padding-left:8px; border: 1px solid #999; margin-bottom: 3px;
 							}
 
 		@media only screen and (max-height: 525px) {	.ct-obsPanel {	margin-top: 0; margin-bottom: 0   }		}
-
 
 		.ui-dialog-buttonpane.ui-widget-content.ui-helper-clearfix { border:none }
 		.ui-dialog { border-radius:6px; background-color:#ddd }
@@ -137,22 +138,99 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 var curTime=0;															// Saves time in task
-var timingInterval=null;												// Timing interval
+var timingInterval=null,totInterval=null;								// Timing interval
 var inPlay=false;														// Play flag
 var curCat=0;															// Current category
 			
 $(document).ready(function() {								           	// ON PAGE LOADED
 	var url=window.location.search.substring(1);						// Get query string
-	InitHandlers();
 	setTimeout(function() {												// Set delay timer
 		$("#splashDiv").animate({ opacity:0 },400);						// Hide logo
 		$("#obsPanel").animate({ opacity:1},1500, function() {			// Show interface
+			GetIntroData();												// Get intro data from user
 			$("#splashDiv").hide();										// Hide splash
 			});
 		},2000);			
+	InitObs();															// Init observation screen
 	});	
 
-	function InitHandlers() {
+	function GetIntroData()												// GET INTRO DATA FROM USER
+	{
+		var str="<table width='100%'>";
+		str+="<tr><td>Teacher&nbsp;ID:</td><td><input class='ct-is' id='intro-id' type='Text'></input></td></tr>";
+		str+="<tr><td>Observer&nbsp;name:</td><td><input class='ct-is' id='intro-name' type='Text'></input></td></tr>";
+		str+="<tr><td>Observer&nbsp;email:</td><td><input class='ct-is' id='intro-email' type='Text'></input></td></tr>";
+		str+="<tr><td>Class:</td><td><select id='intro-grade' class='ct-is' style='width:auto'>";
+		str+="<option>K</option><option>1</option><option>2</option><option>3</option><option>4</option>";
+		str+="<option>5</option><option>6</option><option>7</option><option>8</option><option>8</option>";
+		str+="<option>10</option><option>11</option><option>12</option></select>&nbsp;<select id='intro-sub' class='ct-is' style='width:auto'>";
+		str+="<option>English</option><option>Math</option><option>Reading</option><option>History</option><option>Science</option></select>";
+		str+="<tr><td>Date:</td><td><input class='ct-is' id='intro-date' type='date'></td></tr>";
+		str+="<tr><td>Block/Time:</td><td><input class='ct-is' id='intro-block' type='text'></td></tr>";
+		str+="<tr><td>Video&nbsp;source:</td><td><input class='ct-is' id='intro-video' placeholder='URL of video, if not live' type='Text'></input></td></tr>";
+		str+="<tr><td>Remind&nbsp;every:</td><td><select id='intro-tot' class='ct-is' style='width:auto'>";
+		str+="<option>0</option><option>1</option><option selected>2</option><option>5</option><option>10</option></select> min(s) time on task</td></tr>";
+		str+="<tr><td>Category:</td><td><select id='intro-cat' class='ct-is'></td></tr>";
+		str+="<tr><td>Which Teacher:</td><td><select id='intro-which' class='ct-is''><option>General Ed</option><option>Special Ed</option></td></tr>";
+		str+="<tr><td>Talking&nbsp;to?</td><td><select id='intro-talk' class='ct-is''><option>Whole group</option><option>Small group</option>";
+		str+="<option>Individual</option><option>Other adult</option><option>No one</option></td></tr>";
+		str+="<tr><td>Co-teaching&nbsp;mode:</td><td><select id='intro-model' class='ct-is''><option>NONE</option><option>Alternative</option>";
+		str+="<option>1-teach/1-observe</option><option>1-teach/1-assist</option><option>Parallel</option><option>Stations</option><option>Team</option></td></tr>";
+		str+="</table>"
+
+		DialogBox("Setup",str, function() {								// Run dialog
+			SaveEvent(0,"TeacherID",$("#intro-id").val(),"",0);			// Save events
+			SaveEvent(0,"ObserverName",$("#intro-name").val(),"",0);			
+			SaveEvent(0,"ObserverEmail",$("#intro-email").val(),"",0);			
+			SaveEvent(0,"Grade",$("#intro-grade").val(),"",0);			
+			SaveEvent(0,"Subject",$("#intro-sub").val(),"",0);			
+			SaveEvent(0,"Date",$("#intro-date").val(),"",0);			
+			SaveEvent(0,"Block",$("#intro-block").val(),"",0);			
+			SaveEvent(0,"Setting",$("#intro-video").val() ? $("#intro-video").val() : "Live" ,"",0);			
+			SaveEvent(0,"Teacher status","Which Teacher", $("#intro-which").val(), 0);			
+			SaveEvent(0,"Teacher status","Talking to", $("#intro-talk").val(), 0);			
+			SaveEvent(0,"Teacher status","Model", $("#intro-model").val(), 0);			
+			if ($("#intro-tot").val() > 0) {							// If tot time set
+				totTimingInterval=setInterval( function() {				// Start tot timer
+	 					GetTimeOnTask();
+	 					},$("#intro-tot").val()*600)						// Set time
+				}
+			
+	function GetTimeOnTask()
+	{
+		$("#alertBoxDiv").remove();											// Remove any old ones
+		$("body").append("<div class='qm-unselectable' id='alertBoxDiv'></div>");														
+		var str="<p><img src='img/ctlogo32.png' style='vertical-align:-8px'/>&nbsp;&nbsp;";								
+		str+="<span class='ct-obsCat'>Set time on task</span><p>";
+		str+="<div style='font-size:12px;margin:14px'>Choose percentage of time on task</div>";
+			$("#alertBoxDiv").append(str);	
+		$("#alertBoxDiv").dialog({ width:300, buttons: {
+									}});	
+		}
+
+
+			
+			});
+		
+		var cats=[	"Phonics Instruction","Fluency Instruction","Vocabulary Instruction","Reading Comprehension Instruction",
+					"Writing Instruction","Mathematics Instruction","General Content Instruction","Observing/Assessing Students",
+					"Classroom Management","Non-instructional activity","Observer uncertain" ];
+
+		for (i=0;i<cats.length;++i)
+			$("#intro-cat").append("<option>"+cats[i]+"</option>");
+	
+		}
+
+
+
+
+
+
+
+
+
+
+	function InitObs() {
 
 		var i;
 		var labs=["Deep<br>Q QTR","Rote<br>Q OTR","Choral<br>Resp","Soc/Behav<br>OTR",
@@ -259,6 +337,8 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			str+="</div>";
 
 			DialogBox("Choose new practice",str, function() {				// Run dialog
+				if (curPrac == -1)											// Nothing set
+					return;													// Quit
 				var title=menus[curCat].ops[curPrac].match(/^(.*)\ \*/)[1]; // Extract title
 				var val=menus[curCat].ops[curPrac].match(/\*(.*)\ &/)[1];	// Extract value
 				var subs=menus[curCat].ops[curPrac].match(/&(.*)/)[1].split(",");	// Extract subs
@@ -347,14 +427,36 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 								 buttons: {
 					            	"OK": 		function() { if (callback)
 					            								callback(); 
-					            								$(this).remove();  
+					            								$("#dialogDiv").animate({ opacity:0},200, function() {	
+																	$("#dialogDiv").remove();  
+																	});
 					            								},
 					            	"Cancel":  	function() { if (callback2)	            		
 					            								callback2();
-					            								$(this).remove(); }
+				            									$("#dialogDiv").animate({ opacity:0},200, function() {		
+																	$("#dialogDiv").remove();  
+																	});
+																}
 									}});	
 		$("#dialogDiv").dialog("option","position",{ my:"left top", at:"left top", of:obsPanel });
 	}
+
+	function GetTextBox(title, content, def, callback)					// GET TEXT LINE BOX
+	{
+		$("#alertBoxDiv").remove();											// Remove any old ones
+		$("body").append("<div class='qm-unselectable' id='alertBoxDiv'></div>");														
+		var str="<p><img src='img/ctlogo32.png' style='vertical-align:-8px'/>&nbsp;&nbsp;";								
+		str+="<span class='ct-obsCat'>"+title+"</span><p>";
+		str+="<div style='font-size:12px;margin:14px'>"+content+"</div>";
+		str+="<p><input class='qm-is' type='text' id='gtBoxTt' value='"+def+"'></p></div>";
+		$("#alertBoxDiv").append(str);	
+		$("#alertBoxDiv").dialog({ width:300, buttons: {
+					            	"OK": 		function() { callback($("#gtBoxTt").val()); $(this).remove(); },
+					            	"Cancel":  	function() { $(this).remove(); }
+									}});	
+		}
+
+
 
 	function trace(msg, p1, p2, p3, p4)										// CONSOLE 
 	{
