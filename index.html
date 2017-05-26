@@ -284,11 +284,8 @@ function GetActions()												// GET ACTIONS FROM USER
 	str+="<option>Present/share learning</option>";		str+="<option>Reading</option>";
 	str+="<option>Seatwork learning</option>";			str+="<option>Taking notes</option><option>Writing</option>";
 	str+="</select></td</tr>";
-	str+="<tr><td>Which Teacher:</td><td><select id='intro-which' class='ct-is''><option>General Ed</option><option>Special Ed</option></td></tr>";
 	str+="<tr><td>Talking&nbsp;to?</td><td><select id='intro-talk' class='ct-is''><option>Whole group</option><option>Small group</option>";
 	str+="<option>Individual</option><option>Other adult</option><option>No one</option></td></tr>";
-	str+="<tr><td>Co&#8209;teaching&nbsp;mode:&nbsp;</td><td><select id='intro-model' class='ct-is''><option>NONE</option><option>Alternative</option>";
-	str+="<option>1-teach/1-observe</option><option>1-teach/1-assist</option><option>Parallel</option><option>Stations</option><option>Team</option></td></tr>";
 	str+="</table>"
 
 	DialogBox("Set actions",str) 						// Run dialog
@@ -298,21 +295,10 @@ function GetActions()												// GET ACTIONS FROM USER
 		Sound("click");									// Click sound	
 		});													
 
-	$("#intro-which").on("change", function(e) {		// On key hit
-		SaveEvent(0,"Teacher status","Which Teacher", $("#intro-which").val(), 0);			
-		Sound("click");									// Click sound	
-		});													
-
 	$("#intro-talk").on("change", function(e) {			// On key hit
 		SaveEvent(0,"Teacher status","Talking to", $("#intro-talk").val(), 0);			
 		Sound("click");									// Click sound	
 		});													
-
-	$("#intro-model").on("change", function(e) {		// On key hit
-		SaveEvent(0,"Teacher status","Model", $("#intro-model").val(), 0);			
-		Sound("click");									// Click sound	
-		});													
-
 
 }
 
