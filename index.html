@@ -126,8 +126,8 @@
 			<input id="obsNotePri" type="checkbox">Pvt?</input><br>
 			<div id="obsNoteSend" class="ct-notesBut">Send</div>
 			</div>
-		<div id="obsNewPrac" style='margin-left:40px; width:120px;background-color:#999' class="ct-obsNewPrac">Topic/Vocab term</div>
-		<div id="obsNewPrac" style='margin-left:12px; width:120px;background-color:#999' class="ct-obsNewPrac">Student Actions</div>
+		<div id="obsTerms" style='margin-left:40px; width:120px;background-color:#999' class="ct-obsNewPrac">Topic/Vocab term</div>
+		<div id="obsActions" style='margin-left:12px; width:120px;background-color:#999' class="ct-obsNewPrac">Actions</div>
 
 	</div> <!-- ObsPanel --> 
 
@@ -141,6 +141,7 @@ var curTime=0;															// Saves time in task
 var timingInterval=null,totInterval=null;								// Timing interval
 var inPlay=false;														// Play flag
 var curCat=0;															// Current category
+var vocabTopicTerms=[];													// Holds vocab/topic terms
 			
 $(document).ready(function() {								           	// ON PAGE LOADED
 	var url=window.location.search.substring(1);						// Get query string
@@ -174,7 +175,7 @@ function GetIntroData()												// GET INTRO DATA FROM USER
 	str+="<tr><td>Which Teacher:</td><td><select id='intro-which' class='ct-is''><option>General Ed</option><option>Special Ed</option></td></tr>";
 	str+="<tr><td>Talking&nbsp;to?</td><td><select id='intro-talk' class='ct-is''><option>Whole group</option><option>Small group</option>";
 	str+="<option>Individual</option><option>Other adult</option><option>No one</option></td></tr>";
-	str+="<tr><td>Co-teaching&nbsp;mode:</td><td><select id='intro-model' class='ct-is''><option>NONE</option><option>Alternative</option>";
+	str+="<tr><td>Co&#8209;teaching&nbsp;mode:&nbsp;</td><td><select id='intro-model' class='ct-is''><option>NONE</option><option>Alternative</option>";
 	str+="<option>1-teach/1-observe</option><option>1-teach/1-assist</option><option>Parallel</option><option>Stations</option><option>Team</option></td></tr>";
 	str+="</table>"
 
@@ -193,7 +194,7 @@ function GetIntroData()												// GET INTRO DATA FROM USER
 		if ($("#intro-tot").val() > 0) {								// If tot time set
 			totTimingInterval=setInterval( function() {					// Start tot timer
 					GetTimeOnTask();
-					},$("#intro-tot").val()*6000)						// Set time
+					},$("#intro-tot").val()*60000)						// Set time
 			}
 		});
 
@@ -214,7 +215,7 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 	str+="<span class='ct-obsCat'>Set time on task</span><p>";
 	str+="<div style='font-size:12px;margin:14px;text-align:center'><br><br>";
 	for (i=0;i<110;i+=10) 
-		str+="<div id='tot-"+i+"' style='width:120px;background-color:rgb(0,"+Math.floor(i*2)+",0);margin-bottom:4px;' class='ct-obsNewPrac'>"+i+" percent</div><br>"
+		str+="<div id='tot-"+i+"' style='width:120px;background-color:rgb(0,"+(75+Math.floor(i*1.4))+",0);margin-bottom:4px;' class='ct-obsNewPrac'>"+i+" percent</div><br>"
 	str+="<br><div id='tot-999' style='width:120px;background-color:#e67e22;margin-bottom:4px;' class='ct-obsNewPrac'>Skip</div>"
 	str+="</select></div>";
 	$("#alertBoxDiv").append(str);	
@@ -228,6 +229,50 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 		$("#alertBoxDiv").remove();  									// Close it
 		});
 }
+
+function GetVocabTopicTerms()										// GET VOCAB/TOPIC TERM FROM USER
+{
+	var str="<br>Add a new vocabulary or topic term by typing it in the box below. Click enter or the Save button to save it.<br><br>";
+	str+="<input class='ct-is' id='newTerm' style='width:75%' type='Text' placeholder='Type new term here'></input>&nbsp;"	
+	str+="<div id='sendTerm' class='ct-notesBut'>Save</div><br><br>";
+	str+="<b>Currently active terms</b> (Click to remove)<br>";
+	str+="<ol id='termList'></ol>";
+	DialogBox("Add vocab or topic term",str) 							// Run dialog
+	fillTermList();														// Fill term list
+
+	$("#newTerm").on("keypress", function(e) {							// On key hit
+		if (e.which == 13)												// Enter key hit
+			$("#sendTerm").trigger("click");							// Simulate save click
+		});													
+	
+	$("#sendTerm").on("click", function(e) {							// On save but clicked														
+		if (!$("#newTerm").val())										// Nothing there						
+			return;														// Quit
+		Sound("click");													// Click sound	
+		SaveEvent(0,"Vocab word",$("#newTerm").val(),"Started",0);		// Save term
+		vocabTopicTerms.push($("#newTerm").val());						// Add to list
+		$("#newTerm").val("");											// Clear
+		fillTermList();													// Fill term list
+		});
+
+		function fillTermList() {										// FILL TERM LIST									
+			$("#termList").empty();										// Clear it out
+			for (i=0;i<vocabTopicTerms.length;++i) 						// For each term
+				$("#termList").append("<li id='termItem-"+i+"' style='cursor:zoom-out'>"+vocabTopicTerms[i]+"</li>");	// Add term
+
+			$("[id^=termItem-]").on("click", function(e) {				// On click of item		
+				var id=e.currentTarget.id.substr(9);					// Get id			
+				vocabTopicTerms.splice(id,1);							// Remove it
+				SaveEvent(0,"Vocab word",$("#newTerm").val(),"Stopped",0);	// Save term
+				Sound("delete");										// Delete sound	
+				fillTermList();											// Fill term list
+				});
+			}
+}
+
+
+//Temporary web hosting for VisualEyes, Qmedia, SHIVA as Curry moves to Drupal
+
 
 function InitObs() 													// INIT OBSERVATION PANEL
 {
@@ -366,6 +411,13 @@ function InitObs() 													// INIT OBSERVATION PANEL
 				});	
 		Sound("click");													// Click sound	
 		});
+
+	$("#obsTerms").on("click", function(e) {							// On vocab/topic term click
+		GetVocabTopicTerms();											// Run dialog to get term
+		Sound("click");													// Click sound	
+		});
+
+
 }
 
 	function SetPlayMode(mode) {
@@ -453,7 +505,6 @@ function InitObs() 													// INIT OBSERVATION PANEL
 					            	"Cancel":  	function() { $(this).remove(); }
 									}});	
 		}
-
 
 
 	function trace(msg, p1, p2, p3, p4)										// CONSOLE 
