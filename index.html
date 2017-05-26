@@ -191,6 +191,7 @@ function GetIntroData()												// GET INTRO DATA FROM USER
 		SaveEvent(0,"Teacher status","Which Teacher", $("#intro-which").val(), 0);			
 		SaveEvent(0,"Teacher status","Talking to", $("#intro-talk").val(), 0);			
 		SaveEvent(0,"Teacher status","Model", $("#intro-model").val(), 0);			
+
 		if ($("#intro-tot").val() > 0) {								// If tot time set
 			totTimingInterval=setInterval( function() {					// Start tot timer
 					GetTimeOnTask();
@@ -232,7 +233,7 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 
 function GetVocabTopicTerms()										// GET VOCAB/TOPIC TERM FROM USER
 {
-	var str="<br>Add a new vocabulary or topic term by typing it in the box below. Click enter or the Save button to save it.<br><br>";
+	var str="<br>Add a new vocabulary or topic term by typing it in the box below. Click enter or the Save button to add it.<br><br>";
 	str+="<input class='ct-is' id='newTerm' style='width:75%' type='Text' placeholder='Type new term here'></input>&nbsp;"	
 	str+="<div id='sendTerm' class='ct-notesBut'>Save</div><br><br>";
 	str+="<b>Currently active terms</b> (Click to remove)<br>";
@@ -262,17 +263,58 @@ function GetVocabTopicTerms()										// GET VOCAB/TOPIC TERM FROM USER
 
 			$("[id^=termItem-]").on("click", function(e) {				// On click of item		
 				var id=e.currentTarget.id.substr(9);					// Get id			
+				SaveEvent(0,"Vocab word",$("#termItem"+id).val(),"Stopped",0);	// Stop term
 				vocabTopicTerms.splice(id,1);							// Remove it
-				SaveEvent(0,"Vocab word",$("#newTerm").val(),"Stopped",0);	// Save term
 				Sound("delete");										// Delete sound	
 				fillTermList();											// Fill term list
 				});
 			}
 }
 
+function GetActions()												// GET ACTIONS FROM USER
+{
+	var str="<table width='100%'>";
+	str+="<tr><td>Student&nbspactions:&nbsp</td><td><select id='studentAction' class='ct-is' style='width:auto'>";
+	str+="<option>Choose</option>";
+	str+="<option>Academic convo w/ adult</option>";	str+="<option>Academic convo w/ peers</option>";
+	str+="<option>Answering Qs</option>";				str+="<option>Asking Qs</option>";
+	str+="<option>Group work (active)</option>";		str+="<option>Group work (desk)</option>";
+	str+="<option>Listening</option>";					str+="<option>No clear direction</option>";
+	str+="<option>Group work (active)</option>";		str+="<option>Preparing for activity</option>";
+	str+="<option>Present/share learning</option>";		str+="<option>Reading</option>";
+	str+="<option>Seatwork learning</option>";			str+="<option>Taking notes</option><option>Writing</option>";
+	str+="</select></td</tr>";
+	str+="<tr><td>Which Teacher:</td><td><select id='intro-which' class='ct-is''><option>General Ed</option><option>Special Ed</option></td></tr>";
+	str+="<tr><td>Talking&nbsp;to?</td><td><select id='intro-talk' class='ct-is''><option>Whole group</option><option>Small group</option>";
+	str+="<option>Individual</option><option>Other adult</option><option>No one</option></td></tr>";
+	str+="<tr><td>Co&#8209;teaching&nbsp;mode:&nbsp;</td><td><select id='intro-model' class='ct-is''><option>NONE</option><option>Alternative</option>";
+	str+="<option>1-teach/1-observe</option><option>1-teach/1-assist</option><option>Parallel</option><option>Stations</option><option>Team</option></td></tr>";
+	str+="</table>"
 
-//Temporary web hosting for VisualEyes, Qmedia, SHIVA as Curry moves to Drupal
+	DialogBox("Set actions",str) 						// Run dialog
 
+	$("#studentAction").on("change", function(e) {		// On key hit
+		SaveEvent(0,"Student actions","Action",$("#studentAction").val(),0);	// Save
+		Sound("click");									// Click sound	
+		});													
+
+	$("#intro-which").on("change", function(e) {		// On key hit
+		SaveEvent(0,"Teacher status","Which Teacher", $("#intro-which").val(), 0);			
+		Sound("click");									// Click sound	
+		});													
+
+	$("#intro-talk").on("change", function(e) {			// On key hit
+		SaveEvent(0,"Teacher status","Talking to", $("#intro-talk").val(), 0);			
+		Sound("click");									// Click sound	
+		});													
+
+	$("#intro-model").on("change", function(e) {		// On key hit
+		SaveEvent(0,"Teacher status","Model", $("#intro-model").val(), 0);			
+		Sound("click");									// Click sound	
+		});													
+
+
+}
 
 function InitObs() 													// INIT OBSERVATION PANEL
 {
@@ -412,12 +454,15 @@ function InitObs() 													// INIT OBSERVATION PANEL
 		Sound("click");													// Click sound	
 		});
 
-	$("#obsTerms").on("click", function(e) {							// On vocab/topic term click
+	$("#obsTerms").on("click", function(e) {							// On vocab/topic but click
 		GetVocabTopicTerms();											// Run dialog to get term
 		Sound("click");													// Click sound	
 		});
 
-
+	$("#obsActions").on("click", function(e) {							// On actions but click
+		GetActions();													// Run dialog to get actions
+		Sound("click");													// Click sound	
+		});
 }
 
 	function SetPlayMode(mode) {
