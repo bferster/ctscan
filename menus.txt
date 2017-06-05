@@ -25,10 +25,10 @@ Fluency Instruction:
 Letter or sound naming *Letter naming &
 Models of fluent reading *Models &
 Readers Theater *Readers Theater &
-Repeated reading – choral *RR choral &
-Repeated reading – partner *RR partner &
-Repeated reading – record assisted *RR record &
-Repeated reading – student/adult *RR student/adult &
+Repeated reading choral *RR choral &
+Repeated reading partner *RR partner &
+Repeated reading record assisted *RR record &
+Repeated reading student/adult *RR student/adult &
 Word naming *Word naming &
 Other (describe in Notes) *Other &
 
@@ -49,10 +49,10 @@ Facilitates student demo/presentation *Facil st pres &Cues Instruction,Clear Lan
 Morphological parts of word - highlighted *Morph parts & Cues Instruction,Clear Language,Think-Aloud,Monitors Understaning
 Non-example of term meaning *Non-example, term &Cues Instruction,Clear Language,Distinguishes Similarities,Explicit Explanation,Monitors Understanding
 Semantic relationships *Semantics &Cues Instruction,Clear Language,Monitors Understanding
-Strategy - remember definition (explain/intro) *Strategy – remember &Cues Instruction,Clear Language,Think-Aloud,Several Examples,Provides Feedback
-Strategy - using morph parts (explain/intro) *Strategy – morph &Cues Instruction,Clear Language,Defines Parts then Reunites Word,Think-Aloud,Provides Feedback
-Strategy - models use *strategy – models &Cues Instruction,Clear Language,Provides Prompts,Monitors Use,ProvidesFeedback
-Strategy - prompts use *Strategy – prompts &Cues Instruction,Clear Language,Provides Rationale
+Strategy - remember definition (explain/intro) *Strategy remember &Cues Instruction,Clear Language,Think-Aloud,Several Examples,Provides Feedback
+Strategy - using morph parts (explain/intro) *Strategy morph &Cues Instruction,Clear Language,Defines Parts then Reunites Word,Think-Aloud,Provides Feedback
+Strategy - models use *strategy models &Cues Instruction,Clear Language,Provides Prompts,Monitors Use,ProvidesFeedback
+Strategy - prompts use *Strategy prompts &Cues Instruction,Clear Language,Provides Rationale
 
 Reading Comprehension Instruction:
 Asking and answering questions *Questions &
@@ -65,8 +65,8 @@ Providing background knowledge *Background &
 Sequencing activities *Sequencing &
 Story structure *Story structure &
 Summarizing *Summary &
-Text features – ToC, index, glossary *Features-reference &
-Text features – captions/pictures *Features-pictures &
+Text features ToC, index, glossary *Features-reference &
+Text features captions/pictures *Features-pictures &
 
 Writing Instruction:
 Cognitive strategy instruction *Cognitive strat &
@@ -87,7 +87,7 @@ Reviews hw or previous *Reviews &Uses Consistent Language,Adjusted to student ne
 Explicit instruction *Explicit instr &Uses consistent language,Checks for understanding and adjusts,Purposeful sequence of examples,I do we do you do
 Facilitates student discourse *Student discourse &Uses consistent language,Addresses concepts not procedures,Prompts student talk about problem-solving,Asks follow-up questions
 Cognitive Strategy Instruction *Strategy Inst &Uses consistent language,Provides rationale or purpose,Uses explicit teaching,Monitors student use,Provides specific feedback
-Facilitates independent practice *Facil IP &Clear instructional goal,Activity is on students’ instructional level,Provides individual scaffolding and feedback
+Facilitates independent practice *Facil IP &Clear instructional goal,Activity is on students instructional level,Provides individual scaffolding and feedback
 
 General Content Instruction:
 Anticipatory set *Anticipatory set &
@@ -123,7 +123,7 @@ Teaches/reviews routines/expectations *Teaches expect &
 Transition time *Transition time &
 
 -Non-instructional activity:
-Non-instructional activity/task *Non-inst
+Non-instructional activity/task *Non-inst &
 
 -Observer uncertain:
 Uncertain *Uncertain &

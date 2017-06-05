@@ -18,23 +18,25 @@
 		.ct-splash { 		position: absolute; top:50px; left: calc(50% - 100px); 
 							font-size: 20px; text-align: center; font-weight: bold;
 							}
-		.ct-obsPanel {		background-color:#ddd; border-radius: 6px; margin: 24px; padding: 12px; width: 336px;
+		.ct-obsPanel {		background-color:#ddd; border-radius: 6px; margin: 24px; padding: 12px; width: 620px;
 							margin-left: auto; margin-right: auto; opacity: 0; 
 							}
-		.ct-obsCat {		font-size: 20px; font-weight: bold; color: #000; margin-bottom: 8px; user-select: none;
+		.ct-obsCat {		font-size: 20px; font-weight: bold; color: #000; margin-bottom: 8px; width: 450px;
+							display: inline-block; user-select: none; text-align:right;
 							}
-		.ct-obsTime {		font-size: 20px; border-radius: 6px; background-color: #fff; text-align:center; width: 120px;
-							border: 1px solid #ccc; display: inline-block; color: #666; user-select: none;
+		.ct-obsTime {		font-size: 20px; border-radius: 6px; background-color: #fff; text-align:center; width: 80px;
+							border: 1px solid #ccc; display: inline-block; color: #666; user-select: none; margin-bottom: 8px;
 							}
-		.ct-obsStart {		cursor: pointer; vertical-align: -3px; width: 14px; margin-left: 10px; margin-right: 14px;
+		.ct-obsStart {		cursor: pointer; vertical-align: -3px; width: 14px; margin-left: 8px; margin-right: 8px;
 							}
 		.ct-obsPrac {		cursor: pointer; vertical-align: -6px; margin-left: 67px; 
 							}
-		.ct-obsPracText {	font-size: 14px; color: #3498db; font-weight: bold; margin-top: 6px; margin-bottom: 8px; user-select: none;
+		.ct-obsPracText {	font-size: 12px; color:#000; font-weight: bold; margin-bottom: 8px; 
+							user-select: none;
 							}
-		.ct-obsNewPrac {	width: 100px; cursor: pointer; color:#fff; 
+		.ct-obsNewPrac {	cursor: pointer; color:#fff; 
 							text-align: center; border-radius: 6px; display: inline-block; user-select: none;
-							font-size: 12px; background-color: #3498db; padding-top:2px; padding-bottom: 2px;
+							font-size: 12px; background-color: #aaa; padding: 2px 8px 2px 8px;
 							}
 		.ct-obsPracList {	font-size: 13px; user-select: none; overflow-x:hidden; overflow-y: auto; height: 100%
 							}
@@ -42,15 +44,16 @@
 							}
 		.ct-obsPracItem:hover {	 background-color:#ccc;
 							}
-		.ct-obsPracSubs		{ display: none;
+		.ct-obsPracSubs	{ 	width: 175px; font-weight: normal; cursor: pointer; display: inline-block; color:#666;
+							margin-left: 25px;
 							}
 		.ct-obsDone {		width: 50px; cursor: pointer; color:#fff; margin-left:10px;
 							text-align: center; border-radius: 6px; display: inline-block; user-select: none;
 							font-size: 12px; background-color:#e74c3c; padding-top:2px; padding-bottom: 2px;
 							}
-		.ct-obsEvtBut {		width: 80px; height: 60px;  margin-bottom: 4px; cursor: pointer; color:#fff; 
+		.ct-obsEvtBut {		width: 80px; height: 60px;  margin-bottom: 8px; cursor: pointer; color:#fff; 
 							text-align: center; border-radius: 6px; display: inline-block; user-select: none;
-							padding-top:8px; font-size: 14px;
+							padding-top:8px; font-size: 14px; margin-right:4px;
 							}
 		.ct-obsEvtBut:hover { opacity : .75
 							}
@@ -58,11 +61,11 @@
 							}
 		.ct-count:hover {	color: #333;
 							}
+		.ct-mediarow {		width:280px;
+							}
 		.ct-mediaNotes 	{	margin-top: 8px; margin-bottom: 6px; user-select: none;
 							}
-		.ct-mediaRow1 	{	width: 168px; 
-							}
-		.ct-notes 	{		width: 266px; border-radius:4px; padding-left:8px; border: 1px solid #999;
+		.ct-notes 	{		width: 540px; border-radius:4px; padding-left:8px; border: 1px solid #999;
 		 					margin-top: 8px; margin-bottom: 6px;
 							}
 		.ct-notesBut {		cursor: pointer; color:#fff; text-align: center; border-radius: 6px; display: inline-block;
@@ -72,6 +75,8 @@
 		.ct-is 	{			width:100%; border-radius:4px; padding-left:8px; border: 1px solid #999; margin-bottom: 3px;
 							}
 
+		.ct-dialogTitle {	font-size: 20px; font-weight: bold; color: #000; margin-bottom: 8px; user-select: none;
+							}
 		@media only screen and (max-height: 525px) {	.ct-obsPanel {	margin-top: 0; margin-bottom: 0   }		}
 
 		.ui-dialog-buttonpane.ui-widget-content.ui-helper-clearfix { border:none }
@@ -80,7 +85,7 @@
 		.ui-dialog-titlebar { display:none }
 		 table {			border-spacing: 0px;  }
 		 input {		    vertical-align: -2px; }
-}
+
 </style>
 </head>
 <body>
@@ -91,34 +96,33 @@
 		</span>
 	</div>
 	<div id="obsPanel" class="ct-obsPanel">
-		<div id="obsCat" class="ct-obsCat">Vocabulary Instruction</div>
 		<div id="obsTimerText" class="ct-obsTime">00:00</div>
 		<img id="obsStart" src="img/playbut.png" class="ct-obsStart">
-		<div id="obsNewPrac" class="ct-obsNewPrac">New Practice</div>
-		<div id="obsDone" class="ct-obsDone">Done</div>
-		<div class="ct-obsPracText" id="obsPracText" >No practice set yet...</div>
-	
-		<div id="obsEvt">
+		<div id="obsCat" class="ct-obsCat">No category chosen yet...</div>&nbsp;&nbsp;<div id="obsNewCat" class="ct-obsNewPrac">Set</div><br>
+		<div class="ct-obsPracText" id="obsPracText" ></div><div id="obsNewPrac" class="ct-obsNewPrac">Add new practice</div><br><br>
+
+			<div id="obsEvt">
 			<div id="ev-1"  style="background-color:#e67e22" class="ct-obsEvtBut"><span id="evl-1"></span><span class="ct-count" id="evc-1"><br></span></div> 
 			<div id="ev-2"  style="background-color:#e67e22" class="ct-obsEvtBut"><span id="evl-2"></span><span class="ct-count" id="evc-2"><br></span></div> 
 			<div id="ev-3"  style="background-color:#e67e22" class="ct-obsEvtBut"><span id="evl-3"></span><span class="ct-count" id="evc-3"><br></span></div> 
-			<div id="ev-4"  style="background-color:#e67e22" class="ct-obsEvtBut"><span id="evl-4"></span><span class="ct-count" id="evc-4"><br></span></div><br> 
+			<div id="ev-4"  style="background-color:#e67e22" class="ct-obsEvtBut"><span id="evl-4"></span><span class="ct-count" id="evc-4"><br></span></div>
 			<div id="ev-5"  style="background-color:#27ae60" class="ct-obsEvtBut"><span id="evl-5"></span><span class="ct-count" id="evc-5"><br></span></div> 
-			<div id="ev-6"  style="background-color:#27ae60" class="ct-obsEvtBut"><span id="evl-6"></span><span class="ct-count" id="evc-6"><br></span></div> 
-			<div id="ev-7"  style="background-color:#27ae60" class="ct-obsEvtBut"><span id="evl-7"></span><span class="ct-count" id="evc-7"><br></span></div> 
-			<div id="ev-8"  style="background-color:#3db1ff" class="ct-obsEvtBut"><span id="evl-8"></span><span class="ct-count" id="evc-8"><br></span></div><br> 
+			<div id="ev-6"  style="background-color:#27ae60" class="ct-obsEvtBut"><span id="evl-6"></span><span class="ct-count" id="evc-6"><br></span></div>
+			<div id="ev-7"  style="background-color:#27ae60" class="ct-obsEvtBut"><span id="evl-7"></span><span class="ct-count" id="evc-7"><br></span></div><br> 
+			<div id="ev-8"  style="background-color:#3db1ff" class="ct-obsEvtBut"><span id="evl-8"></span><span class="ct-count" id="evc-8"><br></span></div> 
 			<div id="ev-9"  style="background-color:#3db1ff" class="ct-obsEvtBut"><span id="evl-9"></span><span class="ct-count" id="evc-9"><br></span></div> 
 			<div id="ev-10" style="background-color:#aaaaaa" class="ct-obsEvtBut"><span id="evl-10"></span><span class="ct-count" id="evc-10"><br></span></div> 
 			<div id="ev-11" style="background-color:#aaaaaa" class="ct-obsEvtBut"><span id="evl-11"></span><span class="ct-count" id="evc-11"><br></span></div> 
 			<div id="ev-12" style="background-color:#aaaaaa" class="ct-obsEvtBut"><span id="evl-12"></span><span class="ct-count" id="evc-12"><br></span></div> 
+			<div id="ev-13" style="background-color:#aaaaaa" class="ct-obsEvtBut"><span id="evl-13"></span><span class="ct-count" id="evc-13"><br></span></div> 
+			<div id="ev-14" style="background-color:#aaaaaa" class="ct-obsEvtBut"><span id="evl-14"></span><span class="ct-count" id="evc-14"><br></span></div> 
 		</div>
 
 		<table style="margin-top:4px">
-			<tr><td class="ct-mediaRow1"><input id="md-1" type="checkbox"> Diagram/Graph</input></td>
-			<td><input id="md-2" type="checkbox"> Object/Manipulative</input></td></tr>
-			<tr><td class="ct-mediaRow1"><input id="md-3" type="checkbox"> Graphic Organizer</input></td>
-			<td><input id="md-4" type="checkbox"> Picture</input></td></tr>
-			<tr><td class="ct-mediaRow1"><input id="md-5" type="checkbox"> Movie</input></td>
+			<tr><td class="ct-mediarow"><input id="md-1" type="checkbox"> Diagram/Graph</input></td>
+			<td class="ct-mediarow"><input id="md-2" type="checkbox"> Object/Manipulative</input></td>
+			<td class="ct-mediarow"><input id="md-3" type="checkbox"> Graphic Organizer</input></td></tr>
+			<tr><td><input id="md-4" type="checkbox"> Picture</input></td><td><input id="md-5" type="checkbox"> Movie</input></td>
 			<td><input id="md-6" type="checkbox"> Text</input></td></tr>
 		</table>
 		<textarea id="obsNote" class="ct-notes" type="text" placeholder="Type new note here"></textarea>
@@ -128,6 +132,7 @@
 			</div>
 		<div id="obsTerms" style='margin-left:40px; width:120px;background-color:#999' class="ct-obsNewPrac">Topic/Vocab term</div>
 		<div id="obsActions" style='margin-left:12px; width:120px;background-color:#999' class="ct-obsNewPrac">Actions</div>
+		<div id="obsDone" class="ct-obsDone">Done</div>
 
 	</div> <!-- ObsPanel --> 
 
@@ -142,9 +147,46 @@ var timingInterval=null,totInterval=null;								// Timing interval
 var inPlay=false;														// Play flag
 var curCat=0;															// Current category
 var vocabTopicTerms=[];													// Holds vocab/topic terms
+var menus=[];															// Holds menus													
 			
 $(document).ready(function() {								           	// ON PAGE LOADED
+	var menu="menus.txt";												// Default menu
 	var url=window.location.search.substring(1);						// Get query string
+	$.ajax({ type: "GET", url: menu, success: function(text) {
+		var i,j,o,cp,cc,subs;
+		var lines=text.split("\n")
+		for (i=0;i<lines.length;++i) {									// For each line
+			o=lines[i];													// Point at line
+			if (!o)	continue;											// Skip blanks
+			if (o.match(/:/)) {											// At new category
+				cc=menus.length;										// Get index
+				menus.push({});											// Add cat obj
+				menus[cc].cname=o.substr(0,o.length-2);					// Add cat name
+				menus[cc].prac=[];										// Add array for practices									
+				}
+			else if (o.match(/\*/)) {									// At new * category
+				cp=menus[cc].prac.length;								// Get prac index
+				menus[cc].prac.push({});								// Add practice obj
+				menus[cc].prac[cp].pname=o.split(" *")[0];				// Add prac name
+				menus[cc].prac[cp].subs=[];								// Add array for sub-practices									
+				subs=o.split("&")[1].split(",");						// Get subs, if any
+				for (j=0;j<subs.length;++j)								// For each sub
+					menus[cc].prac[cp].subs.push(subs[j]);				// Add to practice
+				}
+			else if (o.match(/\-/)) {									// At new - category
+				cp=menus[cc].prac.length;								// Get prac index
+				menus[cc].prac.push({});								// Add practice obj
+				menus[cc].prac[cp].pname=o.split(" -")[0];				// Add prac name
+				menus[cc].prac[cp].subs=[];								// Add array for sub-practices									
+				subs=o.split("&")[1].split(",");						// Get subs, if any
+				for (j=0;j<subs.length;++j)								// For each sub
+					menus[cc].prac[cp].subs.push(subs[j]);				// Add to practice
+					}
+				}
+			}
+	
+		});
+
 	setTimeout(function() {												// Set delay timer
 		$("#splashDiv").animate({ opacity:0 },400);						// Hide logo
 		$("#obsPanel").animate({ opacity:1},1500, function() {			// Show interface
@@ -152,6 +194,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			$("#splashDiv").hide();										// Hide splash
 			});
 		},2000);			
+ 
 	InitObs();															// Init observation screen
 	});	
 
@@ -172,12 +215,16 @@ function GetIntroData()												// GET INTRO DATA FROM USER
 	str+="<tr><td>Remind&nbsp;every:</td><td><select id='intro-tot' class='ct-is' style='width:auto'>";
 	str+="<option>0</option><option>1</option><option selected>2</option><option>5</option><option>10</option></select> min(s) time on task</td></tr>";
 	str+="<tr><td>Category:</td><td><select id='intro-cat' class='ct-is'></td></tr>";
-	str+="<tr><td>Which Teacher:</td><td><select id='intro-which' class='ct-is''><option>General Ed</option><option>Special Ed</option></td></tr>";
+	str+="</table>"
+
+
+/*	str+="<tr><td>Which Teacher:</td><td><select id='intro-which' class='ct-is''><option>General Ed</option><option>Special Ed</option></td></tr>";
 	str+="<tr><td>Talking&nbsp;to?</td><td><select id='intro-talk' class='ct-is''><option>Whole group</option><option>Small group</option>";
 	str+="<option>Individual</option><option>Other adult</option><option>No one</option></td></tr>";
 	str+="<tr><td>Co&#8209;teaching&nbsp;mode:&nbsp;</td><td><select id='intro-model' class='ct-is''><option>NONE</option><option>Alternative</option>";
 	str+="<option>1-teach/1-observe</option><option>1-teach/1-assist</option><option>Parallel</option><option>Stations</option><option>Team</option></td></tr>";
-	str+="</table>"
+*/
+
 
 	DialogBox("Setup",str, function() {									// Run dialog
 		SaveEvent(0,"TeacherID",$("#intro-id").val(),"",0);				// Save events
@@ -188,9 +235,11 @@ function GetIntroData()												// GET INTRO DATA FROM USER
 		SaveEvent(0,"Date",$("#intro-date").val(),"",0);			
 		SaveEvent(0,"Block",$("#intro-block").val(),"",0);			
 		SaveEvent(0,"Setting",$("#intro-video").val() ? $("#intro-video").val() : "Live" ,"",0);			
-		SaveEvent(0,"Teacher status","Which Teacher", $("#intro-which").val(), 0);			
-		SaveEvent(0,"Teacher status","Talking to", $("#intro-talk").val(), 0);			
-		SaveEvent(0,"Teacher status","Model", $("#intro-model").val(), 0);			
+		
+		for (i=0;i<menus.length;++i)									// For each menu
+			if ($("#intro-cat").val() == menus[i].cname)				// If matches an option
+				curCat=i;												// This is curCat
+		$("#obsCat").text(menus[curCat].cname);							// Show new name
 
 		if ($("#intro-tot").val() > 0) {								// If tot time set
 			totTimingInterval=setInterval( function() {					// Start tot timer
@@ -199,12 +248,8 @@ function GetIntroData()												// GET INTRO DATA FROM USER
 			}
 		});
 
-	var cats=[	"Phonics Instruction","Fluency Instruction","Vocabulary Instruction","Reading Comprehension Instruction",
-				"Writing Instruction","Mathematics Instruction","General Content Instruction","Observing/Assessing Students",
-				"Classroom Management","Non-instructional activity","Observer uncertain" ];
-
-	for (i=0;i<cats.length;++i)
-		$("#intro-cat").append("<option>"+cats[i]+"</option>");
+	for (i=0;i<menus.length;++i)
+		$("#intro-cat").append("<option>"+menus[i].cname+"</option>");
 }
 
 function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
@@ -213,7 +258,7 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 	$("#alertBoxDiv").remove();											// Remove any old ones
 	$("body").append("<div class='qm-unselectable' id='alertBoxDiv'></div>");														
 	var str="<p><img src='img/ctlogo32.png' style='vertical-align:-8px'/>&nbsp;&nbsp;";								
-	str+="<span class='ct-obsCat'>Set time on task</span><p>";
+	str+="<span class='ct-dialogTitle'>Set time on task</span><p>";
 	str+="<div style='font-size:12px;margin:14px;text-align:center'><br><br>";
 	for (i=0;i<110;i+=10) 
 		str+="<div id='tot-"+i+"' style='width:120px;background-color:rgb(0,"+(75+Math.floor(i*1.4))+",0);margin-bottom:4px;' class='ct-obsNewPrac'>"+i+" percent</div><br>"
@@ -307,34 +352,11 @@ function InitObs() 													// INIT OBSERVATION PANEL
 	var i;
 	var labs=["Deep<br>Q QTR","Rote<br>Q OTR","Choral<br>Resp","Soc/Behav<br>OTR",
 				"Acad<br>FB", "Behav<br>FB","Generic<br>FB","Student<br>Ask Q",
-				"# Student<br>Ask Q","Custom<br>1","Custom<br>2","Custom<br>3"
+				"# Student<br>Ask Q","Custom<br>1","Custom<br>2","Custom<br>3","Custom<br>4","Custom<br>5"
 				];
 	var dataLabs=["Deep Q OTR","Rote Q OTR","Choral Response","Social Behavioral OTR",
 					"Academic Specific FB","Behavior Specific FB","Generic FB Statement","Student Ask Q",
-					"Num Student Ask Q","Custom","Custom","Custom"
-					];
-
-	var menus=[{ title:"Vocabulary Instruction", ops:[ "Alternate meanings *Alt meanings &Cues Instruction,Clear Language,Differentiates Contexts",
-					"Analogy *Analogy &Cues Instruction,Clear Language,Extended Comparison",
-					"Application - prompt student to apply *Application &Cues Instruction,Clear Language,Strong Relevance,Provides Feedback",
-					"Asks to state definition *Asks definition &Cues Instruction,Clear Language,Requires Interpretation,Provides Feedback",
-					"Connection made to other content *Connection &Cues Instruction,Clear Language,Strong Relevance,Understood by Students,Monitors Understanding",
-					"Context to define - teacher provided *Context, define &Cues Instruction,Clear Language,Explicit Identification of Cues,Think-Aloud",
-					"Context - prompt student to use *Context, prompt &Cues Instruction,Clear Language,Direct Context,Monitors Understanding,Provides Feedback",
-					"Definition - formal *Definition, formal &Cues Instruction,Clear Language,Explicitly Explains Parts of Def",
-					"Definition - Student-friendly *Definition, student &Cues Instruction,Clear Language,Monitors Understanding",
-					"Demonstration *Demo &Cues Instruction,Clear Language,Sequential Presentation,Think-Aloud,Chunked Appropriately",
-					"Discussion of term *Discussion &Appropriate and authentic context, Call on sts all over room, Ask open-ended questions, Encourages student talk and use of evidence, Incorporates student responses into discussion",
-					"Example(s) of term meaning *Example &Cues Instruction,Clear Language,Explicit Explanation,Monitors Understanding",
-					"Facilitates student demo/presentation *Facil st pres &Cues Instruction,Clear Language,Provides Feedback",
-					"Morphological parts of word - highlighted *Morph parts & Cues Instruction,Clear Language,Think-Aloud,Monitors Understanding",
-					"Non-example of term meaning *Non-example, term &Cues Instruction,Clear Language,Distinguishes Similarities,Explicit Explanation,Monitors Understanding",
-					"Semantic relationships *Semantics &Cues Instruction,Clear Language,Monitors Understanding",
-					"Strategy - remember definition (explain/intro) *Strategy - remember &Cues Instruction,Clear Language,Think-Aloud,Several Examples,Provides Feedback",
-					"Strategy - using morph parts (explain/intro) *Strategy - morph &Cues Instruction,Clear Language,Defines Parts then Reunites Word,Think-Aloud,Provides Feedback",
-					"Strategy - models use *strategy - models &Cues Instruction,Clear Language,Provides Prompts,Monitors Use,ProvidesFeedback",
-					"Strategy - prompts use *Strategy - prompts &Cues Instruction,Clear Language,Provides Rationale"
-					]}
+					"Num Student Ask Q","Custom","Custom","Custom","Custom","Custom"
 					];
 
 	var dataMedia=["Diagram/Graph","Object/Manipulative","Graphic Organizer","Picture","Movie","Text" ];
@@ -347,7 +369,7 @@ function InitObs() 													// INIT OBSERVATION PANEL
 			});
 		}
 	
-	for (i=1;i<13;++i) {												// For each event button
+	for (i=1;i<=labs.length;++i) {										// For each event button
 		$("#evl-"+i).html(labs[i-1]+"<br>");							// Set label
 
 		$("#ev-"+i).on("click", function(e) {							// On event button click
@@ -361,6 +383,7 @@ function InitObs() 													// INIT OBSERVATION PANEL
 			if (id < 5)			p1="OTR";								// Set category
 			else if (id < 8)	p1="FB";
 			else if (id < 10)	p1="Student Q";
+			else				p1="Custom-"+(id-9);
 			SaveEvent(curTime,p1,dataLabs[id-1],"",0);					// Save event
 			});
 
@@ -393,52 +416,74 @@ function InitObs() 													// INIT OBSERVATION PANEL
 		Sound("click");													// Click sound	
 		});
 
-	$("#obsNewPrac").on("click", function(e) {							// On change practice
-		var str="<div id='pracList' class='ct-obsPracList'>";			// List holder
-		for (i=0;i<menus[curCat].ops.length;++i)	{					// For each practice
-			var title=menus[curCat].ops[i].match(/^(.*)\ \*/)[1];		// Extract title
-			var subs=menus[curCat].ops[i].match(/&(.*)/)[1].split(",");	// Extract subs
-			str+="<div id='opl-"+i+"'class='ct-obsPracItem'>"+title+"</div>";	// Add title
-			if (subs.length) {											// If sub practices
-				str+="<div id='ops-"+i+"' class='ct-obsPracSubs'>";		// Add subs header
-				for (j=0;j<subs.length;++j)								// For each sub practice
-					str+="<div class='ct-obsPracItem' id='oss-"+j+"'>&nbsp;&nbsp;&nbsp;&nbsp;&bull;&nbsp;"+subs[j]+"</div>"
-				str+="</div>";
-				}
-			}
-		str+="</div>";
-
-		DialogBox("Choose new practice",str, function() {				// Run dialog
-			if (curPrac == -1)											// Nothing set
-				return;													// Quit
-			var title=menus[curCat].ops[curPrac].match(/^(.*)\ \*/)[1]; // Extract title
-			var val=menus[curCat].ops[curPrac].match(/\*(.*)\ &/)[1];	// Extract value
-			var subs=menus[curCat].ops[curPrac].match(/&(.*)/)[1].split(",");	// Extract subs
-			if (subs.length)											// If subs
-				val+="->"+subs[curSub];									// Add to val
-			SaveEvent(curTime,"Teacher actions",menus[curCat].title,val,0);	// Save event
-			$("#obsPracText").text(ShortenString(title,40));			// Set new practice text
-			$("#obsPracText").prop("title",subs[curSub]);				// Set new sub-practice as tool-tip
-			});
+	$("#obsNewCat").on("click", function(e) {							// On change category
+		var i;
+		$("#alertBoxDiv").remove();										// Remove any old ones
+		$("body").append("<div class='qm-unselectable' id='alertBoxDiv'></div>");														
+		var str="<p><img src='img/ctlogo32.png' style='vertical-align:-8px'/>&nbsp;&nbsp;";								
+		str+="<span class='ct-dialogTitle'>Choose a category</span><p>";
+		str+="<div style='font-size:12px;margin:14px'>";
+		str+="<div id='pracList' class='ct-obsPracList'>";				// List holder
+		for (i=0;i<menus.length;++i)									// For each category
+			str+="<div id='cat-"+i+"'class='ct-obsPracItem'>"+menus[i].cname+"</div>";	// Add title
+			str+="</div>";
+		$("#alertBoxDiv").append(str);	
+		$("#alertBoxDiv").dialog({ 	 width:$("#obsPanel").width()+16, height:$("#obsPanel").height()+24 });	
+		$("#alertBoxDiv").dialog("option","position",{ my:"middle", at:"middle", of:obsPanel });
 		
-		var curPrac=-1, curSub=-1;	
-			$(".ct-obsPracItem").on("click", function(e) {				// On event button click
-				var id=e.currentTarget.id.substr(4);					// Get id			
-				if (e.currentTarget.id.substr(0,3) == "opl") {			// Clicked on main item
-					$(".ct-obsPracItem").css("font-weight","normal");	// Un-hilite
-					$("[id^=ops]").css("display","none");				// Close all subs, if any
-					if ($("#ops-"+id)[0]) 								// If it has subs
-						$("#ops-"+id).css("display","inline-block");	// Open it
-					curPrac=id;											// Save practice
-					}
-				else if (e.currentTarget.id.substr(0,3) == "oss") {		// Clicked on sub item
-					$("[id^=oss]").css("font-weight","normal");			// Un-hilite chosen sub
-					curSub=id;	
-					}
-				$(this).css("font-weight","bold");						// Highlight chosen
-				});	
-		Sound("click");													// Click sound	
+		$("[id^=cat-]").on("click", function(e) {						// On choosing one		
+			curCat=e.currentTarget.id.substr(4);						// Get id			
+			$("#obsCat").text(menus[curCat].cname);						// Show new name
+			$("#alertBoxDiv").remove();  								// Close it
+			$("#obsPracText").html("");									// No practices
+			Sound("click");												// Click sound	
+			});
 		});
+
+	$("#obsNewPrac").on("click", function(e) {							// ADD NEW PRACTICE
+		var i;
+		$("#alertBoxDiv").remove();										// Remove any old ones
+		$("body").append("<div class='qm-unselectable' id='alertBoxDiv'></div>");														
+		var str="<p><img src='img/ctlogo32.png' style='vertical-align:-8px'/>&nbsp;&nbsp;";								
+		str+="<span class='ct-dialogTitle'>Choose a practice</span><p>";
+		str+="<div style='font-size:12px;margin:14px'>";
+		str+="<div id='pracList' class='ct-obsPracList'>";				// List holder
+		for (i=0;i<menus[curCat].prac.length;++i)	{					// For each practice
+			var title=menus[curCat].prac[i].pname;						// Extract title
+			str+="<div id='opl-"+i+"'class='ct-obsPracItem'>"+title+"</div>";	// Add title
+			}
+		$("#alertBoxDiv").append(str);	
+		$("#alertBoxDiv").dialog({ 	 width:$("#obsPanel").width()+16, height:$("#obsPanel").height()+24 });	
+		$("#alertBoxDiv").dialog("option","position",{ my:"middle", at:"middle", of:obsPanel });
+		
+		$("[id^=opl-]").on("click", function(e) {						// On choosing one		
+			var id=e.currentTarget.id.substr(4);						// Get id			
+			var str=$("#obsPracText").html();
+			str+="<div style='display:inline-block;margin-bottom:4px;margin-top:4px'>"+menus[curCat].prac[id].pname+"</div><br>";
+			for (i=0;i<menus[curCat].prac[id].subs.length;++i) {
+				str+="<div id='"+menus[curCat].prac[id].pname+"->"+menus[curCat].prac[id].subs[i];
+				str+="' class='ct-obsPracSubs'>&bull;&nbsp;"+(menus[curCat].prac[id].subs[i].length > 1 ? menus[curCat].prac[id].subs[i] : "Select practice")+"</div>";
+				}
+			str+="<br>";
+			$("#obsPracText").html(str);
+		
+		$(".ct-obsPracSubs").on("click", function(e) {					// CLICK ON PRACTICE SUB
+				var id=e.currentTarget.id;								// Get id			
+				if ($(this).css("font-weight") == "bold")				// Already set
+					return;												// Quit
+				$(this).css({ color:"#009900","font-weight":"bold"});	// Highlight it
+				SaveEvent(curTime,"Teacher actions",menus[curCat].cname,id,0);	// Save event
+				Sound("click");											// Click sound	
+			});
+
+	
+
+			$("#alertBoxDiv").remove();  								// Close it
+			Sound("click");												// Click sound	
+			});
+		});
+
+
 
 	$("#obsTerms").on("click", function(e) {							// On vocab/topic but click
 		GetVocabTopicTerms();											// Run dialog to get term
@@ -501,7 +546,7 @@ function InitObs() 													// INIT OBSERVATION PANEL
 		$("#dialogDiv").remove();												
 		$("body").append("<div class='unselectable' id='dialogDiv'></div>");														
 		var str="<p><img src='img/ctlogo32.png' style='vertical-align:-8px'/>&nbsp;&nbsp;";								
-		str+="<span class='ct-obsCat'>"+title+"</span><p>";
+		str+="<span class='ct-dialogTitle'>"+title+"</span><p>";
 		str+="<div style='font-size:12px;margin:14px'>"+content+"</div>";
 		$("#dialogDiv").append(str);	
 		$("#dialogDiv").dialog({ width:$("#obsPanel").width()+16, height:$("#obsPanel").height()+24, 
@@ -527,7 +572,7 @@ function InitObs() 													// INIT OBSERVATION PANEL
 		$("#alertBoxDiv").remove();											// Remove any old ones
 		$("body").append("<div class='qm-unselectable' id='alertBoxDiv'></div>");														
 		var str="<p><img src='img/ctlogo32.png' style='vertical-align:-8px'/>&nbsp;&nbsp;";								
-		str+="<span class='ct-obsCat'>"+title+"</span><p>";
+		str+="<span class='ct-dialogTitle'>"+title+"</span><p>";
 		str+="<div style='font-size:12px;margin:14px'>"+content+"</div>";
 		str+="<p><input class='qm-is' type='text' id='gtBoxTt' value='"+def+"'></p></div>";
 		$("#alertBoxDiv").append(str);	
