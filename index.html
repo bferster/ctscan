@@ -47,9 +47,8 @@
 		.ct-obsPracSubs	{ 	width: 175px; font-weight: normal; cursor: pointer; display: inline-block; color:#666;
 							margin-left: 25px;
 							}
-		.ct-obsDone {		width: 50px; cursor: pointer; color:#fff; margin-left:10px;
-							text-align: center; border-radius: 6px; display: inline-block; user-select: none;
-							font-size: 12px; background-color:#e74c3c; padding-top:2px; padding-bottom: 2px;
+		.ct-obsDone {		cursor: pointer; color:#fff; text-align: center; border-radius: 6px; display: inline-block; user-select: none;
+							font-size: 12px; background-color:#e74c3c; padding: 2px 8px 2px 8px;
 							}
 		.ct-obsEvtBut {		width: 80px; height: 60px;  margin-bottom: 8px; cursor: pointer; color:#fff; 
 							text-align: center; border-radius: 6px; display: inline-block; user-select: none;
@@ -65,14 +64,14 @@
 							}
 		.ct-mediaNotes 	{	margin-top: 8px; margin-bottom: 6px; user-select: none;
 							}
-		.ct-notes 	{		width: 540px; border-radius:4px; padding-left:8px; border: 1px solid #999;
+		.ct-notes 	{		width: 560px; border-radius:4px; padding-left:8px; border: 1px solid #999;
 		 					margin-top: 8px; margin-bottom: 6px;
 							}
 		.ct-notesBut {		cursor: pointer; color:#fff; text-align: center; border-radius: 6px; display: inline-block;
 							margin-top: 2px; margin-left:4px; user-select: none; font-size: 10px; 
 							padding-bottom: 2px; padding-left: 6px; padding-right: 6px; background-color:#aaa
 							}
-		.ct-is 	{			width:100%; border-radius:4px; padding-left:8px; border: 1px solid #999; margin-bottom: 3px;
+		.ct-is 	{			border-radius:4px; padding-left:8px; border: 1px solid #999; margin-bottom: 3px;
 							}
 
 		.ct-dialogTitle {	font-size: 20px; font-weight: bold; color: #000; margin-bottom: 8px; user-select: none;
@@ -124,16 +123,31 @@
 			<td class="ct-mediarow"><input id="md-3" type="checkbox"> Graphic Organizer</input></td></tr>
 			<tr><td><input id="md-4" type="checkbox"> Picture</input></td><td><input id="md-5" type="checkbox"> Movie</input></td>
 			<td><input id="md-6" type="checkbox"> Text</input></td></tr>
-		</table>
+		</table><hr>
+		Teacher: <select select id="whichTeacher" class="ct-is" ><option/><option>Special Ed</option><option>Regular</option></select>
+		&nbsp;&nbsp;talking to? &nbsp;<select id="teacherTalk" class="ct-is"><option/><option>Whole group</option><option>Small group</option>
+		<option>Individual</option><option>Other adult</option><option>No one</option></select>&nbsp;&nbsp;
+		Co-teaching?&nbsp;&nbsp;<select id="teacherModel" class="ct-is"><option/><option>NONE</option><option>Alternative</option>
+		<option>1-teach/1-observe</option><option>1-teach/1-assist</option><option>Parallel</option><option>Stations</option><option>Team</option></select>
+		<hr>
+		Student actions:&nbsp;&nbsp;<select id="studentAction" class="ct-is"><option>Choose</option>
+		<option>Answering Qs</option>				<option>Asking Qs</option>				<option>Academic convo w/ adult</option>	
+		<option>Academic convo w/ peers</option>	<option>Group work (active)</option>	<option>Group work (desk)</option>
+		<option>Listening</option>					<option>No clear direction</option>		<option>Group work (active)</option>
+		<option>Preparing for activity</option>		<option>Present/share learning</option>	<option>Reading</option>
+		<option>Seatwork learning</option>			<option>Taking notes</option>			<option>Writing</option>
+		</select>
 		<textarea id="obsNote" class="ct-notes" type="text" placeholder="Type new note here"></textarea>
-		<div style="display:inline-block;vertical-align:10px;font-size:10px">
+		<div style="margin-top:8px;font-size:10px;float:right">
 			<input id="obsNotePri" type="checkbox">Pvt?</input><br>
 			<div id="obsNoteSend" class="ct-notesBut">Send</div>
-			</div>
-		<div id="obsTerms" style='margin-left:40px; width:120px;background-color:#999' class="ct-obsNewPrac">Topic/Vocab term</div>
-		<div id="obsActions" style='margin-left:12px; width:120px;background-color:#999' class="ct-obsNewPrac">Actions</div>
-		<div id="obsDone" class="ct-obsDone">Done</div>
-
+		</div>
+		<hr>
+		Add vocab/topic term: <input class="ct-is" id="newTerm" type="text" placeholder="Type new term here"></input>&nbsp;	
+		<div id="sendTerm" class="ct-notesBut">Add</div>&nbsp;&nbsp;<br>
+		<div id="vocabTerms"></div>
+		<br>
+		<div id="obsDone" style="float:right" class="ct-obsDone">Done</div><br>
 	</div> <!-- ObsPanel --> 
 
 <script>
@@ -204,27 +218,18 @@ function GetIntroData()												// GET INTRO DATA FROM USER
 	str+="<tr><td>Teacher&nbsp;ID:</td><td><input class='ct-is' id='intro-id' type='Text'></input></td></tr>";
 	str+="<tr><td>Observer&nbsp;name:</td><td><input class='ct-is' id='intro-name' type='Text'></input></td></tr>";
 	str+="<tr><td>Observer&nbsp;email:</td><td><input class='ct-is' id='intro-email' type='Text'></input></td></tr>";
-	str+="<tr><td>Class:</td><td><select id='intro-grade' class='ct-is' style='width:auto'>";
+	str+="<tr><td>Class:</td><td><select id='intro-grade' class='ct-is'>";
 	str+="<option>K</option><option>1</option><option>2</option><option>3</option><option>4</option>";
 	str+="<option>5</option><option>6</option><option>7</option><option>8</option><option>8</option>";
-	str+="<option>10</option><option>11</option><option>12</option></select>&nbsp;<select id='intro-sub' class='ct-is' style='width:auto'>";
+	str+="<option>10</option><option>11</option><option>12</option></select>&nbsp;<select id='intro-sub' class='ct-is'>";
 	str+="<option>English</option><option>Math</option><option>Reading</option><option>History</option><option>Science</option></select>";
 	str+="<tr><td>Date:</td><td><input class='ct-is' id='intro-date' type='date'></td></tr>";
 	str+="<tr><td>Block/Time:</td><td><input class='ct-is' id='intro-block' type='text'></td></tr>";
 	str+="<tr><td>Video&nbsp;source:</td><td><input class='ct-is' id='intro-video' placeholder='URL of video, if not live' type='Text'></input></td></tr>";
-	str+="<tr><td>Remind&nbsp;every:</td><td><select id='intro-tot' class='ct-is' style='width:auto'>";
-	str+="<option>0</option><option>1</option><option selected>2</option><option>5</option><option>10</option></select> min(s) time on task</td></tr>";
-	str+="<tr><td>Category:</td><td><select id='intro-cat' class='ct-is'></td></tr>";
+	str+="<tr><td>Remind&nbsp;every:</td><td><select id='intro-tot' class='ct-is'>";
+	str+="<option>0</option><option>.5</option><option>1</option><option>1.5</option><option selected>2</option><option>5</option><option>10</option></select> min(s) time on task</td></tr>";
+	str+="<tr><td>Initial&nbsp;category:</td><td><select id='intro-cat' class='ct-is'></td></tr>";
 	str+="</table>"
-
-
-/*	str+="<tr><td>Which Teacher:</td><td><select id='intro-which' class='ct-is''><option>General Ed</option><option>Special Ed</option></td></tr>";
-	str+="<tr><td>Talking&nbsp;to?</td><td><select id='intro-talk' class='ct-is''><option>Whole group</option><option>Small group</option>";
-	str+="<option>Individual</option><option>Other adult</option><option>No one</option></td></tr>";
-	str+="<tr><td>Co&#8209;teaching&nbsp;mode:&nbsp;</td><td><select id='intro-model' class='ct-is''><option>NONE</option><option>Alternative</option>";
-	str+="<option>1-teach/1-observe</option><option>1-teach/1-assist</option><option>Parallel</option><option>Stations</option><option>Team</option></td></tr>";
-*/
-
 
 	DialogBox("Setup",str, function() {									// Run dialog
 		SaveEvent(0,"TeacherID",$("#intro-id").val(),"",0);				// Save events
@@ -286,71 +291,12 @@ function GetVocabTopicTerms()										// GET VOCAB/TOPIC TERM FROM USER
 	DialogBox("Add vocab or topic term",str) 							// Run dialog
 	fillTermList();														// Fill term list
 
-	$("#newTerm").on("keypress", function(e) {							// On key hit
-		if (e.which == 13)												// Enter key hit
-			$("#sendTerm").trigger("click");							// Simulate save click
-		});													
-	
-	$("#sendTerm").on("click", function(e) {							// On save but clicked														
-		if (!$("#newTerm").val())										// Nothing there						
-			return;														// Quit
-		Sound("click");													// Click sound	
-		SaveEvent(0,"Vocab word",$("#newTerm").val(),"Started",0);		// Save term
-		vocabTopicTerms.push($("#newTerm").val());						// Add to list
-		$("#newTerm").val("");											// Clear
-		fillTermList();													// Fill term list
-		});
-
-		function fillTermList() {										// FILL TERM LIST									
-			$("#termList").empty();										// Clear it out
-			for (i=0;i<vocabTopicTerms.length;++i) 						// For each term
-				$("#termList").append("<li id='termItem-"+i+"' style='cursor:zoom-out'>"+vocabTopicTerms[i]+"</li>");	// Add term
-
-			$("[id^=termItem-]").on("click", function(e) {				// On click of item		
-				var id=e.currentTarget.id.substr(9);					// Get id			
-				SaveEvent(0,"Vocab word",$("#termItem"+id).val(),"Stopped",0);	// Stop term
-				vocabTopicTerms.splice(id,1);							// Remove it
-				Sound("delete");										// Delete sound	
-				fillTermList();											// Fill term list
-				});
-			}
-}
-
-function GetActions()												// GET ACTIONS FROM USER
-{
-	var str="<table width='100%'>";
-	str+="<tr><td>Student&nbspactions:&nbsp</td><td><select id='studentAction' class='ct-is' style='width:auto'>";
-	str+="<option>Choose</option>";
-	str+="<option>Academic convo w/ adult</option>";	str+="<option>Academic convo w/ peers</option>";
-	str+="<option>Answering Qs</option>";				str+="<option>Asking Qs</option>";
-	str+="<option>Group work (active)</option>";		str+="<option>Group work (desk)</option>";
-	str+="<option>Listening</option>";					str+="<option>No clear direction</option>";
-	str+="<option>Group work (active)</option>";		str+="<option>Preparing for activity</option>";
-	str+="<option>Present/share learning</option>";		str+="<option>Reading</option>";
-	str+="<option>Seatwork learning</option>";			str+="<option>Taking notes</option><option>Writing</option>";
-	str+="</select></td</tr>";
-	str+="<tr><td>Talking&nbsp;to?</td><td><select id='intro-talk' class='ct-is''><option>Whole group</option><option>Small group</option>";
-	str+="<option>Individual</option><option>Other adult</option><option>No one</option></td></tr>";
-	str+="</table>"
-
-	DialogBox("Set actions",str) 						// Run dialog
-
-	$("#studentAction").on("change", function(e) {		// On key hit
-		SaveEvent(0,"Student actions","Action",$("#studentAction").val(),0);	// Save
-		Sound("click");									// Click sound	
-		});													
-
-	$("#intro-talk").on("change", function(e) {			// On key hit
-		SaveEvent(0,"Teacher status","Talking to", $("#intro-talk").val(), 0);			
-		Sound("click");									// Click sound	
-		});													
-
 }
 
 function InitObs() 													// INIT OBSERVATION PANEL
 {
 	var i;
-	var labs=["Deep<br>Q QTR","Rote<br>Q OTR","Choral<br>Resp","Soc/Behav<br>OTR",
+	var labs=["Deep<br>Q OTR","Rote<br>Q OTR","Choral<br>Resp","Soc/Behav<br>OTR",
 				"Acad<br>FB", "Behav<br>FB","Generic<br>FB","Student<br>Ask Q",
 				"# Student<br>Ask Q","Custom<br>1","Custom<br>2","Custom<br>3","Custom<br>4","Custom<br>5"
 				];
@@ -387,7 +333,7 @@ function InitObs() 													// INIT OBSERVATION PANEL
 			SaveEvent(curTime,p1,dataLabs[id-1],"",0);					// Save event
 			});
 
-		$("#evc-"+i).on("click", function(e) {							// On event button click
+		$("#evc-"+i).on("click", function(e) {							// ON EVENT CLICK
 			e.stopPropagation();										// Stop propagation
 			var id=e.currentTarget.id.substr(4);						// Get id			
 			var s=$("#evc-"+id).text();									// Get count from label
@@ -404,19 +350,19 @@ function InitObs() 													// INIT OBSERVATION PANEL
 			});
 	}
 
-	$("#obsStart").on("click", function(e) {							// On start/pause button click
+	$("#obsStart").on("click", function(e) {							// START/STOP TIMER
 		inPlay=!inPlay;													// Toggle state
 		SetPlayMode(inPlay);											// Set play mode
 		});
 	
-	$("#obsNoteSend").on("click", function(e) {							// On Note send
+	$("#obsNoteSend").on("click", function(e) {							// ON NOTE SEND
 		var pri=$("#obsNotePri").prop("checked") ? "true" : "false";	// Privacy
 		SaveEvent(curTime,"Note",$("#obsNote").val(),pri,0);			// Save event
 		$("#obsNote").val("");											// Clear textarea
 		Sound("click");													// Click sound	
 		});
 
-	$("#obsNewCat").on("click", function(e) {							// On change category
+	$("#obsNewCat").on("click", function(e) {							// ON CHANGE CATEGORY
 		var i;
 		$("#alertBoxDiv").remove();										// Remove any old ones
 		$("body").append("<div class='qm-unselectable' id='alertBoxDiv'></div>");														
@@ -476,24 +422,65 @@ function InitObs() 													// INIT OBSERVATION PANEL
 				Sound("click");											// Click sound	
 			});
 
-	
-
 			$("#alertBoxDiv").remove();  								// Close it
 			Sound("click");												// Click sound	
 			});
 		});
 
-
-
-	$("#obsTerms").on("click", function(e) {							// On vocab/topic but click
-		GetVocabTopicTerms();											// Run dialog to get term
+	$("#studentAction").on("change", function(e) {						// STUDENT ACTION
+		SaveEvent(curTime,"Student actions","Action",$(this).val(),0);	// Send event
 		Sound("click");													// Click sound	
+		});													
+
+	$("#teacherTalk").on("change", function(e) {						// ON WHICH TALKING
+		SaveEvent(curTime,"Teacher status","Talking to",$(this).val(),0);	// Send event		
+		Sound("click");													// Click sound	
+		});													
+
+	$("#whichTeacher").on("change", function(e) {						// ON WHICH TEACHER
+		SaveEvent(curTime,"Teacher status","Which Teacher",$(this).val(),0); 	// Send event		
+		Sound("click");													// Click sound	
+		});													
+
+	$("#teacherModel").on("change", function(e) {						// ON TEACHER MODEL
+		SaveEvent(curTime,"Teacher status","Model",$(this).val(),0); 	// Send event		
+		Sound("click");													// Click sound	
+		});													
+
+
+	$("#newTerm").on("keypress", function(e) {							// ENTER HIT FOR NEW TERM
+		if (e.which == 13)												// Enter key hit
+			$("#sendTerm").trigger("click");							// Simulate save click
+		});													
+	
+	$("#sendTerm").on("click", function(e) {							// ON SAVE TERM														
+		if (!$("#newTerm").val())										// Nothing there						
+			return;														// Quit
+		Sound("click");													// Click sound	
+		SaveEvent(curTime,"Vocab word",$("#newTerm").val(),"Started",0);// Save term
+		vocabTopicTerms.push($("#newTerm").val());						// Add to list
+		$("#newTerm").val("");											// Clear
+		fillTermList();													// Fill term list
 		});
 
-	$("#obsActions").on("click", function(e) {							// On actions but click
-		GetActions();													// Run dialog to get actions
-		Sound("click");													// Click sound	
-		});
+		function fillTermList() {										// FILL TERM LIST									
+			var i;
+			var str="Currently active terms <i>(click to remove): </i>";// Header			
+			for (i=0;i<vocabTopicTerms.length;++i) 	{					// For each term
+				if (i)	str+=", ";										// Add separator
+				str+="<span id='termItem-"+i+"' style='cursor:zoom-out;color:#009900'><b>"+vocabTopicTerms[i]+"</b></span>";	// Add term
+				}
+			$("#vocabTerms").html(str);									// Show all terms
+			
+			$("[id^=termItem-]").on("click", function(e) {				// On click of item		
+				var id=e.currentTarget.id.substr(9);					// Get id			
+				SaveEvent(curTime,"Vocab word",$("#termItem-"+id).text(),"Stopped",0);	// Stop term
+				vocabTopicTerms.splice(id,1);							// Remove it
+				Sound("delete");										// Delete sound	
+				fillTermList();											// Fill term list
+				});
+			}
+
 }
 
 	function SetPlayMode(mode) {
