@@ -1,0 +1,55 @@
+New Phonics Instruction:
+Alphabet activities *Alphabet &
+Blending/segmenting compound words *Blend compound &
+Blending/segmenting onset-rime *Blend onset-rime &
+Blending/segmenting phonemes *Blend phonemes &
+Blending/segmenting syllables *Blend syllables &
+Compound words *Compound &
+Counting/Clapping syllables *Count syllables &
+Deleting/substituting phonemes *Sub phonemes &
+Identifying letters *Identify letters &
+Isolating phonemes *Isolate phonemes &
+Learning sounds *Learn sounds &
+Learning spelling words *Learn spelling &
+Matching sounds in same position *Match sounds &
+Matching sounds to letters *Sound+letter &
+Nonsense words *Nonsense &
+Reading words *Read words &
+Rhyming activities *Rhyming &
+Strategy to sound out unknown words *Strategy-sound out &
+Word family activities *Word family &
+Word study (learning word patterns) *Word study &
+Writing letters *Write letters &
+
+New Fluency Instruction:
+Letter or sound naming *Letter naming &
+Models of fluent reading *Models &
+Readers Theater *Readers Theater &
+Repeated reading choral *RR choral &
+Repeated reading partner *RR partner &
+Repeated reading record assisted *RR record &
+Repeated reading student/adult *RR student/adult &
+Word naming *Word naming &
+Other (describe in Notes) *Other &
+
+New Vocabulary Instruction:
+Alternate meanings *Alt meanings &Cues Instruction,Clear Language,Differentiates Contexts
+Analogy *Analogy &Cues Instruction,Clear Language,Extended Comparison 
+Application - prompt student to apply *Application &Cues Instruction,Clear Language,Strong Relevance,Provides Feedback
+Asks to state definition *Asks definition &Cues Instruction,Clear Language,Requires Interpretation,Provides Feedback
+Connection made to other content *Connection &Cues Instruction,Clear Language,Strong Relevance,Understood by Students,Monitors Understanding
+Context to define - teacher provided *Context, define &Cues Instruction,Clear Language,Explicit Identification of Cues,Think-Aloud
+Context - prompt student to use *Context, prompt &Cues Instruction,Clear Language,Direct Context,Monitors Understanding,Provides Feedback
+Definition - formal *Definition, formal &Cues Instruction,Clear Language,Explicitly Explains Parts of Def
+Definition - Student-friendly *Definition, student &Cues Instruction,Clear Language,Monitors Understanding
+Demonstration *Demo &Cues Instruction,Clear Language,Sequential Presentation,Think-Aloud,Chunked Appropriately
+Discussion of term *Discussion &Appropriate and authentic context, Call on sts all over room, Ask open-ended questions, Encourages student talk and use of evidence, Incorporates student responses into discussion 
+Example(s) of term meaning *Example &Cues Instruction,Clear Language,Explicit Explanation,Monitors Understanding
+Facilitates student demo/presentation *Facil st pres &Cues Instruction,Clear Language,Provides Feedback
+Morphological parts of word - highlighted *Morph parts & Cues Instruction,Clear Language,Think-Aloud,Monitors Understaning
+Non-example of term meaning *Non-example, term &Cues Instruction,Clear Language,Distinguishes Similarities,Explicit Explanation,Monitors Understanding
+Semantic relationships *Semantics &Cues Instruction,Clear Language,Monitors Understanding
+Strategy - remember definition (explain/intro) *Strategy remember &Cues Instruction,Clear Language,Think-Aloud,Several Examples,Provides Feedback
+Strategy - using morph parts (explain/intro) *Strategy morph &Cues Instruction,Clear Language,Defines Parts then Reunites Word,Think-Aloud,Provides Feedback
+Strategy - models use *strategy models &Cues Instruction,Clear Language,Provides Prompts,Monitors Use,ProvidesFeedback
+Strategy - prompts use *Strategy prompts &Cues Instruction,Clear Language,Provides Rationale

@@ -166,6 +166,10 @@ var menus=[];															// Holds menus
 $(document).ready(function() {								           	// ON PAGE LOADED
 	var menu="menus.txt";												// Default menu
 	var url=window.location.search.substring(1);						// Get query string
+	if (url) {															// If something on command line
+		menu=url;														// Get name
+		if (!menu.match(/\.txt/))	menu+=".txt";						// Add ext if not there
+		}
 	$.ajax({ type: "GET", url: menu, success: function(text) {
 		var i,j,o,cp,cc,subs;
 		var lines=text.split("\n")
