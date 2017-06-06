@@ -144,7 +144,9 @@
 		</div>
 		<hr>
 		Add vocab/topic term: <input class="ct-is" id="newTerm" type="text" placeholder="Type new term here"></input>&nbsp;	
-		<div id="sendTerm" class="ct-notesBut">Add</div>&nbsp;&nbsp;<br>
+		<div id="sendTerm" class="ct-notesBut">Add</div>&nbsp;&nbsp;
+		<div style="float:right"> Help <a href="https://docs.google.com/document/d/19l87L5sZfLohU6rhQKLMERTNHhQr-jLiE4xQJeYN_3g/edit?usp=sharing" target="_blank">
+		<img src="img/helpicon.gif" style="vertical-align:bottom" title="Show help"></a></div><br>
 		<div id="vocabTerms"></div>
 		<br>
 		<div id="obsDone" style="float:right" class="ct-obsDone">Done</div><br>
@@ -233,8 +235,10 @@ function GetIntroData()												// GET INTRO DATA FROM USER
 	str+="<tr><td>Remind&nbsp;every:</td><td><select id='intro-tot' class='ct-is'>";
 	str+="<option>0</option><option>.5</option><option>1</option><option>1.5</option><option selected>2</option><option>5</option><option>10</option></select> min(s) time on task</td></tr>";
 	str+="<tr><td>Initial&nbsp;category:</td><td><select id='intro-cat' class='ct-is'></td></tr>";
-	str+="</table>"
-
+	str+="</table><br>"
+	str+="<div style='float:right'> Help <a href='https://docs.google.com/document/d/19l87L5sZfLohU6rhQKLMERTNHhQr-jLiE4xQJeYN_3g/edit?usp=sharing' target='_blank'>";
+	str+="<img src='img/helpicon.gif' style='vertical-align:bottom' title='Show help'></a></div>";
+	
 	DialogBox("Setup",str, function() {									// Run dialog
 		SaveEvent(0,"TeacherID",$("#intro-id").val(),"",0);				// Save events
 		SaveEvent(0,"ObserverName",$("#intro-name").val(),"",0);			
