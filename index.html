@@ -21,10 +21,10 @@
 		.ct-obsPanel {		background-color:#ddd; border-radius: 6px; margin: 24px; padding: 12px; width: 620px;
 							margin-left: auto; margin-right: auto; opacity: 0; 
 							}
-		.ct-obsCat {		font-size: 20px; font-weight: bold; color: #000; margin-bottom: 8px; width: 450px;
+		.ct-obsCat {		font-size: 20px; font-weight: bold; color: #000; margin-bottom: 8px; width: 440px;
 							display: inline-block; user-select: none; text-align:right;
 							}
-		.ct-obsTime {		font-size: 20px; border-radius: 6px; background-color: #fff; text-align:center; width: 80px;
+		.ct-obsTime {		font-size: 20px; border-radius: 6px; background-color: #fff; text-align:center; width: 90px;
 							border: 1px solid #ccc; display: inline-block; color: #666; user-select: none; margin-bottom: 8px;
 							}
 		.ct-obsStart {		cursor: pointer; vertical-align: -3px; width: 14px; margin-left: 8px; margin-right: 8px;
@@ -44,7 +44,7 @@
 							}
 		.ct-obsPracItem:hover {	 background-color:#ccc;
 							}
-		.ct-obsPracSubs	{ 	width: 175px; font-weight: normal; cursor: pointer; display: inline-block; color:#666;
+		.ct-obsPracSubs	{ 	width: 250px; font-weight: normal; cursor: pointer; display: inline-block; color:#666;
 							margin-left: 25px;
 							}
 		.ct-obsDone {		cursor: pointer; color:#fff; text-align: center; border-radius: 6px; display: inline-block; user-select: none;
@@ -91,7 +91,7 @@
 	<div id="splashDiv" class="ct-splash"><img src="img/ctlogo400.png" width="200"><br>
 		<br>Classroom Teaching<br>Scan<br><br>
 		<span style="font-size:14px;font-weight:normal">
-			Michael J. Kennedy<br>Wendy J. Rodgers<br>John Romig<br><b>University of Virginia</b><br><br>v2.0
+			Michael J. Kennedy<br>Wendy J. Rodgers<br>John E. Romig<br><b>University of Virginia</b><br><br>v2.0
 		</span>
 	</div>
 	<div id="obsPanel" class="ct-obsPanel">
@@ -124,7 +124,7 @@
 			<tr><td><input id="md-4" type="checkbox"> Picture</input></td><td><input id="md-5" type="checkbox"> Movie</input></td>
 			<td><input id="md-6" type="checkbox"> Text</input></td></tr>
 		</table><hr>
-		Teacher: <select select id="whichTeacher" class="ct-is" ><option/><option>Special Ed</option><option>General</option></select>
+		Teacher: <select select id="whichTeacher" class="ct-is" ><option/><option>Special Ed</option><option>General</option><option>Para/IA</option></select>
 		&nbsp;&nbsp;Grouping: &nbsp;<select id="teacherTalk" class="ct-is"><option/><option>Whole group</option><option>Small group</option>
 		<option>Individual</option><option>Other adult</option><option>No one</option></select>&nbsp;&nbsp;
 		Co-teaching?&nbsp;&nbsp;<select id="teacherModel" class="ct-is"><option/><option>NONE</option><option>Alternative</option>
@@ -138,7 +138,10 @@
 		<option>Seatwork learning</option>			<option>Taking notes</option>			<option>Writing</option>
 		</select>
 		<textarea id="obsNote" class="ct-notes" type="text" placeholder="Type new note here"></textarea>
-		<div style="margin-top:18px;font-size:10px;float:right" id="obsNoteSend" class="ct-notesBut">Send</div>
+		<div style="margin-top:8px;font-size:10px;float:right">
+			<div id="obsNoteOops" class="ct-notesBut" style="background-color:#e67e22;margin-bottom:3px">Oops</div><br>
+			<div id="obsNoteSend" class="ct-notesBut">Send</div>
+		</div>
 		<hr>
 		Add vocab/topic term: <input class="ct-is" id="newTerm" type="text" placeholder="Type new term here"></input>&nbsp;	
 		<div id="sendTerm" class="ct-notesBut">Add</div>&nbsp;&nbsp;
@@ -157,8 +160,9 @@
 
 var curTime=0;															// Saves time in task
 var timingInterval=null,totInterval=null;								// Timing interval
+var totTiming=0;														// Time on task timing
 var inPlay=false;														// Play flag
-var curCat=0;															// Current category
+var curCat=-1;curPrac=-1;												// Current category, practice
 var vocabTopicTerms=[];													// Holds vocab/topic terms
 var menus=[];															// Holds menus
 var kidsInClass=0;														// Number of kids in class													
@@ -170,16 +174,19 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		menu=url;														// Get name
 		if (!menu.match(/\.txt/))	menu+=".txt";						// Add ext if not there
 		}
-	$.ajax({ type: "GET", url: menu, success: function(text) {
+	$.ajax({ type: "GET", url: menu, success: function(text) {			// Get menus text tile
 		var i,j,o,cp,cc,subs;
-		var lines=text.split("\n")
+		text=text.replace(/\n\r/g,"\n");								// LFCR -> LF
+		text=text.replace(/\r\n/g,"\n");								// CRLF -> LF
+		text=text.replace(/\r/g,"");									// Remove CR
+		var lines=text.split("\n");										// Spit by line
 		for (i=0;i<lines.length;++i) {									// For each line
 			o=lines[i];													// Point at line
 			if (!o)	continue;											// Skip blanks
 			if (o.match(/:/)) {											// At new category
 				cc=menus.length;										// Get index
 				menus.push({});											// Add cat obj
-				menus[cc].cname=o.substr(0,o.length-2);					// Add cat name
+				menus[cc].cname=o.substr(0,o.length-1);					// Add cat name
 				menus[cc].prac=[];										// Add array for practices									
 				}
 			else if (o.match(/\*/)) {									// At new * category
@@ -189,21 +196,12 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				menus[cc].prac[cp].subs=[];								// Add array for sub-practices									
 				subs=o.split("&")[1].split(",");						// Get subs, if any
 				for (j=0;j<subs.length;++j)								// For each sub
-					menus[cc].prac[cp].subs.push(subs[j]);				// Add to practice
-				}
-			else if (o.match(/\-/)) {									// At new - category
-				cp=menus[cc].prac.length;								// Get prac index
-				menus[cc].prac.push({});								// Add practice obj
-				menus[cc].prac[cp].pname=o.split(" -")[0];				// Add prac name
-				menus[cc].prac[cp].subs=[];								// Add array for sub-practices									
-				subs=o.split("&")[1].split(",");						// Get subs, if any
-				for (j=0;j<subs.length;++j)								// For each sub
-					menus[cc].prac[cp].subs.push(subs[j]);				// Add to practice
-					}
+					if (subs[j].length)									// If something there
+						menus[cc].prac[cp].subs.push(subs[j]);			// Add to practice
 				}
 			}
-	
-		});
+		}
+	});
 
 	setTimeout(function() {												// Set delay timer
 		$("#splashDiv").animate({ opacity:0 },400);						// Hide logo
@@ -218,15 +216,16 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 
 function GetIntroData()												// GET INTRO DATA FROM USER
 {
-	var str="<table width='100%'>";
+	var str="<table>";
 	str+="<tr><td>Teacher&nbsp;ID:</td><td><input class='ct-is' id='intro-id' type='Text'></input></td></tr>";
 	str+="<tr><td>Observer&nbsp;name:</td><td><input class='ct-is' id='intro-name' type='Text'></input></td></tr>";
 	str+="<tr><td>Observer&nbsp;email:</td><td><input class='ct-is' id='intro-email' type='Text'></input></td></tr>";
 	str+="<tr><td>Class:</td><td><select id='intro-grade' class='ct-is'>";
 	str+="<option>K</option><option>1</option><option>2</option><option>3</option><option>4</option>";
-	str+="<option>5</option><option>6</option><option>7</option><option>8</option><option>8</option>";
+	str+="<option>5</option><option>6</option><option>7</option><option>8</option><option>9</option>";
 	str+="<option>10</option><option>11</option><option>12</option></select>&nbsp;<select id='intro-sub' class='ct-is'>";
 	str+="<option>English</option><option>Math</option><option>Reading</option><option>History</option><option>Science</option></select>";
+	str+="<tr><td>Number&nbsp;of&nbsp;students:&nbsp;&nbsp;</td><td><input class='ct-is' id='intro-numkids' type='Text'></input></td></tr>";
 	str+="<tr><td>Date:</td><td><input class='ct-is' id='intro-date' type='date'></td></tr>";
 	str+="<tr><td>Block/Time:</td><td><input class='ct-is' id='intro-block' type='text'></td></tr>";
 	str+="<tr><td>Setting:</td><td><select id='intro-setting' class='ct-is'><option>Self-contained</option>";
@@ -234,7 +233,6 @@ function GetIntroData()												// GET INTRO DATA FROM USER
 	str+="<tr><td>Video&nbsp;source:</td><td><input class='ct-is' id='intro-video' placeholder='URL of video, if not live' type='Text'></input></td></tr>";
 	str+="<tr><td>Remind&nbsp;every:</td><td><select id='intro-tot' class='ct-is'>";
 	str+="<option>0</option><option>.5</option><option>1</option><option>1.5</option><option selected>2</option><option>5</option><option>10</option></select> min(s) students on task</td></tr>";
-	str+="<tr><td>Initial&nbsp;category:</td><td><select id='intro-cat' class='ct-is'></td></tr>";
 	str+="</table><br>"
 	str+="<div style='float:right'> Help <a href='https://docs.google.com/document/d/19l87L5sZfLohU6rhQKLMERTNHhQr-jLiE4xQJeYN_3g/edit?usp=sharing' target='_blank'>";
 	str+="<img src='img/helpicon.gif' style='vertical-align:bottom' title='Show help'></a></div>";
@@ -248,18 +246,19 @@ function GetIntroData()												// GET INTRO DATA FROM USER
 		SaveEvent(0,"Date",$("#intro-date").val(),"",0);			
 		SaveEvent(0,"Block",$("#intro-block").val(),"",0);			
 		SaveEvent(0,"Setting",$("#intro-video").val() ? $("#intro-video").val() : "Live" , $("#intro-setting").val(),0);			
-		
-		for (i=0;i<menus.length;++i)									// For each menu
-			if ($("#intro-cat").val() == menus[i].cname)				// If matches an option
-				curCat=i;												// This is curCat
-		$("#obsCat").text(menus[curCat].cname);							// Show new name
+		totTiming=$("#intro-tot").val();
 
-		if ($("#intro-tot").val() > 0) {								// If tot time set
-			totTimingInterval=setInterval( function() {					// Start tot timer
-					GetTimeOnTask();
-					},$("#intro-tot").val()*60000)						// Set time
-			}
+		if ($("#intro-numkids").val()) 								// If num kids set
+			kidsInClass=isNaN($("#intro-numkids").val()) ? 0 : $("#intro-numkids").val()-0;	// Set it
 		});
+
+	Date.prototype.toDateInputValue = (function() {
+    	var local = new Date(this);
+    	local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
+   		return local.toJSON().slice(0,10);
+		});
+
+	$('#intro-date').val(new Date().toDateInputValue());
 
 	for (i=0;i<menus.length;++i)
 		$("#intro-cat").append("<option>"+menus[i].cname+"</option>");
@@ -271,36 +270,26 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 	$("#alertBoxDiv").remove();											// Remove any old ones
 	$("body").append("<div class='qm-unselectable' id='alertBoxDiv'></div>");														
 	var str="<p><img src='img/ctlogo32.png' style='vertical-align:-8px'/>&nbsp;&nbsp;";								
-	str+="<span class='ct-dialogTitle'>Set percentage of students task</span><p>";
+	str+="<span class='ct-dialogTitle'>Set percentage of students off task</span><p>";
 	str+="<div style='font-size:12px;margin:14px;text-align:center'><br><br>";
-	for (i=0;i<110;i+=10) 
-		str+="<div id='tot-"+i+"' style='width:120px;background-color:rgb(0,"+(75+Math.floor(i*1.4))+",0);margin-bottom:4px;' class='ct-obsNewPrac'>"+i+" percent</div><br>"
+	for (i=0;i<110;i+=10) {												// Make 10 categories
+		str+="<div id='tot-"+i+"' style='width:200px;background-color:rgb(0,"+(75+Math.floor(i*1.4))+",0);margin-bottom:4px;' class='ct-obsNewPrac'>"+i+" percent";
+			if (kidsInClass) 											// If setting kids
+				str+="&nbsp&nbsp;-&nbsp&nbsp;"+Math.round(i/100*kidsInClass)+" students";
+		str+="</div><br>";
+		}
 	str+="<br><div id='tot-999' style='width:120px;background-color:#e67e22;margin-bottom:4px;' class='ct-obsNewPrac'>Skip</div>"
-	str+="</select></div>";
+	str+="</div>";
 	$("#alertBoxDiv").append(str);	
 	$("#alertBoxDiv").dialog({ 	 width:$("#obsPanel").width()+16, height:$("#obsPanel").height()+24 });	
 	$("#alertBoxDiv").dialog("option","position",{ my:"middle", at:"middle", of:obsPanel });
 	
-
-
-	$("[id^=tot-]").on("click", function(e) {			
+	$("[id^=tot-]").on("click", function(e) {							// ON PERCENTAGE PICK	
 		var id=e.currentTarget.id.substr(4);							// Get id			
 		if (id != 999)													// If not skipping
-			SaveEvent(curTime,"Student status","Percent engaged",id,0);	// Save event
+			SaveEvent(curTime,"Student status","Percent engaged",100-id,0);	// Save event
 		$("#alertBoxDiv").remove();  									// Close it
 		});
-}
-
-function GetVocabTopicTerms()										// GET VOCAB/TOPIC TERM FROM USER
-{
-	var str="<br>Add a new vocabulary or topic term by typing it in the box below. Click enter or the Save button to add it.<br><br>";
-	str+="<input class='ct-is' id='newTerm' style='width:75%' type='Text' placeholder='Type new term here'></input>&nbsp;"	
-	str+="<div id='sendTerm' class='ct-notesBut'>Save</div><br><br>";
-	str+="<b>Currently active terms</b> (Click to remove)<br>";
-	str+="<ol id='termList'></ol>";
-	DialogBox("Add vocab or topic term",str) 							// Run dialog
-	fillTermList();														// Fill term list
-
 }
 
 function InitObs() 													// INIT OBSERVATION PANEL
@@ -375,6 +364,14 @@ function InitObs() 													// INIT OBSERVATION PANEL
 		Sound("click");													// Click sound	
 		});
 
+	$("#obsNoteOops").on("click", function(e) {							// ON OOPS SEND
+		if (!$("#obsNote").val())										// If no value
+			return;														// Quit
+		SaveEvent(curTime,"Note","!!!! OOPS !!!!! ---- "+$("#obsNote").val(),"",0);	// Save event
+		$("#obsNote").val("");											// Clear textarea
+		Sound("click");													// Click sound	
+		});
+
 	$("#obsNewCat").on("click", function(e) {							// ON CHANGE CATEGORY
 		var i;
 		$("#alertBoxDiv").remove();										// Remove any old ones
@@ -390,18 +387,24 @@ function InitObs() 													// INIT OBSERVATION PANEL
 		$("#alertBoxDiv").dialog({ 	 width:$("#obsPanel").width()+16, height:$("#obsPanel").height()+24 });	
 		$("#alertBoxDiv").dialog("option","position",{ my:"middle", at:"middle", of:obsPanel });
 		
-		$("[id^=cat-]").on("click", function(e) {						// On choosing one		
+		$("[id^=cat-]").on("click", function(e) {						// ON CATEGORY CHOOSE		
 			curCat=e.currentTarget.id.substr(4);						// Get id			
 			$("#obsCat").text(menus[curCat].cname);						// Show new name
 			$("#alertBoxDiv").remove();  								// Close it
-			$("#obsPracText").html("");									// No practices
+			$("#obsPracText").html("");									// Remove practices
+			curPrac=-1;													// No practuce index
 			Sound("click");												// Click sound	
 			});
 		});
 
 	$("#obsNewPrac").on("click", function(e) {							// ADD NEW PRACTICE
 		var i;
-		$("#alertBoxDiv").remove();										// Remove any old ones
+		if (curCat < 0)													// Not category yet											
+			return;														// Quit
+		$("#alertBoxDiv").remove();										// Remove any old ones			
+		if (curPrac != -1)												// If not first one
+			SaveEvent(curTime,"Teacher actions",menus[curCat].cname,menus[curCat].prac[curPrac].pname+"->OFF",0);	// Save event
+		
 		$("body").append("<div class='qm-unselectable' id='alertBoxDiv'></div>");														
 		var str="<p><img src='img/ctlogo32.png' style='vertical-align:-8px'/>&nbsp;&nbsp;";								
 		str+="<span class='ct-dialogTitle'>Choose a practice</span><p>";
@@ -418,13 +421,15 @@ function InitObs() 													// INIT OBSERVATION PANEL
 		$("[id^=opl-]").on("click", function(e) {						// On choosing one		
 			var str="";			
 			var id=e.currentTarget.id.substr(4);						// Get id			
-			str+="<div style='display:inline-block;margin-bottom:4px;margin-top:4px'>"+menus[curCat].prac[id].pname+"</div><br>";
+			curPrac=id;													// Set current practice
+			str+="<div style='display:inline-block;margin-bottom:4px;margin-top:4px'>"+menus[curCat].prac[curPrac].pname+"</div><br>";
 			for (i=0;i<menus[curCat].prac[id].subs.length;++i) {
 				str+="<div id='"+menus[curCat].prac[id].pname+"->"+menus[curCat].prac[id].subs[i];
-				str+="' class='ct-obsPracSubs'>&bull;&nbsp;"+(menus[curCat].prac[id].subs[i].length > 1 ? menus[curCat].prac[id].subs[i] : "Select practice")+"</div>";
+				str+="' class='ct-obsPracSubs'>&bull;&nbsp;"+menus[curCat].prac[id].subs[i]+"</div>";
 				}
-			str+="<br>";
-			$("#obsPracText").html(str);
+		str+="<div id='"+menus[curCat].prac[id].pname+"->' class='ct-obsPracSubs'>&bull;&nbsp;This practice</div>";
+		str+="<br>";
+		$("#obsPracText").html(str);
 		
 		$(".ct-obsPracSubs").on("click", function(e) {					// CLICK ON PRACTICE SUB
 				var id=e.currentTarget.id;								// Get id			
@@ -460,7 +465,6 @@ function InitObs() 													// INIT OBSERVATION PANEL
 		Sound("click");													// Click sound	
 		});													
 
-
 	$("#newTerm").on("keypress", function(e) {							// ENTER HIT FOR NEW TERM
 		if (e.which == 13)												// Enter key hit
 			$("#sendTerm").trigger("click");							// Simulate save click
@@ -493,42 +497,48 @@ function InitObs() 													// INIT OBSERVATION PANEL
 				fillTermList();											// Fill term list
 				});
 			}
-
-}
+	}
 
 	function SetPlayMode(mode) {
 		if (inPlay)	{
-			$("#obsStart").prop("src","img/pausebut.png");					// Pause but		
-			Sound("click");													// Click sound	
-			SetTimer("start");												// Start timer
+			$("#obsStart").prop("src","img/pausebut.png");				// Pause but		
+			Sound("click");												// Click sound	
+			SetTimer("start");											// Start timer
 			}
 		else{		
-			$("#obsStart").prop("src","img/playbut.png");					// Play but		
-			Sound("delete");												// Delete sound	
-			SetTimer("pause");												// Stop timer
+			$("#obsStart").prop("src","img/playbut.png");				// Play but		
+			Sound("delete");											// Delete sound	
+			SetTimer("pause");											// Stop timer
 			}
 		}
 
 	function SetTimer(mode) {
-		clearInterval(timingInterval);											// Clear timer
-		inPlay=false;															// Not in play
-		if (mode == "start") {													// Timing
-			inPlay=true;														// In play
-			timingInterval=setInterval(function() {								// Start timer
-				showTime(++curTime);											// Add to count and show
-				} ,1000);														// 1fps
+		clearInterval(timingInterval);									// Clear timer
+		clearInterval(totInterval);										// Clear tot timer
+
+		if ((totTiming > 0) && inPlay)									// If tot time set and playing
+			totInterval=setInterval( function() {						// Start tot timer
+					GetTimeOnTask();									// Payload
+					},totTiming*60000);									// Set time
+
+		inPlay=false;													// Not in play
+		if (mode == "start") {											// Timing
+			inPlay=true;												// In play
+			timingInterval=setInterval(function() {						// Start timer
+				showTime(++curTime);									// Add to count and show
+				} ,1000);												// 1fps
 			}
-		else if (mode == "reset")												// Reset
-			curTime=0;															// To 0
+		else if (mode == "reset")										// Reset
+			curTime=0;													// To 0
 	
-		function showTime(time) {												// DISPLAY CURRENT TIME
-			var secs=time%60;													// Get secs
-			if (secs == 0)		secs="00";										// Double 0
-			else if (secs < 10) secs="0"+secs;									// Add leading 0
-			var mins=Math.floor(time/60);										// Get mins
-			if (mins == 0)		mins="00";										// Double 0
-			else if (mins < 10) mins="0"+mins;									// Add leading 0
-			$("#obsTimerText").text(mins+":"+secs);								// Set display
+		function showTime(time) {										// DISPLAY CURRENT TIME
+			var secs=time%60;											// Get secs
+			if (secs == 0)		secs="00";								// Double 0
+			else if (secs < 10) secs="0"+secs;							// Add leading 0
+			var mins=Math.floor(time/60);								// Get mins
+			if (mins == 0)		mins="00";								// Double 0
+			else if (mins < 10) mins="0"+mins;							// Add leading 0
+			$("#obsTimerText").text(mins+":"+secs);						// Set display
 			}
 	}
 
@@ -541,7 +551,7 @@ function InitObs() 													// INIT OBSERVATION PANEL
 // HELPERS
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	function DialogBox(title, content, callback, callback2) 				// DIALOG BOX
+	function DialogBox(title, content, callback, callback2) 	// DIALOG BOX
 	{
 		$("#dialogDiv").remove();												
 		$("body").append("<div class='unselectable' id='dialogDiv'></div>");														
@@ -581,7 +591,6 @@ function InitObs() 													// INIT OBSERVATION PANEL
 					            	"Cancel":  	function() { $(this).remove(); }
 									}});	
 		}
-
 
 	function trace(msg, p1, p2, p3, p4)										// CONSOLE 
 	{
