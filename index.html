@@ -351,10 +351,12 @@ function InitObs() 													// INIT OBSERVATION PANEL
 			else														// No counts
 				$("#evc-"+id).html("<br>");								// Clear display
 			Sound("delete");											// Delete sound	
+			var p1="Custom";											// Assume custom
 			if (id < 5)			p1="OTR";								// Set category
 			else if (id < 8)	p1="FB";
 			else if (id < 10)	p1="Student Q";
-			SaveEvent(curTime,p1,dataLabs[id],"NEGATE",0);				// Save event
+			else				p1="Custom-"+(id-9);
+			SaveEvent(curTime,p1,dataLabs[id-1],"NEGATE",0);			// Save event
 			});
 	}
 
