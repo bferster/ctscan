@@ -15,19 +15,19 @@
 		 body { 			font-family: Verdana,Geneva,sans-serif; font-size:13px; box-sizing: border-box;
 							padding: 0px; margin: 0px; 
 							}
-		.ct-splash { 		position: absolute; top:50px; left: calc(50% - 100px); 
+		.ct-splash { 		position: absolute; top:50px; left: calc(50% - 100px); opacity:0;
 							font-size: 20px; text-align: center; font-weight: bold;
 							}
-		.ct-obsPanel {		background-color:#ddd; border-radius: 6px; margin: 24px; padding: 12px; width: 620px;
+		.ct-obsPanel {		background-color:#ddd; border-radius: 6px; margin: 24px; padding: 12px; width: 618px;
 							margin-left: auto; margin-right: auto; opacity: 0; 
 							}
-		.ct-obsCat {		font-size: 20px; font-weight: bold; color: #000; margin-bottom: 8px; width: 440px;
-							display: inline-block; user-select: none; text-align:right;
+		.ct-obsCat {		font-size: 20px; font-weight: bold; color: #000; margin-bottom: 4px;
+							display: inline-block; user-select: none; 
 							}
-		.ct-obsTime {		font-size: 20px; border-radius: 6px; background-color: #fff; text-align:center; width: 90px;
-							border: 1px solid #ccc; display: inline-block; color: #666; user-select: none; margin-bottom: 8px;
+		.ct-obsTime {		font-size: 20px; border-radius: 6px; background-color: #fff; text-align: center; width: 110px; float: right;
+							border: 1px solid #ccc; color: #666; user-select: none; margin-bottom: 8px;
 							}
-		.ct-obsStart {		cursor: pointer; vertical-align: -3px; width: 14px; margin-left: 8px; margin-right: 8px;
+		.ct-obsStart {		cursor: pointer; width: 14px; margin-left: 8px; margin-right: 8px; float:right; margin-top: 3px;
 							}
 		.ct-obsPrac {		cursor: pointer; vertical-align: -6px; margin-left: 67px; 
 							}
@@ -36,7 +36,7 @@
 							}
 		.ct-obsNewPrac {	cursor: pointer; color:#fff; 
 							text-align: center; border-radius: 6px; display: inline-block; user-select: none;
-							font-size: 12px; background-color: #aaa; padding: 2px 8px 2px 8px;
+							font-size: 12px; background-color: #27ae60; padding: 2px 8px 2px 8px; vertical-align:3px;
 							}
 		.ct-obsPracList {	font-size: 13px; user-select: none; overflow-x:hidden; overflow-y: auto; height: 100%
 							}
@@ -52,7 +52,7 @@
 							}
 		.ct-obsEvtBut {		width: 80px; height: 60px;  margin-bottom: 8px; cursor: pointer; color:#fff; 
 							text-align: center; border-radius: 6px; display: inline-block; user-select: none;
-							padding-top:8px; font-size: 14px; margin-right:4px;
+							padding-top:8px; font-size: 14px; margin-right:4px; background-color:#aaa;
 							}
 		.ct-obsEvtBut:hover { opacity : .75
 							}
@@ -69,7 +69,7 @@
 							}
 		.ct-notesBut {		cursor: pointer; color:#fff; text-align: center; border-radius: 6px; display: inline-block;
 							margin-top: 2px; margin-left:4px; user-select: none; font-size: 10px; 
-							padding-bottom: 2px; padding-left: 6px; padding-right: 6px; background-color:#aaa
+							padding-bottom: 2px; padding-left: 6px; padding-right: 6px; background-color:#27ae60
 							}
 		.ct-is 	{			border-radius:4px; padding-left:8px; border: 1px solid #999; margin-bottom: 3px;
 							}
@@ -91,32 +91,41 @@
 	<div id="splashDiv" class="ct-splash"><img src="img/ctlogo400.png" width="200"><br>
 		<br>Classroom Teaching<br>Scan<br><br>
 		<span style="font-size:14px;font-weight:normal">
-			Michael J. Kennedy<br>Wendy J. Rodgers<br>John E. Romig<br><b>University of Virginia</b><br><br>v2.0
+			Michael J. Kennedy<br>Wendy J. Rodgers, and John E. Romig<br><br>
+			<b>Curry School of Education<br>University of Virginia</b>
+			<br>&copy; 2017
+			<br>v2.0<br><br>
+			<div id="startIt" class="ct-obsNewPrac">Click to continue</div><br>
 		</span>
 	</div>
 	<div id="obsPanel" class="ct-obsPanel">
+		<div id="obsNewCat"  class="ct-obsNewPrac">Set</div>
+		<div id="obsCat" class="ct-obsCat">No category chosen yet...</div>&nbsp;&nbsp;
 		<div id="obsTimerText" class="ct-obsTime">00:00</div>
 		<img id="obsStart" src="img/playbut.png" class="ct-obsStart">
-		<div id="obsCat" class="ct-obsCat">No category chosen yet...</div>&nbsp;&nbsp;<div id="obsNewCat" class="ct-obsNewPrac">Set</div><br>
-		<div class="ct-obsPracText" id="obsPracText" ></div><div id="obsNewPrac" class="ct-obsNewPrac">Add new practice</div><br><br>
-
-			<div id="obsEvt">
-			<div id="ev-1"  style="background-color:#e67e22" class="ct-obsEvtBut"><span id="evl-1"></span><span class="ct-count" id="evc-1"><br></span></div> 
-			<div id="ev-2"  style="background-color:#e67e22" class="ct-obsEvtBut"><span id="evl-2"></span><span class="ct-count" id="evc-2"><br></span></div> 
-			<div id="ev-3"  style="background-color:#e67e22" class="ct-obsEvtBut"><span id="evl-3"></span><span class="ct-count" id="evc-3"><br></span></div> 
-			<div id="ev-4"  style="background-color:#e67e22" class="ct-obsEvtBut"><span id="evl-4"></span><span class="ct-count" id="evc-4"><br></span></div>
-			<div id="ev-5"  style="background-color:#27ae60" class="ct-obsEvtBut"><span id="evl-5"></span><span class="ct-count" id="evc-5"><br></span></div> 
-			<div id="ev-6"  style="background-color:#27ae60" class="ct-obsEvtBut"><span id="evl-6"></span><span class="ct-count" id="evc-6"><br></span></div>
-			<div id="ev-7"  style="background-color:#27ae60" class="ct-obsEvtBut"><span id="evl-7"></span><span class="ct-count" id="evc-7"><br></span></div><br> 
-			<div id="ev-8"  style="background-color:#3db1ff" class="ct-obsEvtBut"><span id="evl-8"></span><span class="ct-count" id="evc-8"><br></span></div> 
-			<div id="ev-9"  style="background-color:#3db1ff" class="ct-obsEvtBut"><span id="evl-9"></span><span class="ct-count" id="evc-9"><br></span></div> 
-			<div id="ev-10" style="background-color:#aaaaaa" class="ct-obsEvtBut"><span id="evl-10"></span><span class="ct-count" id="evc-10"><br></span></div> 
-			<div id="ev-11" style="background-color:#aaaaaa" class="ct-obsEvtBut"><span id="evl-11"></span><span class="ct-count" id="evc-11"><br></span></div> 
-			<div id="ev-12" style="background-color:#aaaaaa" class="ct-obsEvtBut"><span id="evl-12"></span><span class="ct-count" id="evc-12"><br></span></div> 
-			<div id="ev-13" style="background-color:#aaaaaa" class="ct-obsEvtBut"><span id="evl-13"></span><span class="ct-count" id="evc-13"><br></span></div> 
-			<div id="ev-14" style="background-color:#aaaaaa" class="ct-obsEvtBut"><span id="evl-14"></span><span class="ct-count" id="evc-14"><br></span></div> 
+		<div class="ct-obsPracText" id="obsPracText" ></div><div id="obsNewPrac" class="ct-obsNewPrac">Add new practice</div><br>
+		<hr style="margin-bottom:8px;margin-top:10px">
+		Add vocab/topic term: <input class="ct-is" id="newTerm" type="text" placeholder="Type new term here"></input>	
+		<div id="sendTerm" class="ct-notesBut">Add</div>
+		<div id="vocabTerms"></div>
+		<hr style="margin-bottom:8px">
+		<div>
+			<div id="ev-1" class="ct-obsEvtBut"><span id="evl-1"></span><span class="ct-count" id="evc-1"><br></span></div> 
+			<div id="ev-2" class="ct-obsEvtBut"><span id="evl-2"></span><span class="ct-count" id="evc-2"><br></span></div> 
+			<div id="ev-3" class="ct-obsEvtBut"><span id="evl-3"></span><span class="ct-count" id="evc-3"><br></span></div> 
+			<div id="ev-4" class="ct-obsEvtBut"><span id="evl-4"></span><span class="ct-count" id="evc-4"><br></span></div>
+			<div id="ev-5" class="ct-obsEvtBut"><span id="evl-5"></span><span class="ct-count" id="evc-5"><br></span></div> 
+			<div id="ev-6" class="ct-obsEvtBut"><span id="evl-6"></span><span class="ct-count" id="evc-6"><br></span></div>
+			<div id="ev-7" class="ct-obsEvtBut"><span id="evl-7"></span><span class="ct-count" id="evc-7"><br></span></div><br> 
+			<div id="ev-8" class="ct-obsEvtBut"><span id="evl-8"></span><span class="ct-count" id="evc-8"><br></span></div> 
+			<div id="ev-9" class="ct-obsEvtBut"><span id="evl-9"></span><span class="ct-count" id="evc-9"><br></span></div> 
+			<div id="ev-10" class="ct-obsEvtBut"><span id="evl-10"></span><span class="ct-count" id="evc-10"><br></span></div> 
+			<div id="ev-11" class="ct-obsEvtBut"><span id="evl-11"></span><span class="ct-count" id="evc-11"><br></span></div> 
+			<div id="ev-12" class="ct-obsEvtBut"><span id="evl-12"></span><span class="ct-count" id="evc-12"><br></span></div> 
+			<div id="ev-13" class="ct-obsEvtBut"><span id="evl-13"></span><span class="ct-count" id="evc-13"><br></span></div> 
+			<div id="ev-14" class="ct-obsEvtBut"><span id="evl-14"></span><span class="ct-count" id="evc-14"><br></span></div> 
 		</div>
-
+		<hr style="margin-bottom:8px;margin-top:2px">
 		<table style="margin-top:4px">
 			<tr><td class="ct-mediarow"><input id="md-1" type="checkbox"> Diagram/Graph</input></td>
 			<td class="ct-mediarow"><input id="md-2" type="checkbox"> Object/Manipulative</input></td>
@@ -124,32 +133,22 @@
 			<tr><td><input id="md-4" type="checkbox"> Picture</input></td><td><input id="md-5" type="checkbox"> Movie</input></td>
 			<td><input id="md-6" type="checkbox"> Text</input></td></tr>
 		</table><hr>
-		Teacher: <select select id="whichTeacher" class="ct-is" ><option/><option>Special Ed</option><option>General</option><option>Para/IA</option></select>
+		Teacher: <select select id="whichTeacher" class="ct-is" ><option/><option>General</option><option>Special Ed</option><option>Para/IA</option></select>
 		&nbsp;&nbsp;Grouping: &nbsp;<select id="teacherTalk" class="ct-is"><option/><option>Whole group</option><option>Small group</option>
 		<option>Individual</option><option>Other adult</option><option>No one</option></select>&nbsp;&nbsp;
 		Co-teaching?&nbsp;&nbsp;<select id="teacherModel" class="ct-is"><option/><option>NONE</option><option>Alternative</option>
 		<option>1-teach/1-observe</option><option>1-teach/1-assist</option><option>Parallel</option><option>Stations</option><option>Team</option></select>
 		<hr>
-		Student actions:&nbsp;&nbsp;<select id="studentAction" class="ct-is"><option>Choose</option>
-		<option>Answering Qs</option>				<option>Asking Qs</option>				<option>Academic convo w/ adult</option>	
-		<option>Academic convo w/ peers</option>	<option>Group work (active)</option>	<option>Group work (desk)</option>
-		<option>Listening</option>					<option>No clear direction</option>		<option>Group work (active)</option>
-		<option>Preparing for activity</option>		<option>Present/share learning</option>	<option>Reading</option>
-		<option>Seatwork learning</option>			<option>Taking notes</option>			<option>Writing</option>
-		</select>
+		Student actions:&nbsp;&nbsp;<select id="studentAction" class="ct-is"><option>Choose</option></select>
 		<textarea id="obsNote" class="ct-notes" type="text" placeholder="Type new note here"></textarea>
 		<div style="margin-top:8px;font-size:10px;float:right">
 			<div id="obsNoteOops" class="ct-notesBut" style="background-color:#e67e22;margin-bottom:3px">Oops</div><br>
 			<div id="obsNoteSend" class="ct-notesBut">Send</div>
 		</div>
-		<hr>
-		Add vocab/topic term: <input class="ct-is" id="newTerm" type="text" placeholder="Type new term here"></input>&nbsp;	
-		<div id="sendTerm" class="ct-notesBut">Add</div>&nbsp;&nbsp;
-		<div style="float:right"> Help <a href="https://docs.google.com/document/d/19l87L5sZfLohU6rhQKLMERTNHhQr-jLiE4xQJeYN_3g/edit?usp=sharing" target="_blank">
-		<img src="img/helpicon.gif" style="vertical-align:bottom" title="Show help"></a></div><br>
-		<div id="vocabTerms"></div>
-		<br>
-		<div id="obsDone" style="float:right" class="ct-obsDone">Done</div><br>
+		<hr style="margin-bottom:12px;margin-top:4px">
+		<div id="obsDone" class="ct-obsDone">Done</div>
+		<span style="float:right;color:#666">Help&nbsp;<a style="float:right" href="https://docs.google.com/document/d/19l87L5sZfLohU6rhQKLMERTNHhQr-jLiE4xQJeYN_3g/edit?usp=sharing" target="_blank">
+		<img src="img/helpicon.gif" style="vertical-align:bottom" title="Show help"></a></span><br>
 	</div> <!-- ObsPanel --> 
 
 <script>
@@ -165,7 +164,14 @@ var inPlay=false;														// Play flag
 var curCat=-1;curPrac=-1;												// Current category, practice
 var vocabTopicTerms=[];													// Holds vocab/topic terms
 var menus=[];															// Holds menus
-var kidsInClass=0;														// Number of kids in class													
+var kidsInClass=0;														// Number of kids in class
+var dataMedia=[];														// Holds media buttons											
+var dataLabs=[];														// Holds OTR button labels											
+var dataLabVals=[];														// Holds OTR button values											
+var dataLabCats=[];														// Holds OTR button categories											
+var dataLabCols=[];														// Holds OTR button colors											
+var dataActs=[];														// Holds media buttons											
+var dataAcad=[];														// Holds academic diciplines										
 			
 $(document).ready(function() {								           	// ON PAGE LOADED
 	var menu="menus.txt";												// Default menu
@@ -199,20 +205,35 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 					if (subs[j].length)									// If something there
 						menus[cc].prac[cp].subs.push(subs[j]);			// Add to practice
 				}
+			else if (o.match(/MEDIA=/i)) 								// Media button
+				dataMedia=o.substr(6).split(",");						// Get options
+			else if (o.match(/BUTVAL=/i)) 								// OTR button value
+				dataLabVals=o.substr(7).split(",");						// Get options
+			else if (o.match(/BUTLAB=/i)) 								// OTR button label
+				dataLabs=o.substr(7).split(",");						// Get options
+			else if (o.match(/BUTCAT=/i)) 								// OTR button category
+				dataLabCats=o.substr(7).split(",");						// Get options
+			else if (o.match(/BUTCOL=/i)) 								// OTR button color
+				dataLabCols=o.substr(7).split(",");						// Get options
+			else if (o.match(/STUACT=/i)) 								// Student actions
+				dataActs=o.substr(7).split(",");						// Get options
+			else if (o.match(/ACAD=/i)) 								// Disciplines
+				dataAcad=o.substr(5).split(",");						// Get options
 			}
-		}
-	});
+		}});
 
-	setTimeout(function() {												// Set delay timer
+	$("#splashDiv").animate({ opacity:1 },1000);						// Show logo
+
+	$("#startIt").on("click", function() {								// ON START CLICK
 		$("#splashDiv").animate({ opacity:0 },400);						// Hide logo
-		$("#obsPanel").animate({ opacity:1},1500, function() {			// Show interface
+		$("#obsPanel").animate({ opacity:1}, 1500, function() {			// Show interface
 			GetIntroData();												// Get intro data from user
+			InitObs();													// Init observation screen
 			$("#splashDiv").hide();										// Hide splash
 			});
-		},2000);			
- 
-	InitObs();															// Init observation screen
-	});	
+		})
+
+	});																	// End onReady()		
 
 function GetIntroData()												// GET INTRO DATA FROM USER
 {
@@ -220,15 +241,15 @@ function GetIntroData()												// GET INTRO DATA FROM USER
 	str+="<tr><td>Teacher&nbsp;ID:</td><td><input class='ct-is' id='intro-id' type='Text'></input></td></tr>";
 	str+="<tr><td>Observer&nbsp;name:</td><td><input class='ct-is' id='intro-name' type='Text'></input></td></tr>";
 	str+="<tr><td>Observer&nbsp;email:</td><td><input class='ct-is' id='intro-email' type='Text'></input></td></tr>";
-	str+="<tr><td>Class:</td><td><select id='intro-grade' class='ct-is'>";
+	str+="<tr><td>Grade:</td><td><select id='intro-grade' class='ct-is'>";
 	str+="<option>K</option><option>1</option><option>2</option><option>3</option><option>4</option>";
 	str+="<option>5</option><option>6</option><option>7</option><option>8</option><option>9</option>";
-	str+="<option>10</option><option>11</option><option>12</option></select>&nbsp;<select id='intro-sub' class='ct-is'>";
-	str+="<option>English</option><option>Math</option><option>Reading</option><option>History</option><option>Science</option></select>";
+	str+="<option>10</option><option>11</option><option>12</option></select></td></tr>";
+	str+="<tr><td>Academic content:</td><td><select id='intro-sub' class='ct-is'><select>";
 	str+="<tr><td>Number&nbsp;of&nbsp;students:&nbsp;&nbsp;</td><td><input class='ct-is' id='intro-numkids' type='Text'></input></td></tr>";
 	str+="<tr><td>Date:</td><td><input class='ct-is' id='intro-date' type='date'></td></tr>";
 	str+="<tr><td>Block/Time:</td><td><input class='ct-is' id='intro-block' type='text'></td></tr>";
-	str+="<tr><td>Setting:</td><td><select id='intro-setting' class='ct-is'><option>Self-contained</option>";
+	str+="<tr><td>Instructional setting:</td><td><select id='intro-setting' class='ct-is'><option>Self-contained (Academic)</option><option>Self-contained (Severe/Profound)</option>";
 	str+="<option>Co-taught</option><option>Inclusive</option><option>General Education only</option></td></tr>";
 	str+="<tr><td>Video&nbsp;source:</td><td><input class='ct-is' id='intro-video' placeholder='URL of video, if not live' type='Text'></input></td></tr>";
 	str+="<tr><td>Remind&nbsp;every:</td><td><select id='intro-tot' class='ct-is'>";
@@ -260,6 +281,9 @@ function GetIntroData()												// GET INTRO DATA FROM USER
 
 	$('#intro-date').val(new Date().toDateInputValue());
 
+	for (i=0;i<dataAcad.length;++i)
+		$("#intro-sub").append("<option>"+dataAcad[i]+"</option>");
+
 	for (i=0;i<menus.length;++i)
 		$("#intro-cat").append("<option>"+menus[i].cname+"</option>");
 }
@@ -270,7 +294,7 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 	$("#alertBoxDiv").remove();											// Remove any old ones
 	$("body").append("<div class='qm-unselectable' id='alertBoxDiv'></div>");														
 	var str="<p><img src='img/ctlogo32.png' style='vertical-align:-8px'/>&nbsp;&nbsp;";								
-	str+="<span class='ct-dialogTitle'>Set percentage of students off task</span><p>";
+	str+="<span class='ct-dialogTitle'>What percentage of students are OFF Task?</span><p>";
 	str+="<div style='font-size:12px;margin:14px;text-align:center'><br><br>";
 	for (i=0;i<110;i+=10) {												// Make 10 categories
 		str+="<div id='tot-"+i+"' style='width:200px;background-color:rgb(0,"+(75+Math.floor(i*1.4))+",0);margin-bottom:4px;' class='ct-obsNewPrac'>"+i+" percent";
@@ -295,27 +319,19 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 function InitObs() 													// INIT OBSERVATION PANEL
 {
 	var i;
-	var labs=["Deep<br>Q OTR","Rote<br>Q OTR","Choral<br>Resp","Soc/Behav<br>OTR",
-				"Acad<br>FB", "Behav<br>FB","Generic<br>FB","Student<br>Ask Q",
-				"# Student<br>Ask Q","Custom<br>1","Custom<br>2","Custom<br>3","Custom<br>4","Custom<br>5"
-				];
-	var dataLabs=["Deep Q OTR","Rote Q OTR","Choral Response","Social Behavioral OTR",
-					"Academic Specific FB","Behavior Specific FB","Generic FB Statement","Student Ask Q",
-					"Num Student Ask Q","Custom","Custom","Custom","Custom","Custom"
-					];
-
-	var dataMedia=["Diagram/Graph","Object/Manipulative","Graphic Organizer","Picture","Movie","Text" ];
-
-	for (i=1;i<7;++i) {													// For each media
+	for (i=1;i<=dataMedia.length;++i) {									// For each media
 		$("#md-"+i).on("click", function(e) {							// On box click
 			var act=$(this).prop("checked") ? "active" : "inactive";	// Active
 			var id=e.currentTarget.id.substr(3)-1;						// Get id			
 			SaveEvent(curTime,"Visual Aid",dataMedia[id],act,0);		// Save event
 			});
 		}
-	
-	for (i=1;i<=labs.length;++i) {										// For each event button
-		$("#evl-"+i).html(labs[i-1]+"<br>");							// Set label
+	for (i=0;i<dataActs.length;++i) 									// For each student action
+		$("#studentAction").append("<option>"+dataActs[i]+"</option>");	// Add option
+
+	for (i=1;i<=dataLabs.length;++i) {									// For each event button
+		$("#evl-"+i).html(dataLabs[i-1]+"<br>");						// Set label
+		$("#ev-"+i).css("background-color",dataLabCols[i-1]);			// Set back color
 
 		$("#ev-"+i).on("click", function(e) {							// On event button click
 			var id=e.currentTarget.id.substr(3);						// Get id			
@@ -324,12 +340,7 @@ function InitObs() 													// INIT OBSERVATION PANEL
 			if (s)	c=s.substr(1,s.length-2)-0+1						// If not first, get and increment
 			$("#evc-"+id).html("("+c+")");								// Show new count
 			Sound("click");												// Click sound	
-			var p1="Custom";											// Assume custom
-			if (id < 5)			p1="OTR";								// Set category
-			else if (id < 8)	p1="FB";
-			else if (id < 10)	p1="Student Q";
-			else				p1="Custom-"+(id-9);
-			SaveEvent(curTime,p1,dataLabs[id-1],"",0);					// Save event
+			SaveEvent(curTime,dataLabCats[id-1],dataLabVals[id-1],"",0);// Save event
 			});
 
 		$("#evc-"+i).on("click", function(e) {							// ON EVENT CLICK
@@ -342,12 +353,7 @@ function InitObs() 													// INIT OBSERVATION PANEL
 			else														// No counts
 				$("#evc-"+id).html("<br>");								// Clear display
 			Sound("delete");											// Delete sound	
-			var p1="Custom";											// Assume custom
-			if (id < 5)			p1="OTR";								// Set category
-			else if (id < 8)	p1="FB";
-			else if (id < 10)	p1="Student Q";
-			else				p1="Custom-"+(id-9);
-			SaveEvent(curTime,p1,dataLabs[id-1],"NEGATE",0);			// Save event
+			SaveEvent(curTime,dataLabCats[id-1],dataLabVals[id-1],"NEGATE",0);	// Save event
 			});
 		}
 
