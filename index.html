@@ -488,7 +488,7 @@ function InitObs() 													// INIT OBSERVATION PANEL
 
 		function fillTermList() {										// FILL TERM LIST									
 			var i;
-			var str="Currently active terms <i>(click to remove): </i>";// Header			
+			var str="Active term(s) or topic(s) <i>(click to remove): </i>";// Header			
 			for (i=0;i<vocabTopicTerms.length;++i) 	{					// For each term
 				if (i)	str+=", ";										// Add separator
 				str+="<span id='termItem-"+i+"' style='cursor:zoom-out;color:#009900'><b>"+vocabTopicTerms[i]+"</b></span>";	// Add term
