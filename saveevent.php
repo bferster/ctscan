@@ -16,25 +16,21 @@ require_once('config.php');
 	$d4=$_REQUEST['d4'];										// Get data
 	$d5=$_REQUEST['d5'];										// Get data
 		
-	$query="INSERT INTO qshow (obsId, time, d1, d2, d3, d4, d5) VALUES ('";
+	$query="INSERT INTO events (obsId, time, d1, d2, d3, d4, d5, ver) VALUES ('";
 		$query.=addEscapes($obsId)."','";
 		$query.=addEscapes($time)."','";
 		$query.=addEscapes($d1)."','";
 		$query.=addEscapes($d2)."','";
 		$query.=addEscapes($d3)."','";
 		$query.=addEscapes($d4)."','";
-		$query.=addEscapes($d5)."')";
+		$query.=addEscapes($d5)."','";
+		$query.=addEscapes($ver)."')";
 		$result=mysql_query($query);							// Add row
 		if ($result == false)									// Bad save
-			print("-2");										// Show error 
+			print(mysql_error($connection));										// Show error 
 		else
 			print(mysql_insert_id()."\n");						// Return ID of new resource
-		}
-		if ($result == false)									// Bad update
-			print("-4");										// Show error 
-		else
-			print($id);											// Show id 
-			}													// End if valid
+
 		mysql_close();											// Close session
 
 	

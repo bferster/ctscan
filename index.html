@@ -171,7 +171,8 @@ var dataLabVals=[];														// Holds OTR button values
 var dataLabCats=[];														// Holds OTR button categories											
 var dataLabCols=[];														// Holds OTR button colors											
 var dataActs=[];														// Holds media buttons											
-var dataAcad=[];														// Holds academic diciplines										
+var dataAcad=[];														// Holds academic diciplines
+var obsId=MakeUniqueId();												// Observation id										
 			
 $(document).ready(function() {								           	// ON PAGE LOADED
 	var menu="menus.txt";												// Default menu
@@ -550,7 +551,22 @@ function InitObs() 													// INIT OBSERVATION PANEL
 
 	function SaveEvent(time, p1, p2, p3, p4)
 	{
-		trace(time+","+p1+","+p2+","+p3+","+p4);
+		trace(time+","+p1+","+p2+","+p3+","+p4);						// Show data
+		if (window.location.host == "localhost")						// If debugging
+			return;														// Don't save
+
+		var dat={ obsId:obsId, time:time, d1:p1, d2:p2, d3:p3, d4:p4, d5:0};
+		var url="//classroomteachingscan.com/ctscan/saveevent.php";		// Target
+		$.ajax({ url:url,dataType:'text',type:"POST",crossDomain:true,data:dat,  // Post data
+			success:function(d) { 			
+				if (isNaN(d)) {											// Error
+					Sound("delete");									// Delete sound
+					trace(d);											// Show error
+					}
+				},
+			error:function(xhr,status,error) { trace(error) },			// Show error
+			});		
+
 	}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -650,6 +666,20 @@ function InitObs() 													// INIT OBSERVATION PANEL
 		  	return c.substring(name.length,c.length);
 		  }
 		return "";
+	}
+	function MakeUniqueId()													// MAKE UNIQUE ID
+	{
+		var i,index;
+		var ts=+new Date;														// Get date
+		var id=ts.toString();													// Strt with timstamp				
+		var parts=id.split("").reverse();										// Mix them up
+		var n=parts.length-1;													// Max
+		var s=id.length;														// Start digit
+		for(i=s;i<s+8;++i) {													// Add 8 random digits
+			index=Math.floor(Math.random()*n);									// Get index
+			id+=parts[index];													// Add to id 
+			}
+		return ""+id;															// Return unique id	as string													
 	}
 		
 </script>
