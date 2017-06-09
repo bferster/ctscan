@@ -9,10 +9,15 @@
 	<script src="lib/jquery.min.js"></script>
 	<script src="lib/jquery-ui.min.js"></script>
 	<link REL="SHORTCUT ICON" HREF="img/favicon.ico">
-	<title>CTView</title>
+	<title>CTScan Data view</title>
+
 	<style type="text/css">
+		 
 		 body { 			font-family: Verdana,Geneva,sans-serif; font-size:13px; box-sizing: border-box;
 							padding: 0px; margin: 0px; 
+							}
+		.ct-obsPanel {		background-color:#ddd; border-radius: 6px; margin: 24px; padding: 12px; max-width: 1000px;
+							margin-left: auto; margin-right: auto; opacity: 1;
 							}
 		.ct-is 	{			border-radius:4px; padding-left:8px; border: 1px solid #999; margin-bottom: 3px;
 							}
@@ -30,8 +35,24 @@
 </style>
 </head>
 <body>
+	<br>
+	<div style="margin-left: auto; margin-right: auto;text-align:center;width:800px;" >
+		<img src="img/ctlogo400.png" width="100"><br><br>
+		<b>Classroom Teaching Scan Data Viewer</b><br>
+	</div>
+	<div id="obsPanel" class="ct-obsPanel">
+		<table style="max-width:1000px;width:100%">	
+			<tr style="font-weight:bold"><td>Observer</td><td>Email</td><td>Date</td><td>Session Id</td><td>Teacher</td><tr><tr>
+				<tr><td colspan='5'><hr></td></tr>
+				<td><select id="viewObs" class="ct-is"><option>All</option></select></td>
+				<td><select id="viewEmail" class="ct-is"><option>All</option></select></td>
+				<td><select id="viewDate" class="ct-is"><option>All</option></select></td>
+				<td><select id="viewSess" class="ct-is"><option>All</option></select></td>
+				<td><select id="viewTid" class="ct-is"><option>All</option></select></td></tr>
+				<tr><td colspan='5'><hr></td></tr>
+		</table>
+		</div>
 
-Viewer
 
 <script>
 
@@ -40,16 +61,42 @@ Viewer
 /////////////////////////////////////////////////////////////////////////////////////////////////
 			
 $(document).ready(function() {								           	// ON PAGE LOADED
-	var str="SELECT DISTINCT d2 FROM `events` WHERE d1 = 'ObserverName'"
-	Query(str, function(d) { trace(d) });
-	var str="SELECT DISTINCT d2 FROM `events` WHERE d1 = 'ObserverEmail'"
-	Query(str, function(d) { trace(d) });
-	var str="SELECT DISTINCT d2 FROM `events` WHERE d1 = 'Date'"
-	Query(str, function(d) { trace(d) });
-	var str="SELECT DISTINCT d2 FROM `events` WHERE d1 = 'TeacherID'"
-	Query(str, function(d) { trace(d) });
-	var str="SELECT DISTINCT obsId FROM `events` WHERE d1 != ''"
-	Query(str, function(d) { trace(d) });
+	var str="SELECT DISTINCT d2 FROM `events` WHERE d1 = 'ObserverName' ORDER BY d2"
+	Query(str, function(d) { 											// Send query
+		var i;
+		d=$.parseJSON(d);												// Objectify result
+		for (i=0;i<d.length;++i)										// For each one
+			$("#viewObs").append("<option>"+d[i].d2+"</option>");		// Add to select
+		});
+	var str="SELECT DISTINCT d2 FROM `events` WHERE d1 = 'ObserverEmail' ORDER BY d2"
+	Query(str, function(d) { 											// Send query
+		var i;
+		d=$.parseJSON(d);												// Objectify result
+		for (i=0;i<d.length;++i)										// For each one
+			$("#viewEmail").append("<option>"+d[i].d2+"</option>");		// Add to select
+		});
+	var str="SELECT DISTINCT d2 FROM `events` WHERE d1 = 'Date' ORDER BY d2 DESC"
+	Query(str, function(d) { 											// Send query
+		var i;
+		d=$.parseJSON(d);												// Objectify result
+		for (i=0;i<d.length;++i)										// For each one
+			$("#viewDate").append("<option>"+d[i].d2+"</option>");		// Add to select
+		$('#viewDate option:eq(1)').prop('selected', true);				// Highlight first one
+	});
+	var str="SELECT DISTINCT d2 FROM `events` WHERE d1 = 'TeacherID' ORDER BY d2"
+	Query(str, function(d) { 											// Send query
+		var i;
+		d=$.parseJSON(d);												// Objectify result
+		for (i=0;i<d.length;++i)										// For each one
+			$("#viewTid").append("<option>"+d[i].d2+"</option>");		// Add to select
+		});
+	var str="SELECT DISTINCT obsId FROM `events` WHERE d1 != '' ORDER BY obsId"
+	Query(str, function(d) { 											// Send query
+		var i;
+		d=$.parseJSON(d);												// Objectify result
+		for (i=0;i<d.length;++i)										// For each one
+			$("#viewSess").append("<option>"+d[i].obsId+"</option>");	// Add to select
+		});
 
 	});		
 
@@ -64,9 +111,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		var url="//classroomteachingscan.com/ctscan/query.php";				// Target
 
 		$.ajax({ url:url,dataType:'text',type:"GET",crossDomain:true,data:dat,  // Get data
-			success:function(d) { 			
-				trace(d);													// Show data
-				},
+			success:function(d) { callback(d) },							// Run callback				
 			error:function(xhr,status,error) { trace(error) },				// Show error
 			});		
 	}
