@@ -10,6 +10,8 @@ require_once('vconfig.php');
 $q=mysqli_real_escape_string($link,$_GET['q']);			// Get q
 $q=str_replace("~","'","$q");							// Turn ~ into '
 $query="SELECT * FROM events WHERE ".$q; 				// Make query string
+if (strstr($q,"SELECT"))								// If already has a SELECT
+	$query=$q;											// Use it whole
 $result=mysqli_query($link, $query);					// Run query
 
 if ($result == false)									// Bad query

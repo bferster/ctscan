@@ -38,11 +38,19 @@ Viewer
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // MAIN 
 /////////////////////////////////////////////////////////////////////////////////////////////////
-
 			
 $(document).ready(function() {								           	// ON PAGE LOADED
-	var str="";
+	var str="SELECT DISTINCT d2 FROM `events` WHERE d1 = 'ObserverName'"
 	Query(str, function(d) { trace(d) });
+	var str="SELECT DISTINCT d2 FROM `events` WHERE d1 = 'ObserverEmail'"
+	Query(str, function(d) { trace(d) });
+	var str="SELECT DISTINCT d2 FROM `events` WHERE d1 = 'Date'"
+	Query(str, function(d) { trace(d) });
+	var str="SELECT DISTINCT d2 FROM `events` WHERE d1 = 'TeacherID'"
+	Query(str, function(d) { trace(d) });
+	var str="SELECT DISTINCT obsId FROM `events` WHERE d1 != ''"
+	Query(str, function(d) { trace(d) });
+
 	});		
 
 	
@@ -52,7 +60,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 
 	function Query(query, callback) 
 	{
-		var dat={ q:query };
+		var dat={ q:query.replace(/'/g,"~") };
 		var url="//classroomteachingscan.com/ctscan/query.php";				// Target
 
 		$.ajax({ url:url,dataType:'text',type:"GET",crossDomain:true,data:dat,  // Get data
