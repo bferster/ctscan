@@ -15,33 +15,31 @@ require_once('config.php');
 	$d3=$_REQUEST['d3'];										// Get data
 	$d4=$_REQUEST['d4'];										// Get data
 	$d5=$_REQUEST['d5'];										// Get data
-		
+
 	$query="INSERT INTO events (obsId, time, d1, d2, d3, d4, d5, ver) VALUES ('";
-		$query.=addEscapes($obsId)."','";
-		$query.=addEscapes($time)."','";
-		$query.=addEscapes($d1)."','";
-		$query.=addEscapes($d2)."','";
-		$query.=addEscapes($d3)."','";
-		$query.=addEscapes($d4)."','";
-		$query.=addEscapes($d5)."','";
-		$query.=addEscapes($ver)."')";
-		$result=mysql_query($query);							// Add row
+		$query.=addEscapes($link,$obsId)."','";
+		$query.=addEscapes($link,$time)."','";
+		$query.=addEscapes($link,$d1)."','";
+		$query.=addEscapes($link,$d2)."','";
+		$query.=addEscapes($link,$d3)."','";
+		$query.=addEscapes($link,$d4)."','";
+		$query.=addEscapes($link,$d5)."','";
+		$query.=addEscapes($link,$ver)."')";
+		$result=mysqli_query($link,$query);						// Add row
 		if ($result == false)									// Bad save
-			print(mysql_error($connection));										// Show error 
+			print(mysqli_error($link));							// Show error 
 		else
-			print(mysql_insert_id()."\n");						// Return ID of new resource
-
-		mysql_close();											// Close session
-
+			print(mysqli_insert_id($link)."\n");				// Return ID of new resource
 	
-	function addEscapes($str)									// ESCAPE ENTRIES
+	function addEscapes($link, $str)						// ESCAPE ENTRIES
 	{
 		if (!$str)												// If nothing
 			return $str;										// Quit
-		$str=mysql_real_escape_string($str);					// Add slashes
+		$str=mysqli_real_escape_string($link,$str);				// Add slashes
 		$str=str_replace("\r","",$str);							// No crs
 		return $str;
 	}
 
+	mysqli_close($link);										// Close session
 ?>
 	

@@ -15,11 +15,11 @@
 		 body { 			font-family: Verdana,Geneva,sans-serif; font-size:13px; box-sizing: border-box;
 							padding: 0px; margin: 0px; 
 							}
-		.ct-splash { 		position: absolute; top:50px; left: calc(50% - 100px); opacity:0;
+		.ct-splash { 		position: absolute; top:50px; left: calc(50% - 200px); opacity:0; width: 400px;
 							font-size: 20px; text-align: center; font-weight: bold;
 							}
 		.ct-obsPanel {		background-color:#ddd; border-radius: 6px; margin: 24px; padding: 12px; width: 618px;
-							margin-left: auto; margin-right: auto; opacity: 0; 
+							margin-left: auto; margin-right: auto; opacity: 0; display: none;
 							}
 		.ct-obsCat {		font-size: 20px; font-weight: bold; color: #333; margin-bottom: 4px;
 							display: inline-block; user-select: none; 
@@ -88,21 +88,22 @@
 </style>
 </head>
 <body>
-	<div id="splashDiv" class="ct-splash"><img src="img/ctlogo400.png" width="200"><br>
-		<br>Classroom Teaching<br>Scan<br><br>
-		<span style="font-size:14px;font-weight:normal">
+	<div id="splashDiv" class="ct-splash">
+		<img src="img/ctlogo400.png" width="200"><br><br>
+		Classroom Teaching<br>Scan<br><br>
+		<div style="font-size:14px;font-weight:normal">
 			Michael J. Kennedy<br>Wendy J. Rodgers, and John E. Romig<br><br>
 			<b>Curry School of Education<br>University of Virginia</b>
-			<br>&copy; 2017
-			<br>v2.0<br><br>
+			<br>&copy; 2017<br><br>
 			<div id="startIt" class="ct-obsNewPrac">Click to continue</div><br><br>
  			<p style="font-size:12px;line-height:130%">
-			Thank you to our colleagues who provided guidance,<br> helped develop, and/or piloted the CT Scan:<br><br>
-				Bill Gressick from Barron Associates (www.barron-associates.com)<br>Kat D. Alves, Longwood University<br>
-				John Wills Lloyd, University of Virginia<br>Hannah Morris Mathews, University of Virginia<br> Peggy Weiss, George Mason University<br>Mary Brownell, University of Florida<br> 
+			Thank you to our colleagues who provided guidance,<br>helped develop, and/or piloted the CT Scan:<br><br>
+				Bill Gressick, Barron Associates (www.barron-associates.com), Kat D. Alves, Longwood University, 
+				John Wills Lloyd, University of Virginia, Hannah Morris Mathews, University of Virginia, Peggy Weiss, George Mason University, Mary Brownell, University of Florida,  
 				Bill Ferster, University of Virginia.
+				<br><br>v2.0
 				</p>
-		</span>
+		</div>
 	</div>
 	<div id="obsPanel" class="ct-obsPanel">
 		<div id="obsNewCat"  class="ct-obsNewPrac">Set</div>
@@ -233,10 +234,11 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 
 	$("#startIt").on("click", function() {								// ON START CLICK
 		$("#splashDiv").animate({ opacity:0 },400);						// Hide logo
-		$("#obsPanel").animate({ opacity:1}, 1500, function() {			// Show interface
-			GetIntroData();												// Get intro data from user
-			InitObs();													// Init observation screen
+		$("#obsPanel").show();											// Show main screen
+		GetIntroData();													// Get intro data from user
+		$("#obsPanel").animate({ opacity:1}, 500, function() {			// Show interface
 			$("#splashDiv").hide();										// Hide splash
+			InitObs();													// Init observation screen
 			});
 		})
 
