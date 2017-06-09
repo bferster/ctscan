@@ -55,9 +55,9 @@ Strategy - models use *strategy models &Cues Instruction,Clear Language,Provides
 Strategy - prompts use *Strategy prompts &Cues Instruction,Clear Language,Provides Rationale
 
 MEDIA=Diagram/Graph,Object/Manipulative,Graphic Organizer,Picture,Movie,Text
-BUTLAB=Deep<br>Q OTR,Rote<br>Q OTR,Chor/Grp<br>Response,Non-Acad<br>OTR,Academic<br>FB,Behavior<br>FB,Generic<br>FB,Student<br>Ask Q,# Student<br>Asking Q,Precorrect<br>Statement,Custom<br>1,Custom<br>2,Custom<br>3,Custom<br>4
-BUTVAL=Deep Q OTR,Rote Q OTR,Choral Response,Social Behavioral OTR,Academic Specific FB,Behavior Specific FB,Generic FB Statement,Student Ask Q,Num Student Ask Q,Precorrect Statement,Custom,Custom,Custom,Custom
-BUTCAT=OTR,OTR,OTR,OTR,FB,FB,FB,Student Q,Student Q,Precorrect,Custom 1,Custom 2,Custom 3,Custom 4
-BUTCOL=#e67e22,#e67e22,#e67e22,#e67e22,#27ae60,#27ae60,#27ae60,#3db1ff,#3db1ff,#3db1ff,#aaaaaa,#aaaaaa,#aaaaaa,#aaaaaa
+BUTLAB=Deep<br>Q OTR,Rote<br>Q OTR,Chor/Grp<br>Response,Non-Acad<br>OTR,Academic<br>FB,Behavior<br>FB,Generic<br>FB,Precorrect<br>Statement,Student<br>Ask Q,# Student<br>Asking Q,Custom<br>1,Custom<br>2,Custom<br>3,Custom<br>4
+BUTVAL=Deep Q OTR,Rote Q OTR,Choral Response,Social Behavioral OTR,Academic Specific FB,Behavior Specific FB,Generic FB Statement,Precorrect Statement,Student,Ask Q,Num Student Ask Q,Custom,Custom,Custom,Custom
+BUTCAT=OTR,OTR,OTR,OTR,FB,FB,FB,FB,Student Q,Student Q,Custom 1,Custom 2,Custom 3,Custom 4
+BUTCOL=#e67e22,#e67e22,#e67e22,#e67e22,#27ae60,#27ae60,#27ae60,#27ae60,#3db1ff,#3db1ff,#aaaaaa,#aaaaaa,#aaaaaa,#aaaaaa
 STUACT=Answering Qs,Asking Qs,Academic convo w/ adult,Academic convo w/ peers,Group work (active),Group work (desk),Listening,No clear direction,Group work (active),Preparing for activity,Present/share learning,Reading,Seatwork learning,Taking notes,Writing
 ACAD=English,Math,Reading,History,Science
