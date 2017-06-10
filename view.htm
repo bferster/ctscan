@@ -119,7 +119,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 	
 		var q="d1 ='Session'";												// Query base
 	
-		if (dc)															// If a date set
+		if (dc)																// If a date set
 			q+=" AND d4 "+dc+"'"+now+"'";									// Add date to query				
 		if (obs)															// If an obs set
 			q+=" AND time LIKE '%"+obs+"%'";								// Add to query				
@@ -135,9 +135,10 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 
 		Query(q, function(d) { 												// Send query
 			var i,str;
-			if (d == "null")												// No hits													
+			if (!d || d == "null")											// No hits													
 				return;														// Quit
 			d=$.parseJSON(d);												// Objectify result
+			
 			for (i=0;i<d.length;++i) {										// For each one
 				str="<td><input type='checkbox' id='"+d[i].obsId+"'/></td>";// Checkbox
 				str+="<td>"+d[i].time+"</td>";								// Fill obs

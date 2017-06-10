@@ -19,7 +19,8 @@ if ($result == false)									// Bad query
 else{													// Good query
   	while ($row=$result->fetch_array(MYSQL_ASSOC)) 		// Get data
         $myArray[]=$row;								// Add to array
-    echo json_encode($myArray);							// Save as JSON
+    if ($myArray)										// If valid
+		echo json_encode($myArray);						// Save as JSON
 	mysqli_free_result($result);						// Free
  	}
 
