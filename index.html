@@ -269,6 +269,15 @@ function GetIntroData()												// GET INTRO DATA FROM USER
 	str+="<img src='img/helpicon.gif' style='vertical-align:bottom' title='Show help'></a></div>";
 	
 	DialogBox("Setup",str, function() {									// Run dialog
+		var str="Grade="+$("#intro-grade").val();
+		str+="|Subject="+$("#intro-sub").val();
+		str+="|Number="+$("#intro-numkids").val();
+		str+="|Block="+$("#intro-block").val();
+		str+="|Video="+($("#intro-video").val() ? $("#intro-video").val() : "Live");
+		str+="|Level="+$("#intro-level").val();
+		str+="|Setting="+$("#intro-setting").val();
+		SaveEvent($("#intro-name").val(),"Session",$("#intro-email").val(),$("#intro-id").val(),$("#intro-date").val(),str);			
+
 		SaveEvent(0,"TeacherID",$("#intro-id").val(),"",0);				// Save events
 		SaveEvent(0,"ObserverName",$("#intro-name").val(),"",0);			
 		SaveEvent(0,"ObserverEmail",$("#intro-email").val(),"",0);			
@@ -279,7 +288,7 @@ function GetIntroData()												// GET INTRO DATA FROM USER
 		SaveEvent(0,"Setting",$("#intro-video").val() ? $("#intro-video").val() : "Live" , $("#intro-setting").val(),0);			
 		SaveEvent(0,"Level",$("#intro-level").val(),"",0);			
 		totTiming=$("#intro-tot").val();
-
+		
 		if ($("#intro-numkids").val()) 								// If num kids set
 			kidsInClass=isNaN($("#intro-numkids").val()) ? 0 : $("#intro-numkids").val()-0;	// Set it
 		});
@@ -563,13 +572,14 @@ function InitObs() 													// INIT OBSERVATION PANEL
 			}
 	}
 
-	function SaveEvent(time, p1, p2, p3, p4)
+	function SaveEvent(time, p1, p2, p3, p4, p5)
 	{
-		trace(time+","+p1+","+p2+","+p3+","+p4);						// Show data
+		if (!p5)	p5=0;
+		trace(time+","+p1+","+p2+","+p3+","+p4+","+p5);						// Show data
 
-return;													
+//return;													
 
-		var dat={ obsId:obsId, time:time, d1:p1, d2:p2, d3:p3, d4:p4, d5:0};
+		var dat={ obsId:obsId, time:time, d1:p1, d2:p2, d3:p3, d4:p4, d5:p5 };
 		var url="//classroomteachingscan.com/ctscan/saveevent.php";		// Target
 		$.ajax({ url:url,dataType:'text',type:"POST",crossDomain:true,data:dat,  // Post data
 			success:function(d) { 			

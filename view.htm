@@ -16,7 +16,7 @@
 		 body { 			font-family: Verdana,Geneva,sans-serif; font-size:13px; box-sizing: border-box;
 							padding: 0px; margin: 0px; 
 							}
-		.ct-obsPanel {		background-color:#ddd; border-radius: 6px; margin: 24px; padding: 12px; max-width: 1000px;
+		.ct-viewPanel {		background-color:#ddd; border-radius: 6px; margin: 24px; padding: 12px; max-width: 900px;
 							margin-left: auto; margin-right: auto; opacity: 1;
 							}
 		.ct-is 	{			border-radius:4px; padding-left:8px; border: 1px solid #999; margin-bottom: 3px;
@@ -24,7 +24,10 @@
 
 		.ct-dialogTitle {	font-size: 20px; font-weight: bold; color: #000; margin-bottom: 8px; user-select: none;
 							}
-
+		.ct-actionBut {		cursor: pointer; color:#fff; 
+							text-align: center; border-radius: 6px; display: inline-block; user-select: none;
+							font-size: 12px; background-color: #27ae60; padding: 2px 8px 2px 8px; vertical-align:-3px;
+							}
 		.ui-dialog-buttonpane.ui-widget-content.ui-helper-clearfix { border:none }
 		.ui-dialog { border-radius:6px; background-color:#ddd }
 		.ui-button { border-radius:30px;outline:none }
@@ -40,19 +43,28 @@
 		<img src="img/ctlogo400.png" width="100"><br><br>
 		<b>Classroom Teaching Scan Data Viewer</b><br>
 	</div>
-	<div id="obsPanel" class="ct-obsPanel">
-		<table style="max-width:1000px;width:100%">	
-			<tr style="font-weight:bold"><td>Observer</td><td>Email</td><td>Date</td><td>Session Id</td><td>Teacher</td><tr><tr>
-				<tr><td colspan='5'><hr></td></tr>
-				<td><select id="viewObs" class="ct-is"><option>All</option></select></td>
-				<td><select id="viewEmail" class="ct-is"><option>All</option></select></td>
-				<td><select id="viewDate" class="ct-is"><option>All</option></select></td>
-				<td><select id="viewSess" class="ct-is"><option>All</option></select></td>
-				<td><select id="viewTid" class="ct-is"><option>All</option></select></td></tr>
-				<tr><td colspan='5'><hr></td></tr>
-		</table>
-		</div>
-
+	<div id="viewPanel" class="ct-viewPanel">
+		<div style="width:100%;max-height:75%;overflow-y:auto"">
+			<table id="sessionTable" tyle="width:100%;>	
+				<tr style="font-weight:bold"><td>&nbsp;&#x2610;&nbsp;&nbsp;</td><td>Observer</td><td>Email</td><td>Date</td><td>Session Id</td><td>Teacher</td><tr><tr>
+					<tr><td colspan='7'><hr></td></tr>
+					<td><input type="checkbox" id="chooseAll"/></td>
+					<td><input id="viewObs" class="ct-is" style="width:150px"/></td>
+					<td><input id="viewEmail" class="ct-is" style="width:150px"/></td>
+					<td nowrap><select id="viewDateComp" class="ct-is" style="height:19px;vertical-align:-2px;margin-right:-3px;"><option></option><option selected>=</option><option>!=</option><option><</option><option><=</option><option>></option><option>>=</option></select>
+					<input id="viewDate" class="ct-is"style="height:17px" type="date"/></td>
+					<td><input id="viewSess" class="ct-is"/></td>
+					<td><input id="viewTid" class="ct-is" style="width:150px"/></td></tr>
+					<tr><td colspan='7'><hr></td></tr>
+			</table>
+			<hr>
+			<div id="showRaw" class="ct-actionBut">View raw data</div>&nbsp;&nbsp;
+			<div id="showCSV" class="ct-actionBut">View CSV data</div>&nbsp;&nbsp;
+			<div id="showTimeline" class="ct-actionBut">View timeline</div>&nbsp;&nbsp;
+			<div id="showReport" class="ct-actionBut">View Report</div>
+			<input style="float:right" id="password" type="password" class="ct-is" placeholder="Type password here"/>
+		</div>	
+ 	</div>
 
 <script>
 
@@ -61,46 +73,85 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 			
 $(document).ready(function() {								           	// ON PAGE LOADED
-	var str="SELECT DISTINCT d2 FROM `events` WHERE d1 = 'ObserverName' ORDER BY d2"
-	Query(str, function(d) { 											// Send query
-		var i;
-		d=$.parseJSON(d);												// Objectify result
-		for (i=0;i<d.length;++i)										// For each one
-			$("#viewObs").append("<option>"+d[i].d2+"</option>");		// Add to select
-		});
-	var str="SELECT DISTINCT d2 FROM `events` WHERE d1 = 'ObserverEmail' ORDER BY d2"
-	Query(str, function(d) { 											// Send query
-		var i;
-		d=$.parseJSON(d);												// Objectify result
-		for (i=0;i<d.length;++i)										// For each one
-			$("#viewEmail").append("<option>"+d[i].d2+"</option>");		// Add to select
-		});
-	var str="SELECT DISTINCT d2 FROM `events` WHERE d1 = 'Date' ORDER BY d2 DESC"
-	Query(str, function(d) { 											// Send query
-		var i;
-		d=$.parseJSON(d);												// Objectify result
-		for (i=0;i<d.length;++i)										// For each one
-			$("#viewDate").append("<option>"+d[i].d2+"</option>");		// Add to select
-		$('#viewDate option:eq(1)').prop('selected', true);				// Highlight first one
-	});
-	var str="SELECT DISTINCT d2 FROM `events` WHERE d1 = 'TeacherID' ORDER BY d2"
-	Query(str, function(d) { 											// Send query
-		var i;
-		d=$.parseJSON(d);												// Objectify result
-		for (i=0;i<d.length;++i)										// For each one
-			$("#viewTid").append("<option>"+d[i].d2+"</option>");		// Add to select
-		});
-	var str="SELECT DISTINCT obsId FROM `events` WHERE d1 != '' ORDER BY obsId"
-	Query(str, function(d) { 											// Send query
-		var i;
-		d=$.parseJSON(d);												// Objectify result
-		for (i=0;i<d.length;++i)										// For each one
-			$("#viewSess").append("<option>"+d[i].obsId+"</option>");	// Add to select
-		});
 
+	Date.prototype.toDateInputValue = (function() {							// Set today's date
+			var local=new Date(this);										// Get UTC
+			return local.toJSON().slice(0,10);								// Get date portion
+			});
+	$("#viewDate").val(new Date().toDateInputValue());						// Init date to today
+	SetHandlers();															// Set up handlers
+	GetObservations();														// Show matching observations
 	});		
 
+	function SetHandlers() 												// SET EVENT HANDLERS							
+	{
+		$("#viewObs").on("change", function(e) {							// ON OBS CHANGE
+			GetObservations("obs");											// Show matching observations
+			});													
+		$("#viewDate").on("change", function(e) {							// ON DATE CHANGE
+			GetObservations("date");										// Show matching observations
+			});													
+		$("#viewDateComp").on("change", function(e) {						// ON DATE COMPARATOR CHANGE
+			GetObservations("date");										// Show matching observations
+			});													
+		$("#viewEmail").on("change", function(e) {							// ON EMAIL CHANGE
+			GetObservations("email");										// Show matching observations
+			});													
+		$("#viewSess").on("change", function(e) {							// ON SESS CHANGE
+			GetObservations("sess");										// Show matching observations
+			});													
+		$("#viewTid").on("change", function(e) {							// ON OBS CHANGE
+			GetObservations("tid");											// Show matching observations
+			});													
+		$("#chooseAll").on("click", function(e) {							// ON CHECK ALL
+				$("input:checkbox").prop("checked",$(this).prop("checked"));// Toggle
+			});													
+	}
+
+	function GetObservations()											// GET SELECTED OBSERVATIONS FROM DB
+	{
+		var obs=$("#viewObs").val();										// Get observer name
+		var email=$("#viewEmail").val();									// Get observer email
+		var now=$("#viewDate").val();										// Get date
+		var sess=$("#viewSess").val();										// Get session
+		var tid=$("#viewTid").val();										// Get teacher id
+		var dc=$("#viewDateComp").val();									// Get date comparator
 	
+		var q="d1 ='Session'";												// Query base
+	
+		if (dc)															// If a date set
+			q+=" AND d4 "+dc+"'"+now+"'";									// Add date to query				
+		if (obs)															// If an obs set
+			q+=" AND time LIKE '%"+obs+"%'";								// Add to query				
+		if (email)															// If an set
+			q+=" AND d2 LIKE '%"+email+"%'";								// Add to query				
+		if (sess)															// If a session set
+			q+=" AND obsId LIKE '%"+sess+"%'";								// Add to query				
+		if (tid)															// If a tis set
+			q+=" AND d3 LIKE '%"+tid+"%'";									// Add to query				
+	
+		q+=" ORDER BY d2 DESC";												// Sort by
+	 	$("#sessionTable").find("tr:gt(5)").remove();						// Clear sessions
+
+		Query(q, function(d) { 												// Send query
+			var i,str;
+			if (d == "null")												// No hits													
+				return;														// Quit
+			d=$.parseJSON(d);												// Objectify result
+			for (i=0;i<d.length;++i) {										// For each one
+				str="<td><input type='checkbox' id='"+d[i].obsId+"'/></td>";// Checkbox
+				str+="<td>"+d[i].time+"</td>";								// Fill obs
+				str+="<td>"+d[i].d2+"</td>";								// Fill email
+				str+="<td>"+d[i].d4+"</td>";								// Fill date
+				str+="<td>"+d[i].obsId+"</td>";								// Fill id
+				str+="<td>"+d[i].d3+"</td>";								// Fill tid
+				$("#sessionTable").append("<tr>"+str+"<tr>");
+				}
+			});
+	
+	Sound("click");													// Click sound	
+	}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // HELPERS
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -141,21 +192,6 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 									}});	
 		$("#dialogDiv").dialog("option","position",{ my:"left top", at:"left top", of:obsPanel });
 	}
-
-	function GetTextBox(title, content, def, callback)					// GET TEXT LINE BOX
-	{
-		$("#alertBoxDiv").remove();											// Remove any old ones
-		$("body").append("<div class='qm-unselectable' id='alertBoxDiv'></div>");														
-		var str="<p><img src='img/ctlogo32.png' style='vertical-align:-8px'/>&nbsp;&nbsp;";								
-		str+="<span class='ct-dialogTitle'>"+title+"</span><p>";
-		str+="<div style='font-size:12px;margin:14px'>"+content+"</div>";
-		str+="<p><input class='qm-is' type='text' id='gtBoxTt' value='"+def+"'></p></div>";
-		$("#alertBoxDiv").append(str);	
-		$("#alertBoxDiv").dialog({ width:300, buttons: {
-					            	"OK": 		function() { callback($("#gtBoxTt").val()); $(this).remove(); },
-					            	"Cancel":  	function() { $(this).remove(); }
-									}});	
-		}
 
 	function trace(msg, p1, p2, p3, p4)										// CONSOLE 
 	{
@@ -209,20 +245,6 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		  	return c.substring(name.length,c.length);
 		  }
 		return "";
-	}
-	function MakeUniqueId()													// MAKE UNIQUE ID
-	{
-		var i,index;
-		var ts=+new Date;														// Get date
-		var id=ts.toString();													// Strt with timstamp				
-		var parts=id.split("").reverse();										// Mix them up
-		var n=parts.length-1;													// Max
-		var s=id.length;														// Start digit
-		for(i=s;i<s+8;++i) {													// Add 8 random digits
-			index=Math.floor(Math.random()*n);									// Get index
-			id+=parts[index];													// Add to id 
-			}
-		return ""+id;															// Return unique id	as string													
 	}
 		
 </script>
