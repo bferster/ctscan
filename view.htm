@@ -111,6 +111,8 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		$("#showRaw").on("click", function(e) {								// ON SHOW RAW
 			var i;
 			$("#dataPanel").html("No sessions selected...");				// Clear data panel										
+			if (curJson.length)												// If sometghing to show
+				$("#dataPanel").html("");									// Clear data panel										
 			for (i=0;i<curJson.length;++i) {								// For each session
 				if ($("#sessId-"+i).prop("checked")) 						// If checked
 					ShowRawData(i);											// Show raw data
