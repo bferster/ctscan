@@ -111,8 +111,12 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		$("#showRaw").on("click", function(e) {								// ON SHOW RAW
 			var i;
 			$("#dataPanel").html("No sessions selected...");				// Clear data panel										
-			if (curJson.length)												// If sometghing to show
-				$("#dataPanel").html("");									// Clear data panel										
+			for (i=0;i<curJson.length;++i) {								// For each session
+				if ($("#sessId-"+i).prop("checked")) { 						// If checked
+					$("#dataPanel").html("");								// Clear data panel	
+					break;
+					}	
+				}								
 			for (i=0;i<curJson.length;++i) {								// For each session
 				if ($("#sessId-"+i).prop("checked")) 						// If checked
 					ShowRawData(i);											// Show raw data
@@ -169,8 +173,10 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 
 		Query(q, function(d) { 												// Send query
 			var i,str;
-			if (!d || d == "null")											// No hits													
-				return;														// Quit
+			if (!d || d == "null")	{										// No hits													
+				$("#sessionTable").append("<tr><td colspan='5'>No sessions matched...</td></tr>");	// Tell			
+				return;;													// Quit
+				}
 			d=$.parseJSON(d);												// Objectify result
 			curJson=d;														// Save data
 			for (i=0;i<d.length;++i) {										// For each one
@@ -179,7 +185,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				str+="<td>"+d[i].email+"</td>";								// Fill email
 				str+="<td>"+d[i].date+"</td>";								// Fill date
 				str+="<td>"+d[i].teacherId+"</td>";							// Fill tid
-				$("#sessionTable").append("<tr>"+str+"<tr>");
+				$("#sessionTable").append("<tr>"+str+"</tr>");
 				}
 			});
 	
