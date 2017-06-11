@@ -179,8 +179,10 @@ var dataLabCats=[];														// Holds OTR button categories
 var dataLabCols=[];														// Holds OTR button colors											
 var dataActs=[];														// Holds media buttons											
 var dataAcad=[];														// Holds academic diciplines
-var obsId=MakeUniqueId();												// Observation id										
-			
+var obsId=MakeUniqueId();												// Observation id
+var obsEvents=[];														// Holds events										
+var obsData={};															// Obs info
+
 $(document).ready(function() {								           	// ON PAGE LOADED
 	var menu="menus.txt";												// Default menu
 	var url=window.location.search.substring(1);						// Get query string
@@ -242,6 +244,14 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			});
 		})
 
+	$("#obsDone").on("click", function() {								// ON DONE
+		if (ConfirmBox("This will end the observation session and save the data to the server.",
+			function() {												// If sure
+				$("#obsPanel").animate({ opacity:0 },400);				// Hide
+				SaveData();												// Save data to server
+				}));
+		});
+
 	});																	// End onReady()		
 
 function GetIntroData()												// GET INTRO DATA FROM USER
@@ -269,7 +279,7 @@ function GetIntroData()												// GET INTRO DATA FROM USER
 	str+="<img src='img/helpicon.gif' style='vertical-align:bottom' title='Show help'></a></div>";
 	
 	DialogBox("Setup",str, function() {									// Run dialog
-		var str="Grade="+$("#intro-grade").val();
+/*		var str="Grade="+$("#intro-grade").val();
 		str+="|Subject="+$("#intro-sub").val();
 		str+="|Number="+$("#intro-numkids").val();
 		str+="|Block="+$("#intro-block").val();
@@ -287,8 +297,22 @@ function GetIntroData()												// GET INTRO DATA FROM USER
 		SaveEvent(0,"Block",$("#intro-block").val(),"",0);			
 		SaveEvent(0,"Setting",$("#intro-video").val() ? $("#intro-video").val() : "Live" , $("#intro-setting").val(),0);			
 		SaveEvent(0,"Level",$("#intro-level").val(),"",0);			
+*/
+		obsData.tid=$("#intro-id").val();
+		obsData.name=$("#intro-name").val();
+		obsData.email=$("#intro-email").val();
+		obsData.grade=$("#intro-grade").val();
+		obsData.subject=$("#intro-sub").val();
+		obsData.number=$("#intro-numkids").val();
+		obsData.date=$("#intro-date").val();
+		obsData.block=$("#intro-block").val();
+		obsData.setting=$("#intro-setting").val();
+		obsData.level=$("#intro-level").val();
+		obsData.video=($("#intro-video").val() ? $("#intro-video").val() : "Live");
+		obsData.remind=$("#intro-tot").val();
+
 		totTiming=$("#intro-tot").val();
-		
+	
 		if ($("#intro-numkids").val()) 								// If num kids set
 			kidsInClass=isNaN($("#intro-numkids").val()) ? 0 : $("#intro-numkids").val()-0;	// Set it
 		});
@@ -298,7 +322,6 @@ function GetIntroData()												// GET INTRO DATA FROM USER
     	local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
    		return local.toJSON().slice(0,10);
 		});
-
 	$('#intro-date').val(new Date().toDateInputValue());
 
 	for (i=0;i<dataAcad.length;++i)
@@ -572,14 +595,40 @@ function InitObs() 													// INIT OBSERVATION PANEL
 			}
 	}
 
+	function SaveData() 
+	{
+		var dat={ teacherId:obsData.tid, obs:obsData.name, 	    email:obsData.email,
+				  grade:obsData.grade, subject:obsData.subject, numStudents:obsData.number,
+				  date:obsData.date,   block:obsData.block,	    setting:obsData.setting, 
+				  level:obsData.level, video:obsData.video,		remind:obsData.remind,
+				  events: JSON.stringify(obsEvents)
+				  };
+
+		var url="//classroomteachingscan.com/ctscan/saveobs.php";		// Target
+		$.ajax({ url:url,dataType:'text',type:"POST",crossDomain:true,data:dat,  // Post data
+			success:function(d) { 			
+				if (isNaN(d)) {											// Error
+					Sound("delete");									// Delete sound
+					trace(d);											// Show error
+					}
+				else{
+					AlertBox("Successfully saved!","");					// Alert
+					clearInterval(timingInterval);						// Clear timer
+					clearInterval(totInterval);							// Clear tot timer
+					}
+				},
+			error:function(xhr,status,error) { trace(error) },			// Show error
+			});		
+	}
+
+	
 	function SaveEvent(time, p1, p2, p3, p4, p5)
 	{
 		if (!p5)	p5=0;
 		trace(time+","+p1+","+p2+","+p3+","+p4+","+p5);						// Show data
+		obsEvents.push({time:time, d1:p1, d2:p2, d3:p3, d4:p4, d5:p5 });	// Save in array
 
-//return;													
-
-		var dat={ obsId:obsId, time:time, d1:p1, d2:p2, d3:p3, d4:p4, d5:p5 };
+/*		var dat={ obsId:obsId, time:time, d1:p1, d2:p2, d3:p3, d4:p4, d5:p5 };
 		var url="//classroomteachingscan.com/ctscan/saveevent.php";		// Target
 		$.ajax({ url:url,dataType:'text',type:"POST",crossDomain:true,data:dat,  // Post data
 			success:function(d) { 			
@@ -589,13 +638,39 @@ function InitObs() 													// INIT OBSERVATION PANEL
 					}
 				},
 			error:function(xhr,status,error) { trace(error) },			// Show error
-			});		
-
+			});	*/	
 	}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // HELPERS
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	function ConfirmBox(content, callback)								// CONFIRMATION BOX
+	{
+		Sound("ding");														// Ding sound
+		$("body").append("<div class='unselectable' id='confirmBoxDiv'></div>");														
+		var str="<p><img src='img/ctlogo32.png' style='vertical-align:-10px'/>&nbsp;&nbsp;";								
+		str+="<span style='font-size:18px;text-shadow:1px 1px #ccc;color:#990000'><b>Are you sure?</b></span><p>";
+		str+="<div style='font-size:14px;margin:14px'>"+content+"</div>";
+		$("#confirmBoxDiv").append(str);	
+		$("#confirmBoxDiv").dialog({ width:400, buttons: {
+									"Yes": function() { $(this).remove(); callback() },
+									"No":  function() { $(this).remove(); }
+									}});	
+		$("#confirmBoxDiv").dialog("option","position",{ my:"center", at:"center", of:obsPanel });
+		}
+
+	function AlertBox(title, content, callback)							// ALERT BOX
+	{
+	Sound("ding");															// Ding sound
+	$("body").append("<div class='unselectable' id='confirmBoxDiv'></div>");														
+		var str="<p><img src='img/ctlogo32.png' style='vertical-align:-10px'/>&nbsp;&nbsp;";								
+		str+="<span style='font-size:18px;text-shadow:1px 1px #ccc;color:#990000'><b>"+title+"</b></span><p>";
+		str+="<div style='font-size:14px;margin:14px'>"+content+"</div>";
+		$("#confirmBoxDiv").append(str);	
+		$("#confirmBoxDiv").dialog({ width:400 });	
+		$("#confirmBoxDiv").dialog("option","position",{ my:"center", at:"center", of:obsPanel });
+		}
 
 	function DialogBox(title, content, callback, callback2) 	// DIALOG BOX
 	{
