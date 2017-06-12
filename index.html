@@ -672,7 +672,25 @@ function InitObs() 													// INIT OBSERVATION PANEL
 
 	function SaveCSV() 
 	{
-		AlertBox("Not implemented yet","");					// Alert
+		GetTextBox("Save as CSV File","Type name of CSV file to save to","mysession.csv", function(s) {
+			var i,o;
+			var rows=[["time","d1","d2","d2","d4"]];
+			rows.push(["0","Session","Observer",obsData.name,""]);
+			rows.push(["0","Session","Email",obsData.email,""]);
+			rows.push(["0","Session","TeacherId",obsData.tid,""]);
+			rows.push(["0","Session","Grade",obsData.grade,""]);
+			rows.push(["0","Session","Subject",obsData.subject,""]);
+			rows.push(["0","Session","Date",obsData.date,""]);
+			rows.push(["0","Session","Block",obsData.block,""]);
+			rows.push(["0","Session","Setting",obsData.setting,""]);
+			rows.push(["0","Session","Video",obsData.video,""]);
+			rows.push(["0","Session","Reminder",obsData.remind,""]);
+			for (i=0;i<obsEvents.length;++i) {
+				o=obsEvents[i];
+				rows.push([o.time,o.d1,o.d2,o.d3,o.d4]);
+				}
+			ExportToCSV(s,rows);
+			})
 	}
 
 	function SaveData() 
@@ -714,6 +732,45 @@ function InitObs() 													// INIT OBSERVATION PANEL
 		obsEvents.push({time:time, d1:p1, d2:p2, d3:p3, d4:p4, d5:p5 });	// Save in array
 	}
 
+function ExportToCSV(filename, rows) {
+ 	    var processRow = function (row) {
+            var finalVal = '';
+            for (var j = 0; j < row.length; j++) {
+                var innerValue = row[j] === null ? '' : row[j].toString();
+                if (row[j] instanceof Date) {
+                    innerValue = row[j].toLocaleString();
+                };
+                var result = innerValue.replace(/"/g, '""');
+                if (result.search(/("|,|\n)/g) >= 0)
+                    result = '"' + result + '"';
+                if (j > 0)
+                    finalVal += ',';
+                finalVal += result;
+            }
+            return finalVal + '\n';
+        };
+
+        var csvFile = '';
+        for (var i=0; i<rows.length;i++)
+            csvFile+=processRow(rows[i]);
+    
+	    var blob = new Blob([csvFile], { type: 'text/csv;charset=utf-8;' });
+        if (navigator.msSaveBlob) { // IE 10+
+            navigator.msSaveBlob(blob, filename);
+        } else {
+            var link = document.createElement("a");
+    		    if (link.download !== undefined) { 							// Browsers that support HTML5 download attribute
+					var url = URL.createObjectURL(blob);
+					link.setAttribute("href", url);
+					link.setAttribute("download", filename);
+					link.style.visibility = 'hidden';
+					document.body.appendChild(link);
+					link.click();
+					document.body.removeChild(link);
+					}
+				}
+    }
+
 	function ConfirmBox(content, callback)								// CONFIRMATION BOX
 	{
 		Sound("ding");														// Ding sound
@@ -728,7 +785,8 @@ function InitObs() 													// INIT OBSERVATION PANEL
 		$("#confirmBoxDiv").append(str);	
 		$("#confirmBoxDiv").dialog({ width:350});	
 		$("#confirmBoxDiv").dialog("option","position",{ my:"center", at:"center", of:obsPanel });
-	
+		$("#confirmBoxDiv").css({ border:"1px solid #990000","border-radius":"6px"});
+
 		$("#confirmOK").on("click", function() {							// ON OK BUT
 				$("#confirmBoxDiv").remove();								// Remove 
 				if (callback)	callback();									// If callback defines, run it
@@ -738,8 +796,6 @@ function InitObs() 													// INIT OBSERVATION PANEL
 				$("#confirmBoxDiv").remove();								// Remove 
 				Sound("delete");											// Delete sound
 			});
-
-
 	}
 
 	function AlertBox(title, content, callback)							// ALERT BOX
@@ -754,7 +810,8 @@ function InitObs() 													// INIT OBSERVATION PANEL
 			$("#alertBoxDiv").append(str);	
 			$("#alertBoxDiv").dialog({ width:350 });	
 			$("#alertBoxDiv").dialog("option","position",{ my:"center", at:"center", of:obsPanel });
-			
+			$("#alertBoxDiv").css({ border:"1px solid #990000","border-radius":"6px"});
+		
 			$("#alertOK").on("click", function() {							// ON OK BUT
 				if (callback)	callback();									// Run callback
 				$("#alertBoxDiv").remove();									// Remove alert
@@ -799,14 +856,15 @@ function InitObs() 													// INIT OBSERVATION PANEL
 		$("body").append("<div class='qm-unselectable' id='alertBoxDiv'></div>");														
 		var str="<p><img src='img/ctlogo32.png' style='vertical-align:-8px'/>&nbsp;&nbsp;";								
 		str+="<span class='ct-dialogTitle'>"+title+"</span><p>";
-		str+="<div style='font-size:12px;margin:14px'>"+content+"</div>";
-		str+="<p><input class='ct-is' type='text' id='gtBoxTt' value='"+def+"'></p></div>";
-		str+="<br><br><div id='dialogOK' class='ct-obsNewPrac'>OK</div>";
+		str+="<div style='font-size:12px;margin:14px'>"+content;
+		str+="<p><input class='ct-is' type='text' id='gtBoxTt' value='"+def+"'></p>";
+		str+="<div id='dialogOK' class='ct-obsNewPrac'>OK</div>";
 		str+="<div id='dialogCancel' class='ct-obsNewPrac' style='margin-left:8px;background-color:#990000'>Cancel</div></div>";
 		
 		$("#alertBoxDiv").append(str);	
 		$("#alertBoxDiv").dialog({ width:500 });	
 		$("#alertBoxDiv").dialog("option","position",{ my:"center", at:"center", of:obsPanel });
+		$("#alertBoxDiv").css({ border:"1px solid #990000","border-radius":"6px"});
 
 		$("#dialogOK").on("click", function() {							// ON OK BUT
 					callback($("#gtBoxTt").val());
