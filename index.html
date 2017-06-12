@@ -71,6 +71,9 @@
 							margin-top: 2px; margin-left:4px; user-select: none; font-size: 10px; 
 							padding-bottom: 2px; padding-left: 6px; padding-right: 6px; background-color:#27ae60
 							}
+		.ct-dataPanel {		border-radius: 6px; background-color:#eee;padding: 12px; max-width: 600px; margin-left: auto; margin-right: auto; max-height:400px;
+							overflow-x:hidden; overflow-y:auto;
+							}
 		.ct-is 	{			border-radius:4px; padding-left:8px; border: 1px solid #999; margin-bottom: 3px;
 							}
 
@@ -79,7 +82,7 @@
 		@media only screen and (max-height: 525px) {	.ct-obsPanel {	margin-top: 0; margin-bottom: 0   }		}
 
 		.ui-dialog-buttonpane.ui-widget-content.ui-helper-clearfix { border:none }
-		.ui-dialog { border-radius:6px; background-color:#ddd }
+		.ui-dialog { border-radius:6px; background-color:#eee; }
 		.ui-button { border-radius:30px;outline:none }
 		.ui-dialog-titlebar { display:none }
 		 table {			border-spacing: 0px;  }
@@ -245,12 +248,9 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		})
 
 	$("#obsDone").on("click", function() {								// ON DONE
-		if (ConfirmBox("This will end the observation session and save the data to the server.",
-			function() {												// If sure
-				$("#obsPanel").animate({ opacity:0 },400);				// Hide
-				SaveData();												// Save data to server
-				}));
-		});
+		if (ConfirmBox("This will end the observation session",			// Are you sure?
+			function() {	DonePanel(); }));							// If sure
+			});
 
 	});																	// End onReady()		
 
@@ -279,25 +279,6 @@ function GetIntroData()												// GET INTRO DATA FROM USER
 	str+="<img src='img/helpicon.gif' style='vertical-align:bottom' title='Show help'></a></div>";
 	
 	DialogBox("Setup",str, function() {									// Run dialog
-/*		var str="Grade="+$("#intro-grade").val();
-		str+="|Subject="+$("#intro-sub").val();
-		str+="|Number="+$("#intro-numkids").val();
-		str+="|Block="+$("#intro-block").val();
-		str+="|Video="+($("#intro-video").val() ? $("#intro-video").val() : "Live");
-		str+="|Level="+$("#intro-level").val();
-		str+="|Setting="+$("#intro-setting").val();
-		SaveEvent($("#intro-name").val(),"Session",$("#intro-email").val(),$("#intro-id").val(),$("#intro-date").val(),str);			
-
-		SaveEvent(0,"TeacherID",$("#intro-id").val(),"",0);				// Save events
-		SaveEvent(0,"ObserverName",$("#intro-name").val(),"",0);			
-		SaveEvent(0,"ObserverEmail",$("#intro-email").val(),"",0);			
-		SaveEvent(0,"Grade",$("#intro-grade").val(),"",0);			
-		SaveEvent(0,"Subject",$("#intro-sub").val(),"",0);			
-		SaveEvent(0,"Date",$("#intro-date").val(),"",0);			
-		SaveEvent(0,"Block",$("#intro-block").val(),"",0);			
-		SaveEvent(0,"Setting",$("#intro-video").val() ? $("#intro-video").val() : "Live" , $("#intro-setting").val(),0);			
-		SaveEvent(0,"Level",$("#intro-level").val(),"",0);			
-*/
 		obsData.tid=$("#intro-id").val();
 		obsData.name=$("#intro-name").val();
 		obsData.email=$("#intro-email").val();
@@ -595,6 +576,105 @@ function InitObs() 													// INIT OBSERVATION PANEL
 			}
 	}
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// DONE
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	function DonePanel()
+	{
+		$("#obsPanel").animate({ opacity:0 },0);						// Hide
+		var str="<div class='ct-obsCat'>Save observations...</div><br><br>";
+		str+="<div id='dataPanel' class='ct-dataPanel'></div><br>";
+		str+="<a href='https://docs.google.com/document/d/19l87L5sZfLohU6rhQKLMERTNHhQr-jLiE4xQJeYN_3g/edit?usp=sharing' target='_blank'>";
+		str+="<img src='img/helpicon.gif' style='vertical-align:bottom' title='Show help'></a>";
+		str+="&nbsp; Click on a line to edit.";
+		str+="<div id='saveDB' class='ct-obsNewPrac' style='float:right;margin-left:8px;'>Save session to database</div>";
+		str+="<div id='saveCSV' class='ct-obsNewPrac' style='float:right'>Save CSV to computer</div><br>";
+		$("#obsPanel").html(str);										// Draw panel
+		ShowRawData();													// Fill in data table
+		$("#obsPanel").animate({ opacity:1 },400);						// Show end panel
+	
+		$("#saveDB").on("click", function() {							// ON SAVE TO DB
+			SaveData();													// Save to DB
+		}	);
+
+		$("#saveCSV").on("click", function() {							// ON SAVE TO DISK
+			SaveCSV();													// Save to DB
+		}	);
+	}
+
+	function Assess()
+	{
+		var	str="<iframe class='ct-assss' frameborder='0' src='assess.htm' style='height:400px;width:100%'></iframe></div>";	// Load in iframe
+		$("#obsPanel").animate({ opacity:1 },400);						// Show
+		$("#obsPanel").html(str);
+	}
+
+	function ShowRawData()											// SHOW RAW DATA
+	{
+		var i
+		var str="<table id='dataTable'>"
+		str+="<tr id='od-name'><td><b>Observer:</b></td><td>"+obsData.name+"<td></tr>";
+		str+="<tr id='od-email'><td><b>Observer email:&nbsp;&nbsp;</b></td><td>"+obsData.email+"<td></tr>";
+		str+="<tr id='od-tid'><td><b>Teacher Id:</b></td><td>"+obsData.tid+"<td></tr>";
+		str+="<tr id='od-grade'><td><b>Grade:</b></td><td>"+obsData.grade+"<td></tr>";
+		str+="<tr id='od-subject'><td><b>Subject:</b></td><td>"+obsData.subject+"<td></tr>";
+		str+="<tr id='od-date'><td><b>Date:</b></td><td>"+obsData.date+"<td></tr>";
+		str+="<tr id='od-block'><td><b>Block:</b></td><td>"+obsData.block+"<td></tr>";
+		str+="<tr id='od-setting'><td><b>Setting:</b></td><td>"+obsData.setting+"<td></tr>";
+		str+="<tr id='od-video'><td><b>Video:</b></td><td>"+obsData.video+"<td></tr>";
+		str+="<tr><td><b>Reminder:</b></td><td>"+obsData.remind+"<td></tr>";
+		str+"<br>";
+
+		var d=obsEvents;
+		for (i=0;i<d.length;++i){
+			str+="<tr id=oe-"+i+"><td><b>Event:</b></td><td><div style='display:inline-block;width:50px;'>"+d[i].time+"</div>";
+			str+=d[i].d1+", "+d[i].d2;+", "+d[i].d3+"</td></tr>";
+			}	
+		str+="</table>";
+		$("#dataPanel").html(str);										// Add to data panel										
+	
+		$("[id^=od-]").on("click", function(e) {						// ON OBSDATA CLICK					
+			var id=e.currentTarget.id.substr(3);						// Get id
+			var str="Type new value for <b><i>"+id+"</b></i> entry";	// Prompt
+			GetTextBox("Change value", str ,obsData[id], function(s) {	// Open editor
+				obsData[id]=s;											// Set new val
+				Sound("ding");											// Ding sound
+				ShowRawData();											// Refresh screen
+				});
+			})
+		
+		$("[id^=oe-]").on("click", function(e) {						// ON OBSDATA CLICK					
+			var id=e.currentTarget.id.substr(3);						// Get id
+			var str="Type new value for event entry. Make sure you have 4 entries, separated by commas. They can be blank, if needed. If you want to remove the event, clear all the text.";	// Prompt
+			var d=obsEvents[id].time+","+obsEvents[id].d1+","+obsEvents[id].d2+","+obsEvents[id].d3+","+obsEvents[id].d4;								
+			
+			GetTextBox("Change Event", str ,d, function(s) {			// Open editor
+				if (!s) {												// Nothing there
+					obsEvents.splice(id,1);								// Remove it
+					Sound("delete");									// Delete sound
+					ShowRawData();										// Refresh screen
+					return;												// Quit	
+					}
+				s=s.split(",");											// Divide into parts
+				if (s.length < 5)		return;							// Not right number
+				obsEvents[id].time=s[0];								// Set new vals
+				obsEvents[id].d1=s[1];								
+				obsEvents[id].d2=s[2];								
+				obsEvents[id].d3=s[3];								
+				obsEvents[id].d4=s[4];								
+				Sound("ding");											// Ding sound
+				ShowRawData();											// Refresh screen
+				});
+
+			});
+}
+
+	function SaveCSV() 
+	{
+		AlertBox("Not implemented yet","");					// Alert
+	}
+
 	function SaveData() 
 	{
 		var dat={ teacherId:obsData.tid, obs:obsData.name, 	    email:obsData.email,
@@ -621,55 +701,64 @@ function InitObs() 													// INIT OBSERVATION PANEL
 			});		
 	}
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// HELPERS
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	
 	function SaveEvent(time, p1, p2, p3, p4, p5)
 	{
 		if (!p5)	p5=0;
 		trace(time+","+p1+","+p2+","+p3+","+p4+","+p5);						// Show data
 		obsEvents.push({time:time, d1:p1, d2:p2, d3:p3, d4:p4, d5:p5 });	// Save in array
-
-/*		var dat={ obsId:obsId, time:time, d1:p1, d2:p2, d3:p3, d4:p4, d5:p5 };
-		var url="//classroomteachingscan.com/ctscan/saveevent.php";		// Target
-		$.ajax({ url:url,dataType:'text',type:"POST",crossDomain:true,data:dat,  // Post data
-			success:function(d) { 			
-				if (isNaN(d)) {											// Error
-					Sound("delete");									// Delete sound
-					trace(d);											// Show error
-					}
-				},
-			error:function(xhr,status,error) { trace(error) },			// Show error
-			});	*/	
 	}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// HELPERS
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	function ConfirmBox(content, callback)								// CONFIRMATION BOX
 	{
 		Sound("ding");														// Ding sound
+		$("#confirmBoxDiv").remove();										// Remove 
 		$("body").append("<div class='unselectable' id='confirmBoxDiv'></div>");														
 		var str="<p><img src='img/ctlogo32.png' style='vertical-align:-10px'/>&nbsp;&nbsp;";								
 		str+="<span style='font-size:18px;text-shadow:1px 1px #ccc;color:#990000'><b>Are you sure?</b></span><p>";
-		str+="<div style='font-size:14px;margin:14px'>"+content+"</div>";
+		str+="<div style='font-size:14px;margin:14px'>"
+		str+=content;
+		str+="<br><br><div id='confirmOK' class='ct-obsNewPrac'>OK</div>";
+		str+="<div id='confirmCancel' class='ct-obsNewPrac' style='margin-left:8px;background-color:#990000'>Cancel</div></div>";
 		$("#confirmBoxDiv").append(str);	
-		$("#confirmBoxDiv").dialog({ width:400, buttons: {
-									"Yes": function() { $(this).remove(); callback() },
-									"No":  function() { $(this).remove(); }
-									}});	
+		$("#confirmBoxDiv").dialog({ width:350});	
 		$("#confirmBoxDiv").dialog("option","position",{ my:"center", at:"center", of:obsPanel });
-		}
+	
+		$("#confirmOK").on("click", function() {							// ON OK BUT
+				$("#confirmBoxDiv").remove();								// Remove 
+				if (callback)	callback();									// If callback defines, run it
+				});
+
+		$("#confirmCancel").on("click", function() {						// ON cancel BUT
+				$("#confirmBoxDiv").remove();								// Remove 
+				Sound("delete");											// Delete sound
+			});
+
+
+	}
 
 	function AlertBox(title, content, callback)							// ALERT BOX
 	{
-	Sound("ding");															// Ding sound
-	$("body").append("<div class='unselectable' id='confirmBoxDiv'></div>");														
-		var str="<p><img src='img/ctlogo32.png' style='vertical-align:-10px'/>&nbsp;&nbsp;";								
-		str+="<span style='font-size:18px;text-shadow:1px 1px #ccc;color:#990000'><b>"+title+"</b></span><p>";
-		str+="<div style='font-size:14px;margin:14px'>"+content+"</div>";
-		$("#confirmBoxDiv").append(str);	
-		$("#confirmBoxDiv").dialog({ width:400 });	
-		$("#confirmBoxDiv").dialog("option","position",{ my:"center", at:"center", of:obsPanel });
+		Sound("ding");														// Ding sound
+		$("#alertBoxDiv").remove();											// Remove any old ones
+		$("body").append("<div class='unselectable' id='alertBoxDiv'></div>");														
+			var str="<p><img src='img/ctlogo32.png' style='vertical-align:-10px'/>&nbsp;&nbsp;";								
+			str+="<span style='font-size:18px;text-shadow:1px 1px #ccc;color:#990000'><b>"+title+"</b></span><p>";
+			str+="<div id='alertOK' class='ct-obsNewPrac' style='margin-left:46px;'>OK</div>";
+			str+="<div style='font-size:14px;margin:14px;'>"+content+"</div>";
+			$("#alertBoxDiv").append(str);	
+			$("#alertBoxDiv").dialog({ width:350 });	
+			$("#alertBoxDiv").dialog("option","position",{ my:"center", at:"center", of:obsPanel });
+			
+			$("#alertOK").on("click", function() {							// ON OK BUT
+				if (callback)	callback();									// Run callback
+				$("#alertBoxDiv").remove();									// Remove alert
+				});
 		}
 
 	function DialogBox(title, content, callback, callback2) 	// DIALOG BOX
@@ -678,24 +767,30 @@ function InitObs() 													// INIT OBSERVATION PANEL
 		$("body").append("<div class='unselectable' id='dialogDiv'></div>");														
 		var str="<p><img src='img/ctlogo32.png' style='vertical-align:-8px'/>&nbsp;&nbsp;";								
 		str+="<span class='ct-dialogTitle'>"+title+"</span><p>";
-		str+="<div style='font-size:12px;margin:14px'>"+content+"</div>";
+		str+="<div style='font-size:12px;margin:14px'>";
+		str+=content;
+		str+="<br><br><div id='dialogOK' class='ct-obsNewPrac'>OK</div>";
+		str+="<div id='dialogCancel' class='ct-obsNewPrac' style='margin-left:8px;background-color:#990000'>Cancel</div></div>";
 		$("#dialogDiv").append(str);	
-		$("#dialogDiv").dialog({ width:$("#obsPanel").width()+16, height:$("#obsPanel").height()+24, 
-								 buttons: {
-					            	"OK": 		function() { if (callback)
-					            								callback(); 
-					            								$("#dialogDiv").animate({ opacity:0},200, function() {	
-																	$("#dialogDiv").remove();  
-																	});
-					            								},
-					            	"Cancel":  	function() { if (callback2)	            		
-					            								callback2();
-				            									$("#dialogDiv").animate({ opacity:0},200, function() {		
-																	$("#dialogDiv").remove();  
-																	});
-																}
-									}});	
+		$("#dialogDiv").dialog({ width:$("#obsPanel").width()+16, height:$("#obsPanel").height()+24 });
 		$("#dialogDiv").dialog("option","position",{ my:"left top", at:"left top", of:obsPanel });
+
+		$("#dialogOK").on("click", function() {							// ON OK BUT
+				if (callback)	callback();								// If callback defined
+				$("#dialogDiv").animate({ opacity:0},200, function() {		
+					$("#dialogDiv").remove();  
+					});
+				});
+
+		$("#dialogCancel").on("click", function() {						// ON CANCEL BUT
+				$("#dialogBoxDiv").remove();							// Remove 
+				if (callback2)	callback2();							// If callback defined, run it
+				$("#dialogDiv").animate({ opacity:0},200, function() {		
+					$("#dialogDiv").remove();  
+					});
+				Sound("delete");										// Delete sound
+			});
+
 	}
 
 	function GetTextBox(title, content, def, callback)					// GET TEXT LINE BOX
@@ -705,12 +800,24 @@ function InitObs() 													// INIT OBSERVATION PANEL
 		var str="<p><img src='img/ctlogo32.png' style='vertical-align:-8px'/>&nbsp;&nbsp;";								
 		str+="<span class='ct-dialogTitle'>"+title+"</span><p>";
 		str+="<div style='font-size:12px;margin:14px'>"+content+"</div>";
-		str+="<p><input class='qm-is' type='text' id='gtBoxTt' value='"+def+"'></p></div>";
+		str+="<p><input class='ct-is' type='text' id='gtBoxTt' value='"+def+"'></p></div>";
+		str+="<br><br><div id='dialogOK' class='ct-obsNewPrac'>OK</div>";
+		str+="<div id='dialogCancel' class='ct-obsNewPrac' style='margin-left:8px;background-color:#990000'>Cancel</div></div>";
+		
 		$("#alertBoxDiv").append(str);	
-		$("#alertBoxDiv").dialog({ width:300, buttons: {
-					            	"OK": 		function() { callback($("#gtBoxTt").val()); $(this).remove(); },
-					            	"Cancel":  	function() { $(this).remove(); }
-									}});	
+		$("#alertBoxDiv").dialog({ width:500 });	
+		$("#alertBoxDiv").dialog("option","position",{ my:"center", at:"center", of:obsPanel });
+
+		$("#dialogOK").on("click", function() {							// ON OK BUT
+					callback($("#gtBoxTt").val());
+					$("#alertBoxDiv").remove();  
+				});
+
+		$("#dialogCancel").on("click", function() {						// ON CANCEL BUT
+				$("#alertBoxDiv").remove();								// Remove 
+				Sound("delete");										// Delete sound
+			});
+
 		}
 
 	function trace(msg, p1, p2, p3, p4)										// CONSOLE 
