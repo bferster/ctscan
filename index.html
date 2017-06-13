@@ -787,15 +787,15 @@ function ExportToCSV(filename, rows) {
 		$("#confirmBoxDiv").remove();										// Remove 
 		$("body").append("<div class='unselectable' id='confirmBoxDiv'></div>");														
 		var str="<p><img src='img/ctlogo32.png' style='vertical-align:-10px'/>&nbsp;&nbsp;";								
-		str+="<span style='font-size:18px;text-shadow:1px 1px #ccc;color:#990000'><b>Are you sure?</b></span><p>";
+		str+="<span style='font-size:18px;text-shadow:1px 1px #ccc;color:#666'><b>Are you sure?</b></span><p>";
 		str+="<div style='font-size:14px;margin:14px'>"
 		str+=content;
 		str+="<br><br><div id='confirmOK' class='ct-obsNewPrac'>OK</div>";
-		str+="<div id='confirmCancel' class='ct-obsNewPrac' style='margin-left:8px;background-color:#990000'>Cancel</div></div>";
+		str+="<div id='confirmCancel' class='ct-obsNewPrac' style='margin-left:8px;background-color:#e74c3c'>Cancel</div></div>";
 		$("#confirmBoxDiv").append(str);	
 		$("#confirmBoxDiv").dialog({ width:350});	
 		$("#confirmBoxDiv").dialog("option","position",{ my:"center", at:"center", of:obsPanel });
-		$("#confirmBoxDiv").css({ border:"1px solid #990000","border-radius":"6px"});
+		$("#confirmBoxDiv").css({ border:"1px solid #009900","border-radius":"6px"});
 
 		$("#confirmOK").on("click", function() {							// ON OK BUT
 				$("#confirmBoxDiv").remove();								// Remove 
@@ -814,13 +814,13 @@ function ExportToCSV(filename, rows) {
 		$("#alertBoxDiv").remove();											// Remove any old ones
 		$("body").append("<div class='unselectable' id='alertBoxDiv'></div>");														
 			var str="<p><img src='img/ctlogo32.png' style='vertical-align:-10px'/>&nbsp;&nbsp;";								
-			str+="<span style='font-size:18px;text-shadow:1px 1px #ccc;color:#990000'><b>"+title+"</b></span><p>";
+			str+="<span style='font-size:18px;text-shadow:1px 1px #ccc;color:#666'><b>"+title+"</b></span><p>";
 			str+="<div id='alertOK' class='ct-obsNewPrac' style='margin-left:46px;'>OK</div>";
 			str+="<div style='font-size:14px;margin:14px;'>"+content+"</div>";
 			$("#alertBoxDiv").append(str);	
 			$("#alertBoxDiv").dialog({ width:350 });	
 			$("#alertBoxDiv").dialog("option","position",{ my:"center", at:"center", of:obsPanel });
-			$("#alertBoxDiv").css({ border:"1px solid #990000","border-radius":"6px"});
+			$("#alertBoxDiv").css({ border:"1px solid #e74c3c","border-radius":"6px"});
 		
 			$("#alertOK").on("click", function() {							// ON OK BUT
 				if (callback)	callback();									// Run callback
@@ -837,7 +837,7 @@ function ExportToCSV(filename, rows) {
 		str+="<div style='font-size:12px;margin:14px'>";
 		str+=content;
 		str+="<br><br><div id='dialogOK' class='ct-obsNewPrac'>OK</div>";
-		str+="<div id='dialogCancel' class='ct-obsNewPrac' style='margin-left:8px;background-color:#990000'>Cancel</div></div>";
+		str+="<div id='dialogCancel' class='ct-obsNewPrac' style='margin-left:8px;background-color:#e74c3c'>Cancel</div></div>";
 		$("#dialogDiv").append(str);	
 		$("#dialogDiv").dialog({ width:$("#obsPanel").width()+16, height:$("#obsPanel").height()+24 });
 		$("#dialogDiv").dialog("option","position",{ my:"left top", at:"left top", of:obsPanel });
@@ -869,12 +869,12 @@ function ExportToCSV(filename, rows) {
 		str+="<div style='font-size:12px;margin:14px'>"+content;
 		str+="<p><input class='ct-is' type='text' id='gtBoxTt' value='"+def+"'></p>";
 		str+="<div id='dialogOK' class='ct-obsNewPrac'>OK</div>";
-		str+="<div id='dialogCancel' class='ct-obsNewPrac' style='margin-left:8px;background-color:#990000'>Cancel</div></div>";
+		str+="<div id='dialogCancel' class='ct-obsNewPrac' style='margin-left:8px;background-color:#e74c3c'>Cancel</div></div>";
 		
 		$("#alertBoxDiv").append(str);	
 		$("#alertBoxDiv").dialog({ width:500 });	
 		$("#alertBoxDiv").dialog("option","position",{ my:"center", at:"center", of:obsPanel });
-		$("#alertBoxDiv").css({ border:"1px solid #990000","border-radius":"6px"});
+		$("#alertBoxDiv").css({ border:"1px solid #e74c3c","border-radius":"6px"});
 
 		$("#dialogOK").on("click", function() {							// ON OK BUT
 					callback($("#gtBoxTt").val());
