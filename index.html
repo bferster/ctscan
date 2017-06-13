@@ -139,8 +139,8 @@
 		<table style="margin-top:4px">
 			<tr><td class="ct-mediarow"><input id="md-1" type="checkbox"> <span id="ml-1">Diagram/Graph</span></input></td>
 			<td class="ct-mediarow"><input id="md-2" type="checkbox"> <span id="ml-2">Object/Manipulative</span></input></td>
-			<td class="ct-mediarow"><input id="md-3" type="checkbox"><span id="ml-3"> Graphic Organizer</span></input></td></tr>
-			<tr><td><input id="md-4" type="checkbox"><span id="ml-4"> Picture</span></input></td><td><input id="md-5" type="checkbox"> <span id="ml-5">Movie</span></input></td>
+			<td class="ct-mediarow"><input id="md-3" type="checkbox"> <span id="ml-3">Graphic Organizer</span></input></td></tr>
+			<tr><td><input id="md-4" type="checkbox"> <span id="ml-4">Picture</span></input></td><td><input id="md-5" type="checkbox"> <span id="ml-5">Movie</span></input></td>
 			<td><input id="md-6" type="checkbox"> <span id="ml-6">Text</span></input></td></tr>
 		</table><hr>
 		Teacher: <select select id="whichTeacher" class="ct-is" ><option/><option>General</option><option>Special Ed</option><option>Para/IA</option></select>
@@ -185,6 +185,7 @@ var dataAcad=[];														// Holds academic diciplines
 var obsId=MakeUniqueId();												// Observation id
 var obsEvents=[];														// Holds events										
 var obsData={};															// Obs info
+var assessData=[];														// Hold assessments
 
 $(document).ready(function() {								           	// ON PAGE LOADED
 	var menu="menus.txt";												// Default menu
@@ -232,7 +233,9 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				dataActs=o.substr(7).split(",");						// Get options
 			else if (o.match(/ACAD=/i)) 								// Disciplines
 				dataAcad=o.substr(5).split(",");						// Get options
-			}
+			else if (o.match(/ASSESS=/i)) 								// Assessment
+				assessData.push(o)										// Get pages
+				}
 		}});
 
 	$("#splashDiv").animate({ opacity:1 },1000);						// Show logo
@@ -249,7 +252,12 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 
 	$("#obsDone").on("click", function() {								// ON DONE
 		if (ConfirmBox("This will end the observation session",			// Are you sure?
-			function() {	DonePanel(); }));							// If sure
+			function() {												// If sure
+				if (assessData.length)									// If any additional assessmentd
+					Assess();											// Run them
+				else													// None
+					DonePanel();										// We're done
+				}));							
 			});
 
 	});																	// End onReady()		
@@ -344,6 +352,8 @@ function InitObs() 													// INIT OBSERVATION PANEL
 {
 	var i;
 	for (i=1;i<=dataMedia.length;++i) {									// For each media
+		$("#ml-"+i).text(dataMedia[i-1]) 								// Set label
+	
 		$("#md-"+i).on("click", function(e) {							// On box click
 			var col="#000",wgt="normal";								// Def style
 			var act=$(this).prop("checked") ? "active" : "inactive";	// Active

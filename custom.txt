@@ -61,3 +61,9 @@ BUTCAT=OTR,OTR,OTR,OTR,FB,FB,FB,FB,Student Q,Student Q,Custom 1,Custom 2,Custom 
 BUTCOL=#e67e22,#e67e22,#e67e22,#e67e22,#27ae60,#27ae60,#27ae60,#27ae60,#3db1ff,#3db1ff,#aaaaaa,#aaaaaa,#aaaaaa,#aaaaaa
 STUACT=Answering Qs,Asking Qs,Academic convo w/ adult,Academic convo w/ peers,Group work (active),Group work (desk),Listening,No clear direction,Group work (active),Preparing for activity,Present/share learning,Reading,Seatwork learning,Taking notes,Writing
 ACAD=English,Math,Reading,History,Science
+
+ASSESS=write|Write in response|Write anything below
+ASSESS=checkbox|Multiple choice|Choose the one that says Yes|Yes,No,Maybe
+ASSESS=radio|Radio choice|Choose the one that says No|Yes,No,Maybe
+ASSESS=cloze|Fill in the blank (Cloze)|Humpty Dumpty sat on a ______, Humpty Dumpty had a great ______.<br>There are  ______ hours in a day|wall,fall,24;twenty-four;twenty four
+ASSESS=slider|Slider|Choose a rating on the scale|Very Low:Very High
