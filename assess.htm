@@ -39,7 +39,7 @@
 		.optionsRSty { 	padding-top:.33em;padding-left:1.33em;display:inline-block;
 						vertical-align:top;
 						} 
- 		.nextbutSty {	border-radius:.83em;color:#009900;font-size:1em;
+ 		.nextbutSty {	border-radius:.83em;background-color:#27ae60;font-size:1em; color:#fff;
  						}
   		#sortable li {  margin-bottom:.6em; padding:1px; padding-left:.75em; padding-right:.75em;
   						border:1px solid #999;border-radius:.8em; background-color:#ddd; cursor:pointer
@@ -90,49 +90,45 @@
 				});
 	
 		/////////////////////////////////////////////////////////////////		
-		var e={},i,j,v;
-		var aa=[
-			"ASSESS=write|Write in response|Write anything below",
-			"ASSESS=checkbox|Multiple choice|Choose the one that says Yes|Yes,No,Maybe",
-			"ASSESS=radio|Radio choice|Choose the one that says No|Yes,No,Maybe",
-			"ASSESS=cloze|Fill in the blank (Cloze)|Humpty Dumpty sat on a ______, Humpty Dumpty had a great ______.<br>There are  ______ hours in a day|wall,fall,24;twenty-four;twenty four",
-			"ASSESS=slider|Slider|Choose a rating on the scale|Very Low:Very High"
-			];
-
-		e.data='ShivaAct=data|{';
-		e.data+='"pages":[';
-		for (i=0;i<aa.length;++i) {											// For each assessment page
-			if (!aa[i])														// Nothing there
-				continue;													// Skip it
-			v=aa[i].split("|");												// Split into parts
-			e.data+='{"optionType":\"'+v[0].substr(7);						// Type
-			e.data+='\","title":\"'+v[1];									// Title
-			e.data+='\","text":\"'+v[2]+'\"';								// Text
-			if (v[3]) {														// If options
-				v=v[3].split(",");											// Get them
-				e.data+=',"options":[';										// Add header
-				for (j=0;j<v.length;++j) {									// For each option
-					e.data+='\"'+v[j]+'\"';									// Add it
-					if (j != v.length-1)									// If not last
-						e.data+=",";										// Add comma
-					}
-				e.data+="]";												// Close options
-				}
-			e.data+="}";													// Close page
-			if (i != aa.length-1)											// If not last page
-				e.data+=",";												// Add comma
-			}
-		e.data+="]}"														// End data
-
-		QmediaEventHandler(e);													
 	
+		var url=window.location.search.substring(1);							// Get query string
+		if (url) {
+			var aa=url.split("~~");
+			var e={},i,j,v;
+			e.data='ShivaAct=data|{';
+			e.data+='"pages":[';
+			for (i=0;i<aa.length;++i) {											// For each assessment page
+				if (!aa[i])														// Nothing there
+					continue;													// Skip it
+				aa[i]=decodeURI(aa[i]);											// Decode						
+				v=aa[i].split("|");												// Split into parts
+				e.data+='{"optionType":\"'+v[0].substr(7);						// Type
+				e.data+='\","title":\"'+v[1];									// Title
+				e.data+='\","text":\"'+v[2]+'\"';								// Text
+				if (v[3]) {														// If options
+					v=v[3].split(",");											// Get them
+					e.data+=',"options":[';										// Add header
+					for (j=0;j<v.length;++j) {									// For each option
+						e.data+='\"'+v[j]+'\"';									// Add it
+						if (j != v.length-1)									// If not last
+							e.data+=",";										// Add comma
+						}
+					e.data+="]";												// Close options
+					}
+				e.data+="}";													// Close page
+				if (i != aa.length-1)											// If not last page
+					e.data+=",";												// Add comma
+				}
+			e.data+="]}"														// End data
+			QmediaEventHandler(e);													
+			}
+
 		/////////////////////////////////////////////////////////////////	
 
 		});
 		
 	function QmediaEventHandler(e)											// ON SHIVA EVENT
 	{
-	trace(e)
 		var v=e.data.split("|");												// Split into parts													
 		if (v[0] == "ShivaAct=data") {											// If a data 
 			aData=$.parseJSON(v[1]);											// Convert to obj
@@ -176,7 +172,7 @@
 			var s=d.text;
 			i=0;																// Reset counter
 			$("#textDiv").html("");												// No text
-			var imp="<input style='text-align:center;width:6.6em;border:none;border-bottom:1px solid;padding-left:.33em;color:#000099;font-size:1em' type='text' id='opt";
+			var imp="<input style='text-align:center;width:6.6em;border:none;border-bottom:1px solid;padding-left:.33em;color:#000099;font-size:1em' class='is' type='text' id='opt";
 			while (s.match(/__+/)) 												// While a blank
 				s=s.replace(/__+/,imp+(i++)+"'>");								// Replace with text box
 			str="<p style='margin-left:3.33em;margin-right:3.33em'>"+s+"</p>";	// Add cloze
@@ -260,120 +256,24 @@
 	/////////////////////////////////////////////////////////////////////////////////////////
 	
 		$("#nextBut").on("click",function() {									// NEXT BUTTON HANDLER
-			var ans;
-			++numTries;															// Increment tries
-			if (d.optionType == "write") {										// Draw style
+			var i,ans="";
 				ans=$("#opt").val();											// Get answer
-				}	
-			else if (d.optionType == "notes") {									// Notes style
-				qe.SendMessage("answer",d.title+"|personalNotes");				// Send answer message
-				Draw(curPage+1);												// Move on
-				return;															// Quit
-				}
-			else if (d.optionType == "slider") {								// Slider style
-				qe.SendMessage("answer",sliAns+"|slider");						// Send answer message
-				Draw(curPage+1);												// Move on
-				return;															// Quit
-				}
-			else if (d.optionType == "draw") {									// Draw style
-				qe.SendMessage("answer",d.title+"|draw");						// Send answer message
-				qe.SendMessage("draw","done");									// Send done message
-				Draw(curPage+1);												// Move on
-				return;															// Quit
-				}	
-			var i,correct=0,wrong=0,requiredCorrect=0;
-			
-			if (d.optionType != "write")										// Anything but write
-				ans="*"+$("input[name='opt']:checked").val();					// Chosen answer
-			if (d.options)														// If options
-				for (i=0;i<d.options.length;++i) {								// For each option
-					if (d.options[i].match(/^\*/))	requiredCorrect++			// Add to required count
-					if (ans == d.options[i])									// If correct
-						correct++;												// Add to count
+			if (d.optionType == "slider") 										// Slider style
+				ans=sliAns;														// Get answer
+			else if (d.optionType == "radio") 									// Radio style
+				ans=$("input[name='opt']:checked").val();						// Get radio
+			else if (d.optionType == "checkbox") {								// Check style
+				ans="";															// Reset
+				for (i=0;i<aData.pages[num].options.length;++i) {				// For each option
+					if ($("#opt"+i).prop("checked")) {							// If checked
+						ans+=$("#opt"+i+":checked").val();						// Add if checked
+						if (i<aData.pages[num].options.length-1)				// Not last
+							ans+="+";											// Add separator
 						}
-			if (d.optionType == "radio")	ans=correct ? "right" : "wrong"		// Radio
-			else if (d.optionType == "cloze") {									// Cloze
-				for (i=0;i<d.options.length;++i) {								// For each option
-					v=d.options[i].split(";");									// Get parts
-					ans=$("#opt"+i).val();										// Get answer
-					for (var j=0;j<v.length;++j) 								// For each possibility
-						if (ans.toLowerCase() == v[j].toLowerCase()) {			// If a match		
-							correct++;											// Add to corrects
-							break;												// Stop looking
-							}
-					if (j == v.length)											// Didn't find it
-						wrong++;												// Add to wrongs
-					}
-				ans="wrong";													// Assume wrong
-				if (correct == i)				ans="right";					// Correct				
-				if (correct && correct < i)		ans="partial"					// Partial
-				}
-			else if ((d.optionType == "sort") || (d.optionType == "match")) {	// Sort/Match
-				for (i=0;i<d.options.length;++i) 								// For each option
-				 	if ($("#sortable :eq("+i+")").text() == d.options[i].split(":")[0])	// A match
-						++correct;												// Inc right answer
-				ans="wrong";													// Assume wrong
-				if (correct == i)				ans="right";					// Correct				
-				if (correct && correct < i)		ans="partial"					// Partial
-				}
-			else if (d.optionType == "findtime") {								// Find time
-				var s,e;
-				ans="wrong";													// Assume wrong
-				for (i=0;i<d.options.length;++i) {								// For each option
-					s=d.options[i].split("-")[0];								// Start
-					e=d.options[i].split("-")[1];								// End
-					if (!e)	e=s;												// No end
-					if ((curTime >=s) && (curTime <=e))							// In span
-						ans="right";											// Right
 					}
 				}
-			else if (d.optionType != "write") {									// All else but write
-				correct=0;														// Restart
-				for (i=0;i<d.options.length;++i) {								// For each option
-					if ($("#opt"+i).prop("checked"))							// If checked
-						if (d.options[i].match(/^\*/)) 	correct++;				// Add to right count
-						else							wrong++;				// Add to wrong count
-					}
-				ans="wrong";													// Assume wrong
-				if (correct == requiredCorrect  && !wrong) 		ans="right";	// All correct
-				else if (correct < requiredCorrect && !wrong && correct) ans="partial"	// If partial
-				}
-			
 			if ($("#otherOpt").val())											// If *other written in
 				ans=$("#otherOpt").val();										// Use its value
-			if (d.whyRight || d.whyWrong || d.whyPartial) {						// If feedback spec'd
-				str="<div style='margin-left:1.33em;margin-right:1.33em'><div style='font-size:1.5em;text-align:center;font-weight:bold;color:#";	// Title
-				if (ans == "right") {											// Right
-					str+="009900'>That's right!</div><p>";						// Heading
-					if (d.whyRight)												// If right
-						str+="<div style='text-align:center'>"+d.whyRight+"</div>"; // Show explanation
-					}				
-				else if (ans == "partial") { 									// Partial
-					str+="ff9900'>Sorry, you only got some right..</div><p>";	// Heading		
-					if (d.whyPartial)		str+=d.whyPartial;					// Show partial explanation
-					else if (d.whyWrong)	str+=d.whyWrong;					// Show wrong explanation
-				 	if (str.match(/here\(/i)) {									// A here() tag
-				 		i=str.match(/here\((.+)\)/i)[1];						// Get time
-				 		str=str.replace(/here\(.+\)/i,"<a href='javascript:qe.SendMessage(\"play\",\""+i+"\")'>here</a>");
-				 		}
-				 	if (numTries < d.numTries)									// If more tries ahead
-				 		str+="<div style='text-align:center'><b>Please try again</b> ("+numTries+"/"+d.numTries+")</div>";	// Show progress
-					}
-				else if (ans == "wrong") { 										// Wrong
-					str+="000099'>Sorry, that's not the right answer</div><p>";	// Heading	
-					if (d.whyWrong)												// If wrong 
-						str+="<p style='text-align:center'>"+d.whyWrong+"</p>"; // Show explanation
-					 if (str.match(/here\(/i)) {								// A here() tag
-				 		i=str.match(/here\((.+)\)/i)[1];						// Get time
-				 		str=str.replace(/here\(.+\)/i,"<a href='javascript:qe.SendMessage(\"play\",\""+i+"\")'>here</a>");
-				 		}
-				 	if (numTries < d.numTries)									// If more tries ahead
-				 		str+="<div style='text-align:center'><b>Please try again</b> ("+numTries+"/"+d.numTries+")</div>";	// Show progress
-					}
-				else{															// Anything else
-					str+="009900'>Answer</div><p>";								// Heading
-					if (d.whyRight)	str+=d.whyRight;							// Show explanation
-					}				
 				str+="</p><div style='text-align:center'>";						// Center
 				str+="<input id='contBut' type='button' value='Continue' class='nextbutSty'></div></div>"; 	// Add button
 				$("#optionsLDiv").html(str);									// Set div
@@ -387,9 +287,7 @@
 						else 						Draw(curPage+1);			// Move on
 						}
 					});
-				}																// End feedback
-			else
-				Draw(curPage+1);												// Show next
+			Draw(curPage+1);													// Show next
 			qe.SendMessage("answer",d.title+"|"+ans);							// Send answer message
 			});																	// End nextbut
 			
@@ -402,25 +300,6 @@
 			Draw(curPage+1);													// Move on
 			});
 		
-		$('#loadeqneditor').click(function() {									// EQUATION BUTTON CLICKED
-			var http = ('https:' == document.location.protocol ? 'https://' : 'http://');
-		  	var host='latex.codecogs.com';
-			EQUATION_ENGINE = http+host;
-			FAVORITE_ENGINE = http+host+'/json';
-			EDITOR_SRC      = http+host;
-			EMBED_ENGINE    = http+host+'/editor_embedded_json.php';
-			EDIT_ENGINE     = http+'www.codecogs.com/eqnedit.php';
-			EDITOR_SW_FLASH = http+'download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0';
-			EDITOR_SW_PLAYER= http+'www.macromedia.com/go/getflashplayer';
-		    var css=$("<link rel='stylesheet' type='text/css' href='http://latex.codecogs.com/css/equation-embed.css'>");
-     		$("head").append(css); 												// Add css
-			$.ajax({ url: "http://latex.codecogs.com/js/eq_editor-lite-15.js",	// Load js
-     				 dataType: "script", cache: true							// Cached JS 
-					}).done(function() {										// When loaded	
-			 			EqEditor.embed('qneditor','things','mini','en-us');		// Embed editor
-						EqEditor.add(new EqTextArea('equation1','opt'),false);	// Display final equation
-				 		});
-			});	
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

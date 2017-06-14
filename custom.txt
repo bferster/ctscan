@@ -67,3 +67,4 @@ ASSESS=checkbox|Multiple choice|Choose the one that says Yes|Yes,No,Maybe
 ASSESS=radio|Radio choice|Choose the one that says No|Yes,No,Maybe
 ASSESS=cloze|Fill in the blank (Cloze)|Humpty Dumpty sat on a ______, Humpty Dumpty had a great ______.<br>There are  ______ hours in a day|wall,fall,24;twenty-four;twenty four
 ASSESS=slider|Slider|Choose a rating on the scale|Very Low:Very High
+

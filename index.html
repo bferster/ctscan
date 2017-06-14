@@ -186,6 +186,7 @@ var obsId=MakeUniqueId();												// Observation id
 var obsEvents=[];														// Holds events										
 var obsData={};															// Obs info
 var assessData=[];														// Hold assessments
+var assessNum=1;														// Save asssess number
 
 $(document).ready(function() {								           	// ON PAGE LOADED
 	var menu="menus.txt";												// Default menu
@@ -203,7 +204,23 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		for (i=0;i<lines.length;++i) {									// For each line
 			o=lines[i];													// Point at line
 			if (!o)	continue;											// Skip blanks
-			if (o.match(/:/)) {											// At new category
+			if (o.match(/MEDIA=/i)) 								// Media button
+				dataMedia=o.substr(6).split(",");						// Get options
+			else if (o.match(/BUTVAL=/i)) 								// OTR button value
+				dataLabVals=o.substr(7).split(",");						// Get options
+			else if (o.match(/BUTLAB=/i)) 								// OTR button label
+				dataLabs=o.substr(7).split(",");						// Get options
+			else if (o.match(/BUTCAT=/i)) 								// OTR button category
+				dataLabCats=o.substr(7).split(",");						// Get options
+			else if (o.match(/BUTCOL=/i)) 								// OTR button color
+				dataLabCols=o.substr(7).split(",");						// Get options
+			else if (o.match(/STUACT=/i)) 								// Student actions
+				dataActs=o.substr(7).split(",");						// Get options
+			else if (o.match(/ACAD=/i)) 								// Disciplines
+				dataAcad=o.substr(5).split(",");						// Get options
+			else if (o.match(/ASSESS=/i)) 								// Assessment
+				assessData.push(o);										// Get pages
+			else if (o.match(/:/)) {									// At new category
 				cc=menus.length;										// Get index
 				menus.push({});											// Add cat obj
 				menus[cc].cname=o.substr(0,o.length-1);					// Add cat name
@@ -219,24 +236,8 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 					if (subs[j].length)									// If something there
 						menus[cc].prac[cp].subs.push(subs[j]);			// Add to practice
 				}
-			else if (o.match(/MEDIA=/i)) 								// Media button
-				dataMedia=o.substr(6).split(",");						// Get options
-			else if (o.match(/BUTVAL=/i)) 								// OTR button value
-				dataLabVals=o.substr(7).split(",");						// Get options
-			else if (o.match(/BUTLAB=/i)) 								// OTR button label
-				dataLabs=o.substr(7).split(",");						// Get options
-			else if (o.match(/BUTCAT=/i)) 								// OTR button category
-				dataLabCats=o.substr(7).split(",");						// Get options
-			else if (o.match(/BUTCOL=/i)) 								// OTR button color
-				dataLabCols=o.substr(7).split(",");						// Get options
-			else if (o.match(/STUACT=/i)) 								// Student actions
-				dataActs=o.substr(7).split(",");						// Get options
-			else if (o.match(/ACAD=/i)) 								// Disciplines
-				dataAcad=o.substr(5).split(",");						// Get options
-			else if (o.match(/ASSESS=/i)) 								// Assessment
-				assessData.push(o)										// Get pages
-				}
-	
+			}
+			
 		if (window.addEventListener) 									// If supported this way
 			window.addEventListener("message",QmediaEventHandler,false);// Add event handler
 		else															// Use other method
@@ -246,34 +247,12 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 
 	function QmediaEventHandler(e)									// ON SHIVA EVENT
 	{
-		var v=e.data.split("|");										// Split into parts													
-		if (v[0] == "QmediaAssess=ready") {								// If assess ready
-			var i,j,v;
-			var data='{"pages":[';										// Add header
-			for (i=0;i<assessData.length;++i) {							// For each assessment page
-				if (!assessData[i])										// Nothing there
-					continue;											// Skip it
-				v=assessData[i].split("|");								// Split into parts
-				data+='{"optionType":\"'+v[0].substr(7);				// Type
-				data+='\","title":\"'+v[1];								// Title
-				data+='\","text":\"'+v[2]+'\"';							// Text
-				if (v[3]) {												// If options
-					v=v[3].split(",");									// Get them
-					data+=',"options":[';								// Add header
-					for (j=0;j<v.length;++j) {							// For each option
-						data+='\"'+v[j]+'\"';							// Add it
-						if (j != v.length-1)							// If not last
-							data+=",";									// Add comma
-						}
-					data+="]";											// Close options
-					}
-				data+="}";												// Close page
-				if (i != assessData.length-1)							// If not last page
-					data+=",";											// Add comma
-				}
-			data+="]}"													// End data
-			e.source.postMessage=("ShivaAct=data|"+data,"*");			// Load iframe with assessment data		
-			}		
+		var v=e.data.split("|");										// Get parts
+		if (v[0] == "QmediaAssess=answer")								// Answer
+			SaveEvent(curTime,"Assess",assessNum++,v[3],0);				// Save answer
+		if (v[0] == "QmediaAssess=done")								// Done 
+			DonePanel();												// Show done panel
+	
 	}	
 
 	$("#splashDiv").animate({ opacity:1 },1000);						// Show logo
@@ -655,7 +634,14 @@ function InitObs() 													// INIT OBSERVATION PANEL
 
 	function Assess()
 	{
-		var	str="<iframe id='assess' class='ct-assess' frameborder='0' src='assess.htm' style='height:400px;width:100%'></iframe></div>";	// Load in iframe
+		var i,str="assess.htm?";
+		for (i=0;i<assessData.length;++i) {								// For each assessment page
+			str+=encodeURI(assessData[i]);								// Add it and encode
+			if (i != assessData.length-1)								// If not last
+				str+="~~";												// Add separator
+			}
+			
+		var	str="<iframe id='assess' class='ct-assess' frameborder='0' src='"+str+"' style='height:400px;width:100%'></iframe></div>";	// Load in iframe
 		$("#obsPanel").animate({ opacity:1 },400);						// Show
 		$("#obsPanel").html(str);
 	}
