@@ -65,7 +65,7 @@ Providing background knowledge *Background &
 Sequencing activities *Sequencing &
 Story structure *Story structure &
 Summarizing *Summary &
-Text features ToC, index, glossary *Features-reference &
+Text features ToC- index, glossary *Features-reference &
 Text features captions/pictures *Features-pictures &
 
 Writing Instruction:

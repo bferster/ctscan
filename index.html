@@ -592,6 +592,8 @@ function InitObs() 													// INIT OBSERVATION PANEL
 
 	function DonePanel()
 	{
+		clearInterval(timingInterval);									// Clear timer
+		clearInterval(totInterval);										// Clear tot timer
 		$("#obsPanel").animate({ opacity:0 },0);						// Hide
 		var str="<div class='ct-obsCat'>Save observations...</div><br><br>";
 		str+="<div id='dataPanel' class='ct-dataPanel'></div><br>";
@@ -638,8 +640,8 @@ function InitObs() 													// INIT OBSERVATION PANEL
 
 		var d=obsEvents;
 		for (i=0;i<d.length;++i){
-			str+="<tr id=oe-"+i+"><td><b>Event:</b></td><td><div style='display:inline-block;width:50px;'>"+d[i].time+"</div>";
-			str+=d[i].d1+", "+d[i].d2;+", "+d[i].d3+"</td></tr>";
+			str+="<tr id=oe-"+i+"><td><b>Event:</b></td><td style='overflow:hidden;white-space:nowrap'><div style='display:inline-block;width:50px'>"+d[i].time+"</div>";
+				str+=d[i].d1+", "+ShortenString(d[i].d2,20)+","+ShortenString(d[i].d3,20)+"</td></tr>";
 			}	
 		str+="</table>";
 		$("#dataPanel").html(str);										// Add to data panel										
@@ -719,11 +721,8 @@ function InitObs() 													// INIT OBSERVATION PANEL
 					Sound("delete");									// Delete sound
 					trace(d);											// Show error
 					}
-				else{
+				else
 					AlertBox("Successfully saved!","");					// Alert
-					clearInterval(timingInterval);						// Clear timer
-					clearInterval(totInterval);							// Clear tot timer
-					}
 				},
 			error:function(xhr,status,error) { trace(error) },			// Show error
 			});		
@@ -742,7 +741,7 @@ function InitObs() 													// INIT OBSERVATION PANEL
 		obsEvents.push({time:time, d1:p1, d2:p2, d3:p3, d4:p4, d5:p5 });	// Save in array
 	}
 
-function ExportToCSV(filename, rows) {
+	function ExportToCSV(filename, rows) {
  	    var processRow = function (row) {
             var finalVal = '';
             for (var j = 0; j < row.length; j++) {
@@ -867,14 +866,14 @@ function ExportToCSV(filename, rows) {
 		var str="<p><img src='img/ctlogo32.png' style='vertical-align:-8px'/>&nbsp;&nbsp;";								
 		str+="<span class='ct-dialogTitle'>"+title+"</span><p>";
 		str+="<div style='font-size:12px;margin:14px'>"+content;
-		str+="<p><input class='ct-is' type='text' id='gtBoxTt' value='"+def+"'></p>";
+		str+="<p><input class='ct-is' type='text' style='width:425px' id='gtBoxTt' value='"+def+"'></p>";
 		str+="<div id='dialogOK' class='ct-obsNewPrac'>OK</div>";
 		str+="<div id='dialogCancel' class='ct-obsNewPrac' style='margin-left:8px;background-color:#e74c3c'>Cancel</div></div>";
 		
 		$("#alertBoxDiv").append(str);	
 		$("#alertBoxDiv").dialog({ width:500 });	
 		$("#alertBoxDiv").dialog("option","position",{ my:"center", at:"center", of:obsPanel });
-		$("#alertBoxDiv").css({ border:"1px solid #e74c3c","border-radius":"6px"});
+		$("#alertBoxDiv").css({ border:"1px solid #009900","border-radius":"6px"});
 
 		$("#dialogOK").on("click", function() {							// ON OK BUT
 					callback($("#gtBoxTt").val());

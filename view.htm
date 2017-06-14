@@ -156,8 +156,8 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		str+"<br>";
 		var d=$.parseJSON(curJson[num].events);
 		for (i=0;i<d.length;++i){
-			str+="<tr><td><b>Event:</b></td><td><div style='display:inline-block;width:50px;'>"+d[i].time+"</div>";
-			str+=d[i].d1+", "+d[i].d2;+", "+d[i].d3+"</td></tr>";
+			str+="<tr><td><b>Event:</b></td><td style='overflow:hidden;white-space:nowrap'><div style='display:inline-block;width:50px;'>"+d[i].time+"</div>";
+			str+=d[i].d1+", "+d[i].d2+","+ShortenString(d[i].d3,30)+"</td></tr>";
 			}	
 		str+="</table><hr>";
 		$("#dataPanel").append(str);										// Add to data panel										
@@ -276,16 +276,23 @@ function ExportToCSV(filename, rows) {
 		$("#alertBoxDiv").dialog("option","position",{ my:"center", at:"center", of:viewPanel });
 		$("#alertBoxDiv").css({ border:"1px solid #990000","border-radius":"6px"});
 
-		$("#dialogOK").on("click", function() {							// ON OK BUT
+		$("#dialogOK").on("click", function() {								// ON OK BUT
 					callback($("#gtBoxTt").val());
 					$("#alertBoxDiv").remove();  
 				});
 
-		$("#dialogCancel").on("click", function() {						// ON CANCEL BUT
-				$("#alertBoxDiv").remove();								// Remove 
-				Sound("delete");										// Delete sound
+		$("#dialogCancel").on("click", function() {							// ON CANCEL BUT
+				$("#alertBoxDiv").remove();									// Remove 
+				Sound("delete");											// Delete sound
 			});
 		}
+
+	function ShortenString(str, len)									// SHORTEN A STRING TO LENGTH
+	{
+		if (str && str.length > len)										// Too long
+			str=str.substr(0,(len-3)/2)+"..."+str.slice((len-3)/-2);		// Shorten	
+		return str;															// Return string
+	}
 
 	function trace(msg, p1, p2, p3, p4)										// CONSOLE 
 	{
