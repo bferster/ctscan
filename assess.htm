@@ -44,8 +44,7 @@
   		#sortable li {  margin-bottom:.6em; padding:1px; padding-left:.75em; padding-right:.75em;
   						border:1px solid #999;border-radius:.8em; background-color:#ddd; cursor:pointer
   						}
- 		.is {			border-radius:.8em;padding-left:.6em;padding-right:.6em;padding-top:1px;
-						border:1px solid #999; font-size:1em; height: 1.66em; width:16.66em;
+		.is {			border-radius:4px; padding-left:8px; border: 1px solid #999; margin-bottom: 3px;
 						}
 	
  	</style>
@@ -89,45 +88,8 @@
 				if (e.which == 27) 												// Esc key
 					Draw(aData.pages.length);									// Move on
 				});
-		setInterval(function(){	qe.SendMessage("time")},500);					// Get player time						
 	
-		/////////////////////////////////////////////////////////////////	
-
-	/*	
-		var e={}
-		e.data='ShivaAct=data|{';
-		e.data+='"pages":[';
-		e.data+='{"title":"Written response"';
-		e.data+=',"text":"Wrote something here"';
-		e.data+=',"optionType":"write"},'
-	
-		e.data+='{"title":"Multiple choice"';
-		e.data+=',"text":"Choose the one that says &quot;Yes."';
-		e.data+=',"optionType":"checkbox","options":["*Yes","No","Maybe"]},';
-
-		e.data+='{"title":"Radio choice"';
-		e.data+=',"text":"Choose the one that says &quot;No. &quot"';
-		e.data+=',"optionType":"radio","options":["Yes","*No","Maybe"]},';
-
-		e.data+='{"title":"Fill in the blank (Cloze)"';
-		e.data+=',"text":"Humpty Dumpty sat on a ______, Humpty Dumpty had a great ______.<br>There are  ______ hours in a day"';
-		e.data+=',"optionType":"cloze","options":["wall","fall","24;twenty-four;twenty four"]},'
-
-		e.data+='{"title":"Match"';
-		e.data+=',"text":"Match the number and text up"';
-		e.data+=',"optionType":"match","options":["5:Fingers","50:States","7:Seas"]},'
-
-		e.data+='{"title":"Sort"';
-		e.data+=',"text":"Sort this list alphabetically"';
-		e.data+=',"optionType":"sort","options":["Albatross","Bicycle","Climate"]},'
-
-		e.data+='{"title":"Slider"';
-		e.data+=',"text":"Choose a rating on the scale"';
-		e.data+=',"optionType":"slider","options":["Very Low:Very High"]}'
-		e.data+="]}"
-	*/	
-
-		
+		/////////////////////////////////////////////////////////////////		
 		var e={},i,j,v;
 		var aa=[
 			"ASSESS=write|Write in response|Write anything below",
@@ -170,6 +132,7 @@
 		
 	function QmediaEventHandler(e)											// ON SHIVA EVENT
 	{
+	trace(e)
 		var v=e.data.split("|");												// Split into parts													
 		if (v[0] == "ShivaAct=data") {											// If a data 
 			aData=$.parseJSON(v[1]);											// Convert to obj
@@ -230,7 +193,7 @@
 		else if (d.optionType == "write") {										// Write option
 			if (d.options && d.options[0] && d.options[0].match(/eq/i))			// If including equations
 				str+="<button id='loadeqneditor' style='vertical-align:top' class='nextbutSty'>Fx</button>";	// Add button		
-			str+="&nbsp;&nbsp;<textarea id='opt' rows=3 placeholder='Write response here...' ";		// Text 
+			str+="&nbsp;&nbsp;<textarea id='opt' class='is' rows=3 placeholder='Write response here...' ";		// Text 
 			str+="style='font-size:1em;width:"+$("#optionsLDiv").parent().width()*.8+"px'></textarea><br></span>";	// area
 			if (d.options && d.options[0] && d.options[0].match(/eq/i))			// If including equations
 				str+="<img id='equation1'/><div id='qneditor'></div>";			// Add image/div for Codecogs editor	
@@ -494,7 +457,7 @@
 	// QMEDIA EVENT HANDLING
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
-	function QmediaEvents(id)													// CONSTRUCTOR
+	function QmediaEvents(id)												// CONSTRUCTOR
 	{
 		if (window.addEventListener) 											// If supported this way
 			window.addEventListener("message",QmediaEventHandler,false);		// Add event handler
@@ -505,10 +468,8 @@
 	
 	QmediaEvents.prototype.SendMessage=function(cmd, msg)					// SEND MESSAGE TO CONTAINER
 		{
-		
 		var str=this.header+cmd+"|extra";										// Add header				
 		if (msg) str+="|"+msg;													// If more to it, add
-		trace(str)
 		if (window.parent)														// If has a parent
 			window.parent.postMessage(str,"*");									// Send message to parent wind
 		else																	// Local	

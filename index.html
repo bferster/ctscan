@@ -236,7 +236,45 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			else if (o.match(/ASSESS=/i)) 								// Assessment
 				assessData.push(o)										// Get pages
 				}
+	
+		if (window.addEventListener) 									// If supported this way
+			window.addEventListener("message",QmediaEventHandler,false);// Add event handler
+		else															// Use other method
+			window.attachEvent("message",QmediaEventHandler);			// Add handler
+
 		}});
+
+	function QmediaEventHandler(e)									// ON SHIVA EVENT
+	{
+		var v=e.data.split("|");										// Split into parts													
+		if (v[0] == "QmediaAssess=ready") {								// If assess ready
+			var i,j,v;
+			var data='{"pages":[';										// Add header
+			for (i=0;i<assessData.length;++i) {							// For each assessment page
+				if (!assessData[i])										// Nothing there
+					continue;											// Skip it
+				v=assessData[i].split("|");								// Split into parts
+				data+='{"optionType":\"'+v[0].substr(7);				// Type
+				data+='\","title":\"'+v[1];								// Title
+				data+='\","text":\"'+v[2]+'\"';							// Text
+				if (v[3]) {												// If options
+					v=v[3].split(",");									// Get them
+					data+=',"options":[';								// Add header
+					for (j=0;j<v.length;++j) {							// For each option
+						data+='\"'+v[j]+'\"';							// Add it
+						if (j != v.length-1)							// If not last
+							data+=",";									// Add comma
+						}
+					data+="]";											// Close options
+					}
+				data+="}";												// Close page
+				if (i != assessData.length-1)							// If not last page
+					data+=",";											// Add comma
+				}
+			data+="]}"													// End data
+			e.source.postMessage=("ShivaAct=data|"+data,"*");			// Load iframe with assessment data		
+			}		
+	}	
 
 	$("#splashDiv").animate({ opacity:1 },1000);						// Show logo
 
@@ -617,7 +655,7 @@ function InitObs() 													// INIT OBSERVATION PANEL
 
 	function Assess()
 	{
-		var	str="<iframe class='ct-assss' frameborder='0' src='assess.htm' style='height:400px;width:100%'></iframe></div>";	// Load in iframe
+		var	str="<iframe id='assess' class='ct-assess' frameborder='0' src='assess.htm' style='height:400px;width:100%'></iframe></div>";	// Load in iframe
 		$("#obsPanel").animate({ opacity:1 },400);						// Show
 		$("#obsPanel").html(str);
 	}
@@ -954,7 +992,8 @@ function InitObs() 													// INIT OBSERVATION PANEL
 			}
 		return ""+id;															// Return unique id	as string													
 	}
-		
+
+
 </script>
 </body>
 </html>
