@@ -8,7 +8,6 @@
 	<link rel="stylesheet" href="css/jquery-ui.min.css"></link>
 	<script src="lib/jquery.min.js"></script>
 	<script src="lib/jquery-ui.min.js"></script>
-	<!-- script src="lib/jquery.ui.touch-punch.min.js"></script -->
 	<link REL="SHORTCUT ICON" HREF="img/favicon.ico">
 	<title>CTScan</title>
 	<style type="text/css">
@@ -173,8 +172,9 @@ var totTiming=0;														// Time on task timing
 var inPlay=false;														// Play flag
 var curCat=-1;curPrac=-1;												// Current category, practice
 var vocabTopicTerms=[];													// Holds vocab/topic terms
-var menus=[];															// Holds menus
 var kidsInClass=0;														// Number of kids in class
+
+var menus=[];															// Holds menus
 var dataMedia=[];														// Holds media buttons											
 var dataLabs=[];														// Holds OTR button labels											
 var dataLabVals=[];														// Holds OTR button values											
@@ -182,7 +182,7 @@ var dataLabCats=[];														// Holds OTR button categories
 var dataLabCols=[];														// Holds OTR button colors											
 var dataActs=[];														// Holds media buttons											
 var dataAcad=[];														// Holds academic diciplines
-var obsId=MakeUniqueId();												// Observation id
+
 var obsEvents=[];														// Holds events										
 var obsData={};															// Obs info
 var assessData=[];														// Hold assessments
@@ -204,7 +204,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		for (i=0;i<lines.length;++i) {									// For each line
 			o=lines[i];													// Point at line
 			if (!o)	continue;											// Skip blanks
-			if (o.match(/MEDIA=/i)) 								// Media button
+			if (o.match(/MEDIA=/i)) 									// Media button
 				dataMedia=o.substr(6).split(",");						// Get options
 			else if (o.match(/BUTVAL=/i)) 								// OTR button value
 				dataLabVals=o.substr(7).split(",");						// Get options
@@ -238,24 +238,12 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				}
 			}
 			
-		if (window.addEventListener) 									// If supported this way
+		if (window.addEventListener) 									// If listener supported this way
 			window.addEventListener("message",QmediaEventHandler,false);// Add event handler
 		else															// Use other method
 			window.attachEvent("message",QmediaEventHandler);			// Add handler
 
 		}});
-
-	function QmediaEventHandler(e)									// ON SHIVA EVENT
-	{
-		var v=e.data.split("|");										// Get parts
-		if (v[0] == "QmediaAssess=answer")								// Answer
-			SaveEvent(curTime,"Assess",assessNum++,v[3],0);				// Save answer
-		if (v[0] == "QmediaAssess=done")								// Done 
-			DonePanel();												// Show done panel
-	
-	}	
-
-	$("#splashDiv").animate({ opacity:1 },1000);						// Show logo
 
 	$("#startIt").on("click", function() {								// ON START CLICK
 		$("#splashDiv").animate({ opacity:0 },400);						// Hide logo
@@ -277,7 +265,13 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				}));							
 			});
 
+	$("#splashDiv").animate({ opacity:1 },1000);						// Show logo
 	});																	// End onReady()		
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// SETUP
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function GetIntroData()												// GET INTRO DATA FROM USER
 {
@@ -335,34 +329,6 @@ function GetIntroData()												// GET INTRO DATA FROM USER
 
 	for (i=0;i<menus.length;++i)
 		$("#intro-cat").append("<option>"+menus[i].cname+"</option>");
-}
-
-function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
-{
-	var i;
-	$("#alertBoxDiv").remove();											// Remove any old ones
-	$("body").append("<div class='qm-unselectable' id='alertBoxDiv'></div>");														
-	var str="<p><img src='img/ctlogo32.png' style='vertical-align:-8px'/>&nbsp;&nbsp;";								
-	str+="<span class='ct-dialogTitle'>What percentage of students are OFF Task?</span><p>";
-	str+="<div style='font-size:12px;margin:14px;text-align:center'><br><br>";
-	for (i=0;i<110;i+=10) {												// Make 10 categories
-		str+="<div id='tot-"+i+"' style='width:200px;background-color:rgb(0,"+(75+Math.floor(i*1.4))+",0);margin-bottom:4px;' class='ct-obsNewPrac'>"+i+" percent";
-			if (kidsInClass) 											// If setting kids
-				str+="&nbsp&nbsp;-&nbsp&nbsp;"+Math.round(i/100*kidsInClass)+" students";
-		str+="</div><br>";
-		}
-	str+="<br><div id='tot-999' style='width:120px;background-color:#e67e22;margin-bottom:4px;' class='ct-obsNewPrac'>Skip</div>"
-	str+="</div>";
-	$("#alertBoxDiv").append(str);	
-	$("#alertBoxDiv").dialog({ 	 width:$("#obsPanel").width()+16, height:$("#obsPanel").height()+24 });	
-	$("#alertBoxDiv").dialog("option","position",{ my:"middle", at:"middle", of:obsPanel });
-	
-	$("[id^=tot-]").on("click", function(e) {							// ON PERCENTAGE PICK	
-		var id=e.currentTarget.id.substr(4);							// Get id			
-		if (id != 999)													// If not skipping
-			SaveEvent(curTime,"Student status","Percent engaged",100-id,0);	// Save event
-		$("#alertBoxDiv").remove();  									// Close it
-		});
 }
 
 function InitObs() 													// INIT OBSERVATION PANEL
@@ -604,6 +570,47 @@ function InitObs() 													// INIT OBSERVATION PANEL
 	}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// MISC
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function QmediaEventHandler(e)										// ON MESSAGE EVENT
+{
+	var v=e.data.split("|");											// Get parts
+	if (v[0] == "QmediaAssess=answer")									// Answer
+		SaveEvent(curTime,"Assess",assessNum++,v[3],0);					// Save answer
+	if (v[0] == "QmediaAssess=done")									// Done 
+		DonePanel();													// Show done panel
+}	
+
+function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
+{
+	var i;
+	$("#alertBoxDiv").remove();											// Remove any old ones
+	$("body").append("<div class='qm-unselectable' id='alertBoxDiv'></div>");														
+	var str="<p><img src='img/ctlogo32.png' style='vertical-align:-8px'/>&nbsp;&nbsp;";								
+	str+="<span class='ct-dialogTitle'>What percentage of students are OFF Task?</span><p>";
+	str+="<div style='font-size:12px;margin:14px;text-align:center'><br><br>";
+	for (i=0;i<110;i+=10) {												// Make 10 categories
+		str+="<div id='tot-"+i+"' style='width:200px;background-color:rgb(0,"+(75+Math.floor(i*1.4))+",0);margin-bottom:4px;' class='ct-obsNewPrac'>"+i+" percent";
+			if (kidsInClass) 											// If setting kids
+				str+="&nbsp&nbsp;-&nbsp&nbsp;"+Math.round(i/100*kidsInClass)+" students";
+		str+="</div><br>";
+		}
+	str+="<br><div id='tot-999' style='width:120px;background-color:#e67e22;margin-bottom:4px;' class='ct-obsNewPrac'>Skip</div>"
+	str+="</div>";
+	$("#alertBoxDiv").append(str);	
+	$("#alertBoxDiv").dialog({ 	 width:$("#obsPanel").width()+16, height:$("#obsPanel").height()+24 });	
+	$("#alertBoxDiv").dialog("option","position",{ my:"middle", at:"middle", of:obsPanel });
+	
+	$("[id^=tot-]").on("click", function(e) {							// ON PERCENTAGE PICK	
+		var id=e.currentTarget.id.substr(4);							// Get id			
+		if (id != 999)													// If not skipping
+			SaveEvent(curTime,"Student status","Percent engaged",100-id,0);	// Save event
+		$("#alertBoxDiv").remove();  									// Close it
+		});
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // DONE
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -745,8 +752,10 @@ function InitObs() 													// INIT OBSERVATION PANEL
 					Sound("delete");									// Delete sound
 					trace(d);											// Show error
 					}
-				else
+				else{
 					AlertBox("Successfully saved!","");					// Alert
+					$("#saveDB").remove();								// Remove save button
+					}
 				},
 			error:function(xhr,status,error) { trace(error) },			// Show error
 			});		
@@ -944,41 +953,6 @@ function InitObs() 													// INIT OBSERVATION PANEL
 			snd.play();															// Play it
 			}
 		}
-
-	function SetCookie(cname, cvalue, exdays)								// SET COOKIE
-	{
-		var d=new Date();
-		d.setTime(d.getTime()+(exdays*24*60*60*1000));
-		var expires = "expires="+d.toGMTString();
-		document.cookie = cname + "=" + cvalue + "; " + expires;
-	}
-	
-	function GetCookie(cname) 												// GET COOKIE
-	{
-		var name=cname+"=",c;
-		var ca=document.cookie.split(';');
-		for (var i=0;i<ca.length;i++)  {
-		  c=ca[i].trim();
-		  if (c.indexOf(name) == 0) 
-		  	return c.substring(name.length,c.length);
-		  }
-		return "";
-	}
-	function MakeUniqueId()													// MAKE UNIQUE ID
-	{
-		var i,index;
-		var ts=+new Date;														// Get date
-		var id=ts.toString();													// Start with timestamp				
-		var parts=id.split("").reverse();										// Mix them up
-		var n=parts.length-1;													// Max
-		var s=id.length;														// Start digit
-		for(i=s;i<s+8;++i) {													// Add 8 random digits
-			index=Math.floor(Math.random()*n);									// Get index
-			id+=parts[index];													// Add to id 
-			}
-		return ""+id;															// Return unique id	as string													
-	}
-
 
 </script>
 </body>
