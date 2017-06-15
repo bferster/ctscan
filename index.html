@@ -344,7 +344,7 @@ function InitObs() 													// INIT OBSERVATION PANEL
 			if (act == "active") 										// If active
 				col="#009900",wgt="bold";								// Make it bold green
 			$("#ml-"+id).css({ "color":col, "font-weight":wgt});		// Style
-			SaveEvent(curTime,"Visual Aid",dataMedia[id-1],act,0);		// Save event
+			SaveEvent(curTime,"Visual Aid",dataMedia[id-1],act);		// Save event
 			});
 		}
 	for (i=0;i<dataActs.length;++i) 									// For each student action
@@ -361,12 +361,20 @@ function InitObs() 													// INIT OBSERVATION PANEL
 			if (s)	c=s.substr(1,s.length-2)-0+1						// If not first, get and increment
 			$("#evc-"+id).html("("+c+")");								// Show new count
 			Sound("click");												// Click sound	
-			SaveEvent(curTime,dataLabCats[id-1],dataLabVals[id-1],"",0);// Save event
+			SaveEvent(curTime,dataLabCats[id-1],dataLabVals[id-1],c);	// Save event
 			});
 
 		$("#evc-"+i).on("click", function(e) {							// ON EVENT CLICK
+			var j;
 			e.stopPropagation();										// Stop propagation
 			var id=e.currentTarget.id.substr(4);						// Get id			
+			for (j=obsEvents.length-1;j>=0;--j) {						// Search backwards
+				if (obsEvents[j].d2 == dataLabVals[id-1]) {				// Found last
+					obsEvents.splice(j,1);								// Remove it from list
+					trace("---> REMOVED OTR <----");					// Removed
+					break;												// Quit looking
+					}
+				}
 			var s=$("#evc-"+id).text();									// Get count from label
 			var c=s.substr(1,s.length-2)-1								// If not first, get and decrement
 			if (c)														// Something to show
@@ -374,7 +382,6 @@ function InitObs() 													// INIT OBSERVATION PANEL
 			else														// No counts
 				$("#evc-"+id).html("<br>");								// Clear display
 			Sound("delete");											// Delete sound	
-			SaveEvent(curTime,dataLabCats[id-1],dataLabVals[id-1],"NEGATE",0);	// Save event
 			});
 		}
 
@@ -386,7 +393,7 @@ function InitObs() 													// INIT OBSERVATION PANEL
 	$("#obsNoteSend").on("click", function(e) {							// ON NOTE SEND
 		if (!$("#obsNote").val())										// If no value
 			return;														// Quit
-		SaveEvent(curTime,"Note",$("#obsNote").val(),"",0);				// Save event
+		SaveEvent(curTime,"Note",$("#obsNote").val());					// Save event
 		$("#obsNote").val("");											// Clear textarea
 		Sound("click");													// Click sound	
 		});
@@ -394,7 +401,7 @@ function InitObs() 													// INIT OBSERVATION PANEL
 	$("#obsNoteOops").on("click", function(e) {							// ON OOPS SEND
 		if (!$("#obsNote").val())										// If no value
 			return;														// Quit
-		SaveEvent(curTime,"Note","!!!! OOPS !!!!! ---- "+$("#obsNote").val(),"",0);	// Save event
+		SaveEvent(curTime,"oops","!!!! OOPS !!!!! ---- "+$("#obsNote").val());	// Save event
 		$("#obsNote").val("");											// Clear textarea
 		Sound("click");													// Click sound	
 		});
@@ -419,7 +426,6 @@ function InitObs() 													// INIT OBSERVATION PANEL
 			$("#obsCat").text(menus[curCat].cname);						// Show new name
 			$("#alertBoxDiv").remove();  								// Close it
 			$("#obsPracText").html("");									// Remove practices
-			curPrac=-1;													// No practuce index
 			Sound("click");												// Click sound	
 			});
 		});
@@ -429,9 +435,6 @@ function InitObs() 													// INIT OBSERVATION PANEL
 		if (curCat < 0)													// Not category yet											
 			return;														// Quit
 		$("#alertBoxDiv").remove();										// Remove any old ones			
-		if (curPrac != -1)												// If not first one
-			SaveEvent(curTime,"Teacher actions",menus[curCat].cname,menus[curCat].prac[curPrac].pname+"->OFF",0);	// Save event
-		
 		$("body").append("<div class='qm-unselectable' id='alertBoxDiv'></div>");														
 		var str="<p><img src='img/ctlogo32.png' style='vertical-align:-8px'/>&nbsp;&nbsp;";								
 		str+="<span class='ct-dialogTitle'>Choose a practice</span><p>";
@@ -449,22 +452,35 @@ function InitObs() 													// INIT OBSERVATION PANEL
 			var str="";			
 			var id=e.currentTarget.id.substr(4);						// Get id			
 			curPrac=id;													// Set current practice
+			SaveEvent(curTime,"Teacher actions",menus[curCat].cname,menus[curCat].prac[curPrac].pname);	// Save event
 			str+="<div style='display:inline-block;margin-bottom:4px;margin-top:4px'>"+menus[curCat].prac[curPrac].pname+"</div><br>";
-			str+="<div id='"+menus[curCat].prac[id].pname+"->' class='ct-obsPracSubs'>&bull;&nbsp;None</div>";
+			str+="<div id='0' class='ct-obsPracSubs'>&bull;&nbsp;None</div>";
 			for (i=0;i<menus[curCat].prac[id].subs.length;++i) {
-				str+="<div id='"+menus[curCat].prac[id].pname+"->"+menus[curCat].prac[id].subs[i];
+				str+="<div id='"+(i+1)+"'";
 				str+="' class='ct-obsPracSubs'>&bull;&nbsp;"+menus[curCat].prac[id].subs[i]+"</div>";
 				}
 		str+="<br>";
 		$("#obsPracText").html(str);
 		
 		$(".ct-obsPracSubs").on("click", function(e) {					// CLICK ON PRACTICE SUB
-				var id=e.currentTarget.id;								// Get id			
-				if ($(this).css("font-weight") == "bold")				// Already set
-					return;												// Quit
-				$(this).css({ color:"#009900","font-weight":"bold"});	// Highlight it
-				SaveEvent(curTime,"Teacher actions",menus[curCat].cname,id,0);	// Save event
-				Sound("click");											// Click sound	
+				var id=e.currentTarget.id-1;							// Get id			
+				var sub=menus[curCat].prac[curPrac].subs[id];			// Get sub
+				var n=menus[curCat].prac[curPrac].subs.length;			// Number of subs
+				sub=sub ? sub : "";										// If undefines, null
+				if ($(this).css("font-weight") == "bold") {				// Already set
+					Sound("delete");									// Delete sound	
+					$(this).css({ color:"#000","font-weight":"normal"});// Un-highlight it
+					for (var j=obsEvents.length-1;j>=0;--j) {			// Search backwards
+						if ((obsEvents[j].d3 == menus[curCat].prac[curPrac].pname) && (obsEvents[j].d4 == sub)) {	// Found last
+							obsEvents.splice(j,1);						// Remove it from list
+							trace("---> REMOVED sub-practice <----");	// Removed
+							return;										// Quit
+							}
+						}
+					}
+			$(this).css({ color:"#009900","font-weight":"bold"});	// Highlight it
+			SaveEvent(curTime,"Teacher actions",menus[curCat].cname,menus[curCat].prac[curPrac].pname,sub,n);	// Save event
+			Sound("click");											// Click sound	
 			});
 
 			$("#alertBoxDiv").remove();  								// Close it
@@ -473,22 +489,22 @@ function InitObs() 													// INIT OBSERVATION PANEL
 		});
 
 	$("#studentAction").on("change", function(e) {						// STUDENT ACTION
-		SaveEvent(curTime,"Student actions","Action",$(this).val(),0);	// Send event
+		SaveEvent(curTime,"Student actions","Action",$(this).val());	// Send event
 		Sound("click");													// Click sound	
 		});													
 
 	$("#teacherTalk").on("change", function(e) {						// ON WHICH TALKING
-		SaveEvent(curTime,"Teacher status","Grouping",$(this).val(),0);	// Send event		
+		SaveEvent(curTime,"Teacher status","Grouping",$(this).val());	// Send event		
 		Sound("click");													// Click sound	
 		});													
 
 	$("#whichTeacher").on("change", function(e) {						// ON WHICH TEACHER
-		SaveEvent(curTime,"Teacher status","Which Teacher",$(this).val(),0); 	// Send event		
+		SaveEvent(curTime,"Teacher status","Which Teacher",$(this).val()); 	// Send event		
 		Sound("click");													// Click sound	
 		});													
 
 	$("#teacherModel").on("change", function(e) {						// ON TEACHER MODEL
-		SaveEvent(curTime,"Teacher status","Model",$(this).val(),0); 	// Send event		
+		SaveEvent(curTime,"Teacher status","Model",$(this).val()); 		// Send event		
 		Sound("click");													// Click sound	
 		});													
 
@@ -518,7 +534,7 @@ function InitObs() 													// INIT OBSERVATION PANEL
 			
 			$("[id^=termItem-]").on("click", function(e) {				// On click of item		
 				var id=e.currentTarget.id.substr(9);					// Get id			
-				SaveEvent(curTime,"Vocab word",$("#termItem-"+id).text(),"Stopped",0);	// Stop term
+				SaveEvent(curTime,"Vocab word",$("#termItem-"+id).text(),"Stopped");	// Stop term
 				vocabTopicTerms.splice(id,1);							// Remove it
 				Sound("delete");										// Delete sound	
 				fillTermList();											// Fill term list
@@ -577,7 +593,7 @@ function QmediaEventHandler(e)										// ON MESSAGE EVENT
 {
 	var v=e.data.split("|");											// Get parts
 	if (v[0] == "QmediaAssess=answer")									// Answer
-		SaveEvent(curTime,"Assess",assessNum++,v[3],0);					// Save answer
+		SaveEvent(curTime,"Assess",assessNum++,v[3]);					// Save answer
 	if (v[0] == "QmediaAssess=done")									// Done 
 		DonePanel();													// Show done panel
 }	
@@ -605,7 +621,7 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 	$("[id^=tot-]").on("click", function(e) {							// ON PERCENTAGE PICK	
 		var id=e.currentTarget.id.substr(4);							// Get id			
 		if (id != 999)													// If not skipping
-			SaveEvent(curTime,"Student status","Percent engaged",100-id,0);	// Save event
+			SaveEvent(curTime,"Student status","Percent engaged",100-id);	// Save event
 		$("#alertBoxDiv").remove();  									// Close it
 		});
 }
@@ -672,7 +688,7 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 		var d=obsEvents;
 		for (i=0;i<d.length;++i){
 			str+="<tr id=oe-"+i+"><td><b>Event:</b></td><td style='overflow:hidden;white-space:nowrap'><div style='display:inline-block;width:50px'>"+d[i].time+"</div>";
-				str+=d[i].d1+", "+ShortenString(d[i].d2,20)+","+ShortenString(d[i].d3,20)+"</td></tr>";
+				str+=d[i].d1+", "+ShortenString(d[i].d2,20)+","+ShortenString(d[i].d3,20)+","+ShortenString(d[i].d4,20)+"</td></tr>";
 			}	
 		str+="</table>";
 		$("#dataPanel").html(str);										// Add to data panel										
@@ -689,8 +705,8 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 		
 		$("[id^=oe-]").on("click", function(e) {						// ON OBSDATA CLICK					
 			var id=e.currentTarget.id.substr(3);						// Get id
-			var str="Type new value for event entry. Make sure you have 4 entries, separated by commas. They can be blank, if needed. If you want to remove the event, clear all the text.";	// Prompt
-			var d=obsEvents[id].time+","+obsEvents[id].d1+","+obsEvents[id].d2+","+obsEvents[id].d3+","+obsEvents[id].d4;								
+			var str="Type new value for event entry. Make sure you have 5 entries, separated by commas. They can be blank, if needed. If you want to remove the event, clear all the text.";	// Prompt
+			var d=obsEvents[id].time+","+obsEvents[id].d1+","+obsEvents[id].d2+","+obsEvents[id].d3+","+obsEvents[id].d4+","+obsEvents[id].d5;								
 			
 			GetTextBox("Change Event", str ,d, function(s) {			// Open editor
 				if (!s) {												// Nothing there
@@ -700,12 +716,13 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 					return;												// Quit	
 					}
 				s=s.split(",");											// Divide into parts
-				if (s.length < 5)		return;							// Not right number
+				if (s.length < 6)		return;							// Not right number
 				obsEvents[id].time=s[0];								// Set new vals
 				obsEvents[id].d1=s[1];								
 				obsEvents[id].d2=s[2];								
 				obsEvents[id].d3=s[3];								
 				obsEvents[id].d4=s[4];								
+				obsEvents[id].d5=s[5];								
 				Sound("ding");											// Ding sound
 				ShowRawData();											// Refresh screen
 				});
@@ -769,7 +786,8 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 	
 	function SaveEvent(time, p1, p2, p3, p4, p5)
 	{
-		if (!p5)	p5=0;
+		if (p4 == undefined)	p4="";
+		if (p5 == undefined)	p5="";
 		trace(time+","+p1+","+p2+","+p3+","+p4+","+p5);						// Show data
 		obsEvents.push({time:time, d1:p1, d2:p2, d3:p3, d4:p4, d5:p5 });	// Save in array
 	}
