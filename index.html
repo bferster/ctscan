@@ -403,7 +403,7 @@ function InitObs() 													// INIT OBSERVATION PANEL
 	$("#obsNoteOops").on("click", function(e) {							// ON OOPS SEND
 		if (!$("#obsNote").val())										// If no value
 			return;														// Quit
-		SaveEvent(curTime,"oops","!!!! OOPS !!!!! ---- "+$("#obsNote").val());	// Save event
+		SaveEvent(curTime,"Note","!! OOPS !! "+$("#obsNote").val());	// Save event
 		$("#obsNote").val("");											// Clear textarea
 		Sound("click");													// Click sound	
 		});
@@ -501,7 +501,7 @@ function InitObs() 													// INIT OBSERVATION PANEL
 		});
 
 	$("#studentAction").on("change", function(e) {						// STUDENT ACTION
-		SaveEvent(curTime,"Student actions","Action",$(this).val());	// Send event
+		SaveEvent(curTime,"Student actions",$(this).val());				// Send event
 		Sound("click");													// Click sound	
 		});													
 
@@ -717,7 +717,7 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 		
 		$("[id^=oe-]").on("click", function(e) {						// ON OBSDATA CLICK					
 			var id=e.currentTarget.id.substr(3);						// Get id
-			var str="Type new value for event entry. Make sure you have 5 entries, separated by commas. They can be blank, if needed. If you want to remove the event, clear all the text.";	// Prompt
+			var str="Type new value for event entry. Make sure you have 6 entries, separated by commas. They can be blank, if needed. If you want to remove the event, clear all the text.";	// Prompt
 			var d=obsEvents[id].time+","+obsEvents[id].d1+","+obsEvents[id].d2+","+obsEvents[id].d3+","+obsEvents[id].d4+","+obsEvents[id].d5;								
 			
 			GetTextBox("Change Event", str ,d, function(s) {			// Open editor
@@ -746,7 +746,7 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 	{
 		GetTextBox("Save as CSV File","Type name of CSV file to save to","mysession.csv", function(s) {
 			var i,o;
-			var rows=[["time","d1","d2","d2","d4"]];
+			var rows=[["time","d1","d2","d2","d4","d5"]];
 			rows.push(["0","Session","Observer",obsData.name,""]);
 			rows.push(["0","Session","Email",obsData.email,""]);
 			rows.push(["0","Session","TeacherId",obsData.tid,""]);
@@ -759,7 +759,7 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 			rows.push(["0","Session","Reminder",obsData.remind,""]);
 			for (i=0;i<obsEvents.length;++i) {
 				o=obsEvents[i];
-				rows.push([o.time,o.d1,o.d2,o.d3,o.d4]);
+				rows.push([o.time,o.d1,o.d2,o.d3,o.d4,o.d5]);
 				}
 			ExportToCSV(s,rows);
 			})
@@ -798,6 +798,7 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 	
 	function SaveEvent(time, p1, p2, p3, p4, p5)
 	{
+		if (p3 == undefined)	p3="";
 		if (p4 == undefined)	p4="";
 		if (p5 == undefined)	p5="";
 		trace(time+","+p1+","+p2+","+p3+","+p4+","+p5);						// Show data
