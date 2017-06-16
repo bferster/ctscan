@@ -746,7 +746,7 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 	{
 		GetTextBox("Save as CSV File","Type name of CSV file to save to","mysession.csv", function(s) {
 			var i,o;
-			var rows=[["time","d1","d2","d2","d4","d5"]];
+			var rows=[["time","type","d2","d2","d4","d5"]];
 			rows.push(["0","Session","Observer",obsData.name,""]);
 			rows.push(["0","Session","Email",obsData.email,""]);
 			rows.push(["0","Session","TeacherId",obsData.tid,""]);
@@ -891,7 +891,7 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 				});
 		}
 
-	function DialogBox(title, content, callback, callback2) 	// DIALOG BOX
+	function DialogBox(title, content, callback, callback2) 		// DIALOG BOX
 	{
 		$("#dialogDiv").remove();												
 		$("body").append("<div class='unselectable' id='dialogDiv'></div>");														

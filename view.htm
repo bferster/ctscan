@@ -53,15 +53,16 @@
 	<div id="viewPanel" class="ct-viewPanel">
 		<div style="width:100%;max-height:75%;overflow-y:auto">
 			<table id="sessionTable" style="width:100%">	
-				<tr style="font-weight:bold"><td>&nbsp;&#x2610;&nbsp;&nbsp;</td><td>Observer</td><td>Email</td><td>Date</td><td>Teacher</td><tr><tr>
-					<tr><td colspan='6'><hr></td></tr>
+				<tr style="font-weight:bold"><td>&nbsp;&#x2610;&nbsp;&nbsp;</td><td>Observer</td><td>Email</td><td>Date</td><td>Teacher Id</td><td>Session Id</td><tr><tr>
+					<tr><td colspan='7'><hr></td></tr>
 					<td><input type="checkbox" id="chooseAll"/></td>
 					<td><input id="viewObs" class="ct-is"/></td>
 					<td><input id="viewEmail" class="ct-is"/></td>
 					<td nowrap><select id="viewDateComp" class="ct-is" style="height:19px;vertical-align:-2px;margin-right:-3px;"><option></option><option selected>=</option><option>!=</option><option><</option><option><=</option><option>></option><option>>=</option></select>
 					<input id="viewDate" class="ct-is"style="height:17px" type="date"/></td>
-					<td><input id="viewTid" class="ct-is"/></td></tr>
-					<tr><td colspan='6'><hr></td></tr>
+					<td><input id="viewTid" class="ct-is" style="width:80px"/></td>
+					<td><input id="viewSid" class="ct-is" style="width:80px"/></td></tr>
+					<tr><td colspan='7'><hr></td></tr>
 			</table>
 			<hr>
 			<div id="showRaw" class="ct-actionBut">View raw data</div>&nbsp;&nbsp;
@@ -106,11 +107,20 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		$("#viewEmail").on("change", function(e) {							// ON EMAIL CHANGE
 			GetObservations("email");										// Show matching observations
 			});													
-		$("#viewTid").on("change", function(e) {							// ON OBS CHANGE
+		$("#viewTid").on("change", function(e) {							// ON TID CHANGE
 			GetObservations("tid");											// Show matching observations
+			});													
+		$("#viewSid").on("change", function(e) {							// ON SESSSION ID CHANGE
+			GetObservations("sid");											// Show matching observations
 			});													
 		$("#chooseAll").on("click", function(e) {							// ON CHECK ALL
 			$("input:checkbox").prop("checked",$(this).prop("checked"));	// Toggle
+			});													
+		$("#showTimeline").on("click", function(e) {						// ON SHOW TIMELINE
+				for (i=0;i<curJson.length;++i) 								// For each session
+					if ($("#sessId-"+i).prop("checked")) 						// If checked
+						window.open("timeline.htm?"+curJson[i].id,"_blank")	// Open tab
+			Sound("ding");													// Ding sound	
 			});													
 		$("#showRaw").on("click", function(e) {								// ON SHOW RAW
 			var i;
@@ -139,10 +149,12 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			});
 	}
 
+
 	function ShowRawData(num)											// SHOW RAW DATA
 	{
 		var i
 		var str="<table>"
+		str+="<tr><td><b>Session Id:</b></td><td>"+curJson[num].id+"<td></tr>";
 		str+="<tr><td><b>Observer:</b></td><td>"+curJson[num].obs+"<td></tr>";
 		str+="<tr><td><b>Observer email:&nbsp;&nbsp;</b></td><td>"+curJson[num].email+"<td></tr>";
 		str+="<tr><td><b>Teacher Id:</b></td><td>"+curJson[num].teacherId+"<td></tr>";
@@ -169,10 +181,12 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		var email=$("#viewEmail").val();									// Get observer email
 		var now=$("#viewDate").val();										// Get date
 		var tid=$("#viewTid").val();										// Get teacher id
+		var sid=$("#viewSid").val();										// Get session id
 		var dc=$("#viewDateComp").val();									// Get date comparator
 	
 		var q="id != '0'";													// Query base (all)
-	
+		if (sid)															// If a session is set
+			q="id = '"+sid+"'";												// Base query on id			
 		if (dc)																// If a date set
 			q+=" AND date "+dc+"'"+now+"'";									// Add date to query				
 		if (obs)															// If an obs set
@@ -199,6 +213,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				str+="<td>"+d[i].email+"</td>";								// Fill email
 				str+="<td>"+d[i].date+"</td>";								// Fill date
 				str+="<td>"+d[i].teacherId+"</td>";							// Fill tid
+				str+="<td>"+d[i].id+"</td>";								// Fill id
 				$("#sessionTable").append("<tr>"+str+"</tr>");
 				}
 			});

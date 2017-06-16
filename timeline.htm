@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<link rel="stylesheet" href="css/jquery-ui.min.css"></link>
+	<script src="lib/jquery.min.js"></script>
+	<script src="lib/jquery-ui.min.js"></script>
+	<link REL="SHORTCUT ICON" HREF="img/favicon.ico">
+	<title>CTScan Timeline</title>
+
+	<style type="text/css">
+		 
+		 body { 			font-family: Verdana,Geneva,sans-serif; font-size:13px; box-sizing: border-box;
+							padding: 0px; margin: 0px; 
+							}
+		.ct-mainPanel {		background-color:#eee; border-radius: 6px; margin-top: 16px; padding: 12px; max-width: 1200px;
+							margin-left: auto; margin-right: auto; opacity: 0;
+							}
+		.ct-dataPanel {		margin-top: 16px; max-width:1200px; margin-left: auto; margin-right: auto; opacity: 0;
+							}
+		.ct-timePanel {		border-radius: 6px; background-color:#fff; padding: 12px; overflow-x:auto; margin-left:120px;
+							}
+		.ct-is 	{			border-radius:4px; padding-left:8px; border: 1px solid #999; margin-bottom: 3px;
+							}
+
+		.ct-but {			cursor: pointer; color:#fff; 
+							text-align: center; border-radius: 6px; display: inline-block; user-select: none;
+							font-size: 12px; background-color: #27ae60; padding: 2px 8px 2px 8px; vertical-align:3px;
+							}
+		.ct-dialogTitle {	font-size: 20px; font-weight: bold; color: #000; margin-bottom: 8px; user-select: none;
+							}
+		.ct-actionBut {		cursor: pointer; color:#fff; 
+							text-align: center; border-radius: 6px; display: inline-block; user-select: none;
+							font-size: 12px; background-color: #27ae60; padding: 2px 8px 2px 8px; vertical-align:-3px;
+							}
+		.ui-dialog-buttonpane.ui-widget-content.ui-helper-clearfix { border:none }
+		.ui-dialog { border-radius:6px; background-color:#eee }
+		.ui-button { border-radius:30px;outline:none }
+		.ui-dialog-titlebar { display:none }
+		 table {			border-spacing: 0px;  }
+		 input {		    vertical-align: -2px; }
+
+</style>
+</head>
+<body>
+	<div id="mainPanel" class="ct-mainPanel">
+	<div style="text-align:center">
+		<div style="float:right;line-height:13px">
+			<img id="scaleUp"   style="cursor:zoom-in" src="img/upbut.gif"><br>
+			<span id="scaleAmt">5</span><br>
+			<img id="scaleDown" style="cursor:zoom-out" src="img/downbut.gif"><br>
+		</div>
+		<img src="img/ctlogo32.png"><br>
+		<b>Classroom Teaching Scan Timeline</b></div><br>
+			<div style="text-align:right;font-size:12px;width:150px;float:left;margin-top:8px;padding-right:10px;line-height:20px;font-weight:bold">
+			<span style="color:#999;font-size:10px">100%</span><br>
+			<span style="color:#666;line-height:40px">Engagement</span><br>
+			<span style="color:#999;font-size:10px">0%</span><br><br>
+			<span style="color:#27ae60">Diagram/Graph</span><br>
+			<span style="color:#27ae60">Object/Manipulative</span><br>
+			<span style="color:#27ae60">Graphic Organizer</span><br>
+			<span style="color:#27ae60">Picture</span><br>
+			<span style="color:#27ae60">Movie</span><br>
+			<span style="color:#27ae60">Text</span><br><br>
+			<span style="color:#e67e22">OTR</span><br>
+			<span style="color:#e67e22">Feedback</span><br>
+			<span style="color:#e67e22">Questions</span><br>
+			<span style="color:#e67e22">Custom</span><br><br><br>
+			<span style="color:#3db1ff">Vocab</span><br><br><br>
+			<span style="color:#888">Student Actions</span><br>
+			<span style="color:#e74c3c;line-height:60px">Practice</span><br>
+			</div>
+		<div id="timePanel" class="ct-timePanel">
+		<svg id="svg" width="100%" height="99%"></svg>
+		</div>
+	</div>
+	<div id="dataPanel" class="ct-dataPanel"></div>
+
+<script>
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// MAIN 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+var curJson=null;															// Holds session results
+var maxTime=50*60;
+var svgNS="http://www.w3.org/2000/svg";										// Name space
+var scaleSpan=128;															// Scaling
+
+$(document).ready(function() {								           	// ON PAGE LOADED
+
+	var url=window.location.search.substring(1);							// Get query string
+	document.title+=" ("+url+")";											// Add id to title		
+	Query("id = '"+url+"'", function(d) { 									// Send query
+		if (!d || d == "null")												// No hits													
+			return;;														// Quit
+		d=$.parseJSON(d);													// Objectify result
+		curJson=d[0];														// Save data
+		Draw();
+		ShowData();
+		$("#mainPanel").animate({ opacity:1 },1500);						// Show timeline
+		$("#dataPanel").animate({ opacity:1 },1500);						// Show data
+		});
+	$("#scaleUp").on("click", function(e) {									// SCALE UP
+		if (scaleSpan < 16)													// At max
+			return;															// Quit
+		$("#scaleAmt").text($("#scaleAmt").text()-1);						// Show scale
+		scaleSpan/=2;														// Show less
+		Sound("click");														// Click sound
+		Draw()
+		});
+
+	$("#scaleDown").on("click", function(e) {								// SCALE DOWN
+		if (scaleSpan > 1024)												// At max
+			return;															// Quit
+		$("#scaleAmt").text($("#scaleAmt").text()-0+1);						// Show scale
+		scaleSpan*=2;														// Show less
+		Sound("click");														// Click sound
+		Draw()
+		});
+
+	});		
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// DRAW
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	function Draw()														// DRAW TIMELINE
+	{
+		var x=8;
+		var h=530;															
+		var i,o,xs,ys;
+		var mins=Math.round(maxTime/60);									// Number of minutes to show
+		$("#timePanel").height(h);											// Set panel height
+		var w=mins*scaleSpan;												// Width of timeline
+		$("#svg").empty();													// Remove all segs
+		document.getElementById('svg').setAttribute("width", w+"px");		// Set width	
+		if (w > $("#timePanel").width())									// If no scroller
+			h-=18;															// Reduce height
+		for (i=0;i<5;++i) {													// For each engagement line
+			y=i*16+5;														// Set height
+			DrawLine([x,w],[y,y],"#ccc",.5);								// Draw it
+			}
+		ys=[5, h-23 ];														// Line ys
+		DrawLine([x,w],[225,225],"#ccc",.5);								// Draw separators
+		DrawLine([x,w],[325,325],"#ccc",.5);
+		DrawLine([x,w],[410,410],"#ccc",.5);
+		DrawLine([x,w],[440,440],"#ccc",.5);
+		DrawLine([x,w],[490,490],"#ccc",.5);
+		for (i=0;i<mins;++i) {												// For each minute
+			xs=[x,x];														// Xs
+			DrawLine(xs,ys,"#ccc",.5);										// Draw minute tic
+			DrawText(x,h-6,"#666",12,i,"middle");							// Label it
+			x+=scaleSpan;													// Next pos
+			}
+		o=$.parseJSON(curJson.events);										// Objectify events
+			for (i=0;i<o.length;++i) {
+			trace(o[i])	
+		}
+		
+		DrawVocab(200, 300, 2)
+		DrawStudentAction(300, 400, 2)
+		DrawDot(50, 2)
+		DrawDot(150, 2)
+		DrawMedia(40, 400, 2)
+		DrawEngagement(2)
+		DrawPractice(60, 180, 2)
+		}
+
+
+	function DrawEngagement(id)												// DRAW ENGAGEMENT GRAPH
+	{
+		var xs=[0,100,200,300,400,500];
+		var ys=[0,20,30,10,80,50];
+		for (i=0;i<ys.length;++i)
+			xs[i]=GetPixFromTime(xs[i])
+		for (i=0;i<ys.length;++i)
+			ys[i]=(100-ys[i])/100*64+5;
+		DrawLine(xs,ys,"#ccc",5).setAttribute("stroke-dasharray","5,5");
+	}
+
+	function DrawPractice(start, end, id)
+	{
+		start=GetPixFromTime(start);											// Convert time to pixels
+		end=GetPixFromTime(end);
+		DrawBox(start,85,end,489,"","#e74c3c",3,0);								// Draw box
+		var x=start+(end-start)/2;												// Center
+		var cat="Vocabulary Instruction";
+		DrawText(x,460,"#e74c3c",12,cat,"middle").setAttribute("font-weight","bold");
+		var prac="Analogy";
+		DrawText(x,475,"#e74c3c",12,prac,"middle").setAttribute("font-weight","bold");;
+	}
+
+	function DrawDot(start, id)												// DRAW EVENT DOT
+	{
+		var y=242;
+		start=GetPixFromTime(start);											// Convert time to pixels
+		DrawBox(start,y,start+8,y+8,"#e67e22","",0,8);							// Draw circle
+	}
+
+	function DrawVocab(start, end, id)										// DRAW VOCAB
+	{
+		var pos=1;
+		start=GetPixFromTime(start);											// Convert time to pixels
+		end=GetPixFromTime(end);
+		DrawBox(start,330,end,345,"#3db1ff","",0,8);							// Draw bar
+		var x=start+(end-start)/2;												// Center
+		var y=pos*16;
+		var str="Word";
+		DrawText(x,342,"#fff",12,str,"middle");
+	}
+
+	function DrawMedia(start, end, id)										// DRAW MEDIA ELEMENT
+	{
+		var pos=1;
+		start=GetPixFromTime(start);											// Convert time to pixels
+		end=GetPixFromTime(end);
+		DrawBox(start,103,end,108,"#27ae60","",0,5);							// Draw bar
+		var x=start+(end-start)/2;												// Center
+		var y=pos*16;
+		}
+
+	function DrawStudentAction(start, end, id)								// DRAW STUDENT ACTION
+	{
+		start=GetPixFromTime(start);											// Convert time to pixels
+		end=GetPixFromTime(end);
+		var x=start+(end-start)/2;												// Center
+		DrawBox(start,417,end,434,"#999","",0,3);								// Draw box
+		var str="Behaves well";
+		DrawText(x,430,"#fff",12,str,"middle");
+	}
+
+	function ShowData()														// SHOW DATA
+	{
+		var i
+		var str="<div><table>"
+		str+="<tr><td><b>Session Id:</b></td><td>"+curJson.id+"<td></tr>";
+		str+="<tr><td><b>Observer:</b></td><td>"+curJson.obs+"<td></tr>";
+		str+="<tr><td><b>Observer email:&nbsp;&nbsp;</b></td><td>"+curJson.email+"<td></tr>";
+		str+="<tr><td><b>Teacher Id:</b></td><td>"+curJson.teacherId+"<td></tr>";
+		str+="<tr><td><b>Grade:</b></td><td>"+curJson.grade+"<td></tr>";
+		str+="<tr><td><b>Subject:</b></td><td>"+curJson.subject+"<td></tr>";
+		str+="<tr><td><b>Date:</b></td><td>"+curJson.date+"<td></tr>";
+		str+="<tr><td><b>Block:</b></td><td>"+curJson.block+"<td></tr>";
+		str+="<tr><td><b>Setting:</b></td><td>"+curJson.setting+"<td></tr>";
+		str+="<tr><td><b>Video:</b></td><td>"+curJson.video+"<td></tr>";
+		str+="<tr><td><b>Reminder:</b></td><td>"+curJson.remind+"<td></tr>";
+		str+="</table></div><br>";
+		$("#dataPanel").append(str);										// Add to panel										
+	}
+
+
+	function GetPixFromTime(time)											// GET TIMELINE POSITION FROM TIME
+	{
+		return time*scaleSpan/60+8;												// Get pixels
+	}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// SVG
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	function DrawLine(x, y, col, wid) 									// DRAW SVG LINE
+	{
+		var i;
+		var o=document.createElementNS(svgNS,"path");						// Create element
+		var str="M"+x[0]+" "+y[0];											// Start
+		for (i=1;i<x.length;++i) {											// For each coord
+			str+="L";														// Line to
+			str+=x[i]+",";													// Pos x
+			str+=y[i]+" ";													// Pos y
+			}
+		o.setAttribute("d",str);											// Add coords to line
+		o.setAttribute("stroke-width",wid+"px");							// Stroke width 
+		o.style.fill="none";												// No fill	
+		o.style.stroke=col;  												// Stroke color
+		svg.appendChild(o);													// Add element to DOM
+		return o;															// Return pointer to element
+}
+
+	function DrawText(x, y, col, size, text, align) 					// DRAW SVG TEXT
+	{
+		var o=document.createElementNS(svgNS,"text");						// Create element
+		o.setAttribute("x",x);												// X
+		o.setAttribute("y",y);												// Y
+		o.setAttribute("fill",col);											// Col
+		o.setAttribute("font-size",size);									// Size
+		o.setAttribute("font-family","sans-serif");							// Font
+		if (align)															// If aligning
+			o.setAttribute("text-anchor",align);							// Align
+		svg.appendChild(o);													// Add element to DOM
+		$(o).css("user-select","none");										// No select
+		$(o).text(text);													// Text
+		return o;															// Return pointer to element
+		}
+
+	function DrawBox(x1, y1, x2, y2, col, ecol, ewid, rad) 				// DRAW SVG BOX
+	{
+		var o=document.createElementNS(svgNS,"rect");						// Create element
+		o.setAttribute("height",Math.abs(y2-y1));							// Height
+		o.setAttribute("width",Math.abs(x2-x1));							// Width
+		o.setAttribute("x",x1);												// X
+		o.setAttribute("y",y1);												// Y
+		if (rad) {															// If rounded
+			o.setAttribute("rx",rad);										// Set X radius
+			o.setAttribute("ry",rad);										// Y
+			}
+		if (ewid) {
+			o.style.stroke=ecol;  											// Stroke color
+			o.setAttribute("stroke-width",ewid+"px");						// Stroke width 
+			}
+		else
+			o.style.stroke="none";											// No edge	
+		if (col) 
+			o.style.fill=col;  												// Fill color
+		else
+			o.style.fill="none";											// No fill	
+		svg.appendChild(o);													// Add element to DOM
+		return o;															// Return pointer to element
+	}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// HELPERS
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+	function Query(query, callback) 
+	{
+		var dat={ q:query.replace(/'/g,"~") };
+		var url="//classroomteachingscan.com/ctscan/query.php";				// Target
+		$.ajax({ url:url,dataType:'text',type:"GET",crossDomain:true,data:dat,  // Get data
+			success:function(d) { callback(d) },							// Run callback				
+			error:function(xhr,status,error) { trace(error) },				// Show error
+			});		
+	}
+		
+	function GetTextBox(title, content, def, callback)					// GET TEXT LINE BOX
+	{
+		$("#alertBoxDiv").remove();											// Remove any old ones
+		$("body").append("<div class='unselectable' id='alertBoxDiv'></div>");														
+		var str="<p><img src='img/ctlogo32.png' style='vertical-align:-8px'/>&nbsp;&nbsp;";								
+		str+="<span class='ct-dialogTitle'>"+title+"</span><p>";
+		str+="<div style='font-size:12px;margin:14px'>"+content;
+		str+="<p><input class='ct-is' type='text' id='gtBoxTt' value='"+def+"'></p>";
+		str+="<div id='dialogOK' class='ct-but'>OK</div>";
+		str+="<div id='dialogCancel' class='ct-but' style='margin-left:8px;background-color:#990000'>Cancel</div></div>";
+		
+		$("#alertBoxDiv").append(str);	
+		$("#alertBoxDiv").dialog({ width:500 });	
+		$("#alertBoxDiv").dialog("option","position",{ my:"center", at:"center", of:viewPanel });
+		$("#alertBoxDiv").css({ border:"1px solid #990000","border-radius":"6px"});
+
+		$("#dialogOK").on("click", function() {								// ON OK BUT
+					callback($("#gtBoxTt").val());
+					$("#alertBoxDiv").remove();  
+				});
+
+		$("#dialogCancel").on("click", function() {							// ON CANCEL BUT
+				$("#alertBoxDiv").remove();									// Remove 
+				Sound("delete");											// Delete sound
+			});
+		}
+
+	function ShortenString(str, len)									// SHORTEN A STRING TO LENGTH
+	{
+		if (str && str.length > len)										// Too long
+			str=str.substr(0,(len-3)/2)+"..."+str.slice((len-3)/-2);		// Shorten	
+		return str;															// Return string
+	}
+
+	function trace(msg, p1, p2, p3, p4)										// CONSOLE 
+	{
+		if (p4 != undefined)
+			console.log(msg,p1,p2,p3,p4);
+		else if (p3 != undefined)
+			console.log(msg,p1,p2,p3);
+		else if (p2 != undefined)
+			console.log(msg,p1,p2);
+		else if (p1 != undefined)
+			console.log(msg,p1);
+		else
+			console.log(msg);
+	}
+
+	function Sound(sound, mute)												// PLAY SOUND
+	{
+		var snd=new Audio();													// Init audio object
+		if (!snd.canPlayType("audio/mpeg") || (snd.canPlayType("audio/mpeg") == "maybe")) 
+			snd=new Audio("img/"+sound+".ogg");									// Use ogg
+		else	
+			snd=new Audio("img/"+sound+".mp3");									// Use mp3
+		if (!mute)	{															// If not initing or muting	
+			snd.volume=50/100;													// Set volume
+			snd.play();															// Play it
+			}
+		}
+	
+</script>
+</body>
+</html>
