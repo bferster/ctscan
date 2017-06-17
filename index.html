@@ -312,7 +312,6 @@ function GetIntroData()												// GET INTRO DATA FROM USER
 		obsData.level=$("#intro-level").val();
 		obsData.video=($("#intro-video").val() ? $("#intro-video").val() : "Live");
 		obsData.remind=$("#intro-tot").val();
-
 		totTiming=$("#intro-tot").val();
 	
 		if ($("#intro-numkids").val()) 								// If num kids set
@@ -372,7 +371,7 @@ function InitObs() 													// INIT OBSERVATION PANEL
 			if (s)	c=s.substr(1,s.length-2)-0+1						// If not first, get and increment
 			$("#evc-"+id).html("("+c+")");								// Show new count
 			Sound("click");												// Click sound	
-			SaveEvent(curTime,dataLabCats[id-1],dataLabVals[id-1],c);	// Save event
+			SaveEvent(curTime,"Event",dataLabCats[id-1],dataLabVals[id-1],c);	// Save event
 			});
 
 		$("#evc-"+i).on("click", function(e) {							// ON EVENT CLICK
@@ -795,7 +794,7 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 	{
 		GetTextBox("Save as CSV File","Type name of CSV file to save to","mysession.csv", function(s) {
 			var i,o;
-			var rows=[["time","type","d2","d2","d4","d5"]];
+			var rows=[["time","type","d2","d2","d4","duration"]];
 			rows.push(["0","Session","Observer",obsData.name,""]);
 			rows.push(["0","Session","Email",obsData.email,""]);
 			rows.push(["0","Session","TeacherId",obsData.tid,""]);
