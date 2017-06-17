@@ -224,8 +224,13 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				}
 			else if (o[i].d1 == "Practice") {								// Practice	
 				DrawBox(start,85,end,489,"","#e74c3c",3,0);					// Draw box
-				DrawText(x,460,"#e74c3c",12,o[i].d2,"middle").setAttribute("font-weight","bold");
-				DrawText(x,475,"#e74c3c",12,o[i].d3,"middle").setAttribute("font-weight","bold");;
+				j=100;
+				if (end-start < 16)			j=0;
+				else if (end-start < 64)	j=5;
+				else if (end-start < 128)	j=10;
+				else if (end-start < 192)	j=20;
+				DrawText(x,460,"#e74c3c",12,ShortenString(o[i].d2,j),"middle").setAttribute("font-weight","bold");
+				DrawText(x,475,"#e74c3c",12,ShortenString(o[i].d3,j),"middle").setAttribute("font-weight","bold");;
 				}
 			else if (o[i].d1 == "Student actions") {						// Student actions	
 				DrawBox(start,416,end,435,"#999","#fff",1.5,3);				// Draw bar
@@ -235,11 +240,15 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				for (j=0;j<dataLabCats.length;++j)							// For each media type
 					if (o[i].d2 == dataLabCats[j]) {						// Matches
 						y=242+(j*20);										// Set pos
-						DrawBox(start,y,end,y+5,"#27ae60","",0,5);			// Draw bar
 						break;												// Quit
 						}
 				p=DrawBox(start,y,start+8,y+8,"#e67e22","",0,8);			// Draw circle
-				}
+/*				p.setAttribute("id","dot-"+i);								// Id
+				$("#dot-"+i).on("mouseover", function(e) { 					// On click
+					var id=e.target.id.substr(4);							// Get id
+					trace(obsEvents[id].d3);
+					});
+*/				}
 			else if (o[i].d1 == "Visual Aid") {								// Visual Aid	
 				for (j=0;j<dataMedia.length;++j)							// For each media type
 					if (o[i].d2 == dataMedia[j]) {							// Matches
@@ -248,7 +257,6 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 						break;												// Quit
 						}
 				}
-trace(o[i])	
 			}
 		DrawLine(xs,ys,"#ccc",5).setAttribute("stroke-dasharray","5,5");	// Draw engagement line
 	}
@@ -385,6 +393,8 @@ trace(o[i])
 
 	function ShortenString(str, len)									// SHORTEN A STRING TO LENGTH
 	{
+		if (!len)															// No length
+			return "";														// Return null
 		if (str && str.length > len)										// Too long
 			str=str.substr(0,(len-3)/2)+"..."+str.slice((len-3)/-2);		// Shorten	
 		return str;															// Return string
