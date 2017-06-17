@@ -335,18 +335,27 @@ function GetIntroData()												// GET INTRO DATA FROM USER
 
 function InitObs() 													// INIT OBSERVATION PANEL
 {
-	var i;
+	var i,j;
 	for (i=1;i<=dataMedia.length;++i) {									// For each media
 		$("#ml-"+i).text(dataMedia[i-1]) 								// Set label
 	
 		$("#md-"+i).on("click", function(e) {							// On box click
 			var col="#000",wgt="normal";								// Def style
-			var act=$(this).prop("checked") ? "active" : "inactive";	// Active
 			var id=e.currentTarget.id.substr(3);						// Get id			
-			if (act == "active") 										// If active
+			if ($(this).prop("checked")) {								// Activating
 				col="#009900",wgt="bold";								// Make it bold green
+				SaveEvent(curTime,"Visual Aid",dataMedia[id-1],"","",0);	// Save event
+				}
+			else{														// Deactivating
+				for (j=obsEvents.length-1;j>=0;--j) {					// Search backwards
+					if (obsEvents[j].d2 == dataMedia[id-1]) {			// Found last
+						obsEvents[j].d5=curTime-obsEvents[j].time;		// Add time	
+						trace("---> "+dataMedia[id-1]+" STOPPED at "+obsEvents[j].d5+" <----"); 
+						break;											// Quit looking
+						}
+					}
+				}
 			$("#ml-"+id).css({ "color":col, "font-weight":wgt});		// Style
-			SaveEvent(curTime,"Visual Aid",dataMedia[id-1],act);		// Save event
 			});
 		}
 	for (i=0;i<dataActs.length;++i) 									// For each student action
@@ -492,10 +501,10 @@ function InitObs() 													// INIT OBSERVATION PANEL
 		});
 
 	$("#obsConfirmPrac").on("click", function(e) {						// CONFIRM PRACTICE
-		var i;
+		var j;
 		if ((curCat < 0) || (curPrac < 0))								// No category and practice yet											
 			return;														// Quit
-		SaveEvent(pracTime,"Teacher actions",menus[curCat].cname,menus[curCat].prac[curPrac].pname,"Start");	// Save event
+		SaveEvent(pracTime,"Practice",menus[curCat].cname,menus[curCat].prac[curPrac].pname);	// Save event
 		$(this).css("display","none");									// Hide
 		Sound("click");													// Click sound	
 		});
@@ -529,7 +538,7 @@ function InitObs() 													// INIT OBSERVATION PANEL
 		if (!$("#newTerm").val())										// Nothing there						
 			return;														// Quit
 		Sound("click");													// Click sound	
-		SaveEvent(curTime,"Vocab word",$("#newTerm").val(),"Started",0);// Save term
+		SaveEvent(curTime,"Vocab Word",$("#newTerm").val(),"");			// Save term
 		vocabTopicTerms.push($("#newTerm").val());						// Add to list
 		$("#newTerm").val("");											// Clear
 		fillTermList();													// Fill term list
@@ -546,7 +555,14 @@ function InitObs() 													// INIT OBSERVATION PANEL
 			
 			$("[id^=termItem-]").on("click", function(e) {				// On click of item		
 				var id=e.currentTarget.id.substr(9);					// Get id			
-				SaveEvent(curTime,"Vocab word",$("#termItem-"+id).text(),"Stopped");	// Stop term
+				var str=$("#termItem-"+id).text();						// Get word
+				for (j=obsEvents.length-1;j>=0;--j) {					// Search backwards
+					if (obsEvents[j].d2 == str) {						// Found last
+						obsEvents[j].d5=curTime-obsEvents[j].time;		// Add time	
+						trace("---> "+str+" STOPPED at "+obsEvents[j].d5+" <----"); 
+						break;											// Quit looking
+						}
+					}
 				vocabTopicTerms.splice(id,1);							// Remove it
 				Sound("delete");										// Delete sound	
 				fillTermList();											// Fill term list
@@ -655,6 +671,39 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 		str+="<div id='saveDB' class='ct-obsNewPrac' style='float:right;margin-left:8px;'>Save session to database</div>";
 		str+="<div id='saveCSV' class='ct-obsNewPrac' style='float:right'>Save CSV to computer</div><br>";
 		$("#obsPanel").html(str);										// Draw panel
+
+		var now1=curTime,now2=curTime,now3=curTime,now4=curTime,now5=curTime;	// Start at end
+		for (j=obsEvents.length-1;j>=0;--j) {							// Search backwards to set dur
+			if (obsEvents[j].d1 == "Student actions") {					// Found a student action
+				obsEvents[j].d5=now1-obsEvents[j].time;					// Add time	
+				now1=obsEvents[j].time;									// New now
+				}
+			else if (obsEvents[j].d1 == "Vocab Word") {					// Found a vocab
+				if (!obsEvents[j].d5) 									// If not ended
+					obsEvents[j].d5=curTime-obsEvents[j].time;			// End it
+				}
+			else if (obsEvents[j].d1 == "Visual Aid") {					// Found a visual ais
+				if (!obsEvents[j].d5) 									// If not ended
+					obsEvents[j].d5=curTime-obsEvents[j].time;			// End it
+				}
+			else if (obsEvents[j].d1 == "Practice") {					// Found a practice
+				obsEvents[j].d5=now2-obsEvents[j].time;					// Add time	
+				now2=obsEvents[j].time;									// New now
+				}
+			else if (obsEvents[j].d2 == "Which Teacher") {				// Found a which action
+				obsEvents[j].d5=now3-obsEvents[j].time;					// Add time	
+				now3=obsEvents[j].time;									// New now
+				}
+			else if (obsEvents[j].d2 == "Grouping") {					// Found a group action
+				obsEvents[j].d5=now4-obsEvents[j].time;					// Add time	
+				now4=obsEvents[j].time;									// New now
+				}
+			else if (obsEvents[j].d2 == "Model") {						// Found a model action
+				obsEvents[j].d5=now5-obsEvents[j].time;					// Add time	
+				now5=obsEvents[j].time;									// New now
+				}
+		}
+	
 		ShowRawData();													// Fill in data table
 		$("#obsPanel").animate({ opacity:1 },400);						// Show end panel
 	
@@ -685,22 +734,22 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 	{
 		var i
 		var str="<table id='dataTable'>"
-		str+="<tr id='od-name'><td><b>Observer:</b></td><td>"+obsData.name+"<td></tr>";
-		str+="<tr id='od-email'><td><b>Observer email:&nbsp;&nbsp;</b></td><td>"+obsData.email+"<td></tr>";
-		str+="<tr id='od-tid'><td><b>Teacher Id:</b></td><td>"+obsData.tid+"<td></tr>";
-		str+="<tr id='od-grade'><td><b>Grade:</b></td><td>"+obsData.grade+"<td></tr>";
+		str+="<tr id='od-name'><td><b>Observer</b></td><td>"+obsData.name+"<td></tr>";
+		str+="<tr id='od-email'><td><b>Email</b></td><td>"+obsData.email+"<td></tr>";
+		str+="<tr id='od-tid'><td><b>Teacher Id&nbsp;&nbsp</b></td><td>"+obsData.tid+"<td></tr>";
+		str+="<tr id='od-grade'><td><b>Grade</b></td><td>"+obsData.grade+"<td></tr>";
 		str+="<tr id='od-subject'><td><b>Subject:</b></td><td>"+obsData.subject+"<td></tr>";
-		str+="<tr id='od-date'><td><b>Date:</b></td><td>"+obsData.date+"<td></tr>";
-		str+="<tr id='od-block'><td><b>Block:</b></td><td>"+obsData.block+"<td></tr>";
-		str+="<tr id='od-setting'><td><b>Setting:</b></td><td>"+obsData.setting+"<td></tr>";
-		str+="<tr id='od-video'><td><b>Video:</b></td><td>"+obsData.video+"<td></tr>";
-		str+="<tr><td><b>Reminder:</b></td><td>"+obsData.remind+"<td></tr>";
+		str+="<tr id='od-date'><td><b>Date</b></td><td>"+obsData.date+"<td></tr>";
+		str+="<tr id='od-block'><td><b>Block</b></td><td>"+obsData.block+"<td></tr>";
+		str+="<tr id='od-setting'><td><b>Setting</b></td><td>"+obsData.setting+"<td></tr>";
+		str+="<tr id='od-video'><td><b>Video</b></td><td>"+obsData.video+"<td></tr>";
+		str+="<tr><td><b>Reminder</b></td><td>"+obsData.remind+"<td></tr>";
 		str+"<br>";
 
 		var d=obsEvents;
 		for (i=0;i<d.length;++i){
-			str+="<tr id=oe-"+i+"><td><b>Event:</b></td><td style='overflow:hidden;white-space:nowrap'><div style='display:inline-block;width:50px'>"+d[i].time+"</div>";
-				str+=d[i].d1+", "+ShortenString(d[i].d2,20)+","+ShortenString(d[i].d3,20)+","+ShortenString(d[i].d4,20)+"</td></tr>";
+			str+="<tr id=oe-"+i+"><td><b>Event:</b></td><td style='overflow:hidden;white-space:nowrap'><div style='display:inline-block;width:40px'>"+d[i].time+"</div><b>";
+				str+=d[i].d1+"</b>,"+ShortenString(d[i].d2,20)+","+ShortenString(d[i].d3,20)+","+ShortenString(d[i].d4,20)+","+d[i].d5+"</td></tr>";
 			}	
 		str+="</table>";
 		$("#dataPanel").html(str);										// Add to data panel										

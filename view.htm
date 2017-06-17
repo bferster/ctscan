@@ -46,11 +46,10 @@
 </head>
 <body>
 	<br>
-	<div style="margin-left:auto; margin-right:auto;text-align:center;width:500px;" >
-		<img src="img/ctlogo400.png" width="150"><br><br>
-		<b>Classroom Teaching Scan Data Viewer</b><br>
-	</div>
 	<div id="viewPanel" class="ct-viewPanel">
+	<div style="text-align:center">
+		<img src="img/ctlogo32.png"><br>
+		<b>Classroom Teaching Scan Viewer</b></div><br><hr>
 		<div style="width:100%;max-height:75%;overflow-y:auto">
 			<table id="sessionTable" style="width:100%">	
 				<tr style="font-weight:bold"><td>&nbsp;&#x2610;&nbsp;&nbsp;</td><td>Observer</td><td>Email</td><td>Date</td><td>Teacher Id</td><td>Session Id</td><tr><tr>
@@ -117,12 +116,16 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			$("input:checkbox").prop("checked",$(this).prop("checked"));	// Toggle
 			});													
 		$("#showTimeline").on("click", function(e) {						// ON SHOW TIMELINE
+				if (!curJson)												// If no data
+					return;													// Quit	
 				for (i=0;i<curJson.length;++i) 								// For each session
-					if ($("#sessId-"+i).prop("checked")) 						// If checked
+					if ($("#sessId-"+i).prop("checked")) 					// If checked
 						window.open("timeline.htm?"+curJson[i].id,"_blank")	// Open tab
 			Sound("ding");													// Ding sound	
 			});													
 		$("#showRaw").on("click", function(e) {								// ON SHOW RAW
+			if (!curJson)													// If no data
+				return;														// Quit	
 			var i;
 			$("#dataPanel").html("No sessions selected...");				// Clear data panel										
 			for (i=0;i<curJson.length;++i) {								// For each session
@@ -138,6 +141,8 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			});													
 
 		$("#saveCSV").on("click", function(e) {								// ON SHOW RAW
+			if (!curJson)													// If no data
+				return;														// Quit	
 				GetTextBox("Save as CSV File","Type name of CSV file to save to","session.csv", function(s) {
 					ExportToCSV(s, [
 						['name','description'],	
@@ -154,22 +159,21 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 	{
 		var i
 		var str="<table>"
-		str+="<tr><td><b>Session Id:</b></td><td>"+curJson[num].id+"<td></tr>";
-		str+="<tr><td><b>Observer:</b></td><td>"+curJson[num].obs+"<td></tr>";
-		str+="<tr><td><b>Observer email:&nbsp;&nbsp;</b></td><td>"+curJson[num].email+"<td></tr>";
-		str+="<tr><td><b>Teacher Id:</b></td><td>"+curJson[num].teacherId+"<td></tr>";
-		str+="<tr><td><b>Grade:</b></td><td>"+curJson[num].grade+"<td></tr>";
-		str+="<tr><td><b>Subject:</b></td><td>"+curJson[num].subject+"<td></tr>";
-		str+="<tr><td><b>Date:</b></td><td>"+curJson[num].date+"<td></tr>";
-		str+="<tr><td><b>Block:</b></td><td>"+curJson[num].block+"<td></tr>";
-		str+="<tr><td><b>Setting:</b></td><td>"+curJson[num].setting+"<td></tr>";
-		str+="<tr><td><b>Video:</b></td><td>"+curJson[num].video+"<td></tr>";
-		str+="<tr><td><b>Reminder:</b></td><td>"+curJson[num].remind+"<td></tr>";
+		str+="<tr id='od-name'><td><b>Observer</b></td><td>"+curJson[num].obs+"<td></tr>";
+		str+="<tr id='od-email'><td><b>Email</b></td><td>"+curJson[num].email+"<td></tr>";
+		str+="<tr id='od-tid'><td><b>Teacher Id&nbsp;&nbsp</b></td><td>"+curJson[num].teacherId+"<td></tr>";
+		str+="<tr id='od-grade'><td><b>Grade</b></td><td>"+curJson[num].grade+"<td></tr>";
+		str+="<tr id='od-subject'><td><b>Subject:</b></td><td>"+curJson[num].subject+"<td></tr>";
+		str+="<tr id='od-date'><td><b>Date</b></td><td>"+curJson[num].date+"<td></tr>";
+		str+="<tr id='od-block'><td><b>Block</b></td><td>"+curJson[num].block+"<td></tr>";
+		str+="<tr id='od-setting'><td><b>Setting</b></td><td>"+curJson[num].setting+"<td></tr>";
+		str+="<tr id='od-video'><td><b>Video</b></td><td>"+curJson[num].video+"<td></tr>";
+		str+="<tr><td><b>Reminder</b></td><td>"+curJson[num].remind+"<td></tr>";
 		str+"<br>";
 		var d=$.parseJSON(curJson[num].events);
 		for (i=0;i<d.length;++i){
-			str+="<tr><td><b>Event:</b></td><td style='overflow:hidden;white-space:nowrap'><div style='display:inline-block;width:50px;'>"+d[i].time+"</div>";
-			str+=d[i].d1+", "+d[i].d2+","+ShortenString(d[i].d3,30)+"</td></tr>";
+			str+="<tr id=oe-"+i+"><td><b>Event:</b></td><td style='overflow:hidden;white-space:nowrap'><div style='display:inline-block;width:40px'>"+d[i].time+"</div><b>";
+				str+=d[i].d1+"</b>,"+ShortenString(d[i].d2,30)+","+ShortenString(d[i].d3,40)+","+ShortenString(d[i].d4,20)+","+d[i].d5+"</td></tr>";
 			}	
 		str+="</table><hr>";
 		$("#dataPanel").append(str);										// Add to data panel										

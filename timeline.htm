@@ -104,7 +104,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		$("#mainPanel").animate({ opacity:1 },1500);						// Show timeline
 		$("#dataPanel").animate({ opacity:1 },1500);						// Show data
 		});
-	$("#scaleUp").on("click", function(e) {									// SCALE UP
+	$("#scaleDown").on("click", function(e) {								// SCALE DOWN
 		if (scaleSpan < 16)													// At max
 			return;															// Quit
 		$("#scaleAmt").text($("#scaleAmt").text()-1);						// Show scale
@@ -113,7 +113,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		Draw()
 		});
 
-	$("#scaleDown").on("click", function(e) {								// SCALE DOWN
+	$("#scaleUp").on("click", function(e) {									// SCALE UP
 		if (scaleSpan > 1024)												// At max
 			return;															// Quit
 		$("#scaleAmt").text($("#scaleAmt").text()-0+1);						// Show scale
