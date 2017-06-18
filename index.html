@@ -78,6 +78,9 @@
 
 		.ct-dialogTitle {	font-size: 20px; font-weight: bold; color: #000; margin-bottom: 8px; user-select: none;
 							}
+		.unselectable { 	-moz-user-select: none;     -khtml-user-select: none;
+		   			 		-webkit-user-select: none;  -ms-user-select: none;   user-select: none;
+		   				}
 		@media only screen and (max-height: 525px) {	.ct-obsPanel {	margin-top: 0; margin-bottom: 0   }		}
 
 		.ui-dialog-buttonpane.ui-widget-content.ui-helper-clearfix { border:none }
@@ -474,6 +477,8 @@ function InitObs() 													// INIT OBSERVATION PANEL
 		$("#obsPracText").html(str);
 		
 		$(".ct-obsPracSubs").on("click", function(e) {					// CLICK ON PRACTICE SUB
+				if ($("#obsConfirmPrac").css("display") != "none")		// If not confirmed yet
+					return;												// Quit
 				var id=e.currentTarget.id-1;							// Get id			
 				var sub=menus[curCat].prac[curPrac].subs[id];			// Get sub
 				var n=menus[curCat].prac[curPrac].subs.length;			// Number of subs
@@ -671,6 +676,7 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 		str+="<div id='saveCSV' class='ct-obsNewPrac' style='float:right'>Save CSV to computer</div><br>";
 		$("#obsPanel").html(str);										// Draw panel
 
+		var i,j,n,c;
 		var now1=curTime,now2=curTime,now3=curTime,now4=curTime,now5=curTime;	// Start at end
 		for (j=obsEvents.length-1;j>=0;--j) {							// Search backwards to set dur
 			if (obsEvents[j].d1 == "Student actions") {					// Found a student action
@@ -688,6 +694,16 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 			else if (obsEvents[j].d1 == "Practice") {					// Found a practice
 				obsEvents[j].d5=now2-obsEvents[j].time;					// Add time	
 				now2=obsEvents[j].time;									// New now
+				c=0;	n=1;											// Reset count
+				for (i=j+1;i<obsEvents.length;++i) {					// Look for subs
+					if (obsEvents[i].d1 == "Practice")					// If into another practice
+						break;											// Quit
+					if  (obsEvents[i].d1 == "Teacher actions")	{		// Found one
+						n=Math.max(obsEvents[i].d5,1);					// Get count
+						++c;											// Add to count
+						}
+					}
+				obsEvents[j].d4=Math.round(c/n*100);					// Set percentage
 				}
 			else if (obsEvents[j].d2 == "Which Teacher") {				// Found a which action
 				obsEvents[j].d5=now3-obsEvents[j].time;					// Add time	
@@ -701,6 +717,8 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 				obsEvents[j].d5=now5-obsEvents[j].time;					// Add time	
 				now5=obsEvents[j].time;									// New now
 				}
+				
+
 		}
 	
 		ShowRawData();													// Fill in data table
@@ -794,7 +812,7 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 	{
 		GetTextBox("Save as CSV File","Type name of CSV file to save to","mysession.csv", function(s) {
 			var i,o;
-			var rows=[["time","type","d2","d2","d4","duration"]];
+			var rows=[["time","type","d1","d2","d3","duration"]];
 			rows.push(["0","Session","Observer",obsData.name,""]);
 			rows.push(["0","Session","Email",obsData.email,""]);
 			rows.push(["0","Session","TeacherId",obsData.tid,""]);

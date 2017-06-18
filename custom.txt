@@ -54,7 +54,7 @@ Strategy - using morph parts (explain/intro) *Strategy morph &Cues Instruction,C
 Strategy - models use *strategy models &Cues Instruction,Clear Language,Provides Prompts,Monitors Use,ProvidesFeedback
 Strategy - prompts use *Strategy prompts &Cues Instruction,Clear Language,Provides Rationale
 
-MEDIA=Diagram/Graph,Object/Manipulative,Graphic Organizer,Picture,Movie,Text
+MEDIA=Diagram,Object/Manipulative,Graphic Organizer,Picture,Movie,Text
 BUTLAB=Deep<br>Q OTR,Rote<br>Q OTR,Chor/Grp<br>Response,Non-Acad<br>OTR,Academic<br>FB,Behavior<br>FB,Generic<br>FB,Precorrect<br>Statement,Student<br>Ask Q,# Student<br>Asking Q,Custom<br>1,Custom<br>2,Custom<br>3,Custom<br>4
 BUTVAL=Deep Q OTR,Rote Q OTR,Choral Response,Social Behavioral OTR,Academic Specific FB,Behavior Specific FB,Generic FB Statement,Precorrect Statement,Student,Ask Q,Num Student Ask Q,Custom,Custom,Custom,Custom
 BUTCAT=OTR,OTR,OTR,OTR,FB,FB,FB,FB,Student Q,Student Q,Custom,Custom,Custom,Custom

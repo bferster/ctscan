@@ -36,6 +36,13 @@
 							text-align: center; border-radius: 6px; display: inline-block; user-select: none;
 							font-size: 12px; background-color: #27ae60; padding: 2px 8px 2px 8px; vertical-align:-3px;
 							}
+		.ct-popup {			display: none; position: absolute; padding: 3px 8px 3px 8px; border-radius: 12px;
+							font-size: 11px; border: 1px solid #999; background-color: #eee;
+							}
+		
+		.unselectable { 	-moz-user-select: none;     -khtml-user-select: none;
+		   			 		-webkit-user-select: none;  -ms-user-select: none;   user-select: none;
+		   				}
 		.ui-dialog-buttonpane.ui-widget-content.ui-helper-clearfix { border:none }
 		.ui-dialog { border-radius:6px; background-color:#eee }
 		.ui-button { border-radius:30px;outline:none }
@@ -48,14 +55,15 @@
 <body>
 	<div id="mainPanel" class="ct-mainPanel">
 	<div style="text-align:center">
-		<div style="float:right;line-height:13px">
-			<img id="scaleUp"   style="cursor:zoom-in" src="img/upbut.gif"><br>
+		<div style="float:right;line-height:13px;user-select:none;">
+			<img id="scaleUp"   style="cursor:zoom-in;padding-bottom:2px;" src="img/upbut.gif"><br>
 			<span id="scaleAmt">5</span><br>
 			<img id="scaleDown" style="cursor:zoom-out" src="img/downbut.gif"><br>
 		</div>
+		<div>
 		<img src="img/ctlogo32.png"><br>
 		<b>Classroom Teaching Scan Timeline</b></div><br>
-			<div style="text-align:right;font-size:12px;width:150px;float:left;margin-top:8px;padding-right:10px;line-height:20px;font-weight:bold">
+			<div style="text-align:right;font-size:12px;width:150px;float:left;margin-top:8px;padding-right:10px;line-height:20px;font-weight:bold;user-select:none;">
 			<span style="color:#999;font-size:10px">100%</span><br>
 			<span style="color:#666;line-height:40px">Engagement</span><br>
 			<span style="color:#999;font-size:10px">0%</span><br><br>
@@ -78,6 +86,7 @@
 		</div>
 	</div>
 	<div id="dataPanel" class="ct-dataPanel"></div>
+	<div id="popup" class="ct-popup"></div>
 
 <script>
 
@@ -95,12 +104,19 @@ var dataLabVals=[];															// Holds OTR button values
 var dataLabCats=[];															// Holds OTR button categories											
 var dataActs=[];															// Holds media buttons											
 var dataAcad=[];															// Holds academic diciplines
+var menuFile="menus.txt";
 
 $(document).ready(function() {								           	// ON PAGE LOADED
 
 	var url=window.location.search.substring(1);							// Get query string
-	if (!url)	url=15;
-	
+	if (url) {																// If something	
+		if (url.split("&")[0]) menuFile=url.split("&")[0];					// Get menu file
+		if (!menuFile.match(/\.txt/))	menuFile+=".txt";					// Add ext if not there
+		url=url.split("&")[1];												// Get id
+		}
+	else
+		url=15;																// Use default
+
 	document.title+=" ("+url+")";											// Add id to title		
 	Query("id = '"+url+"'", function(d) { 									// Send query
 		if (!d || d == "null")												// No hits													
@@ -135,7 +151,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		Draw()
 		});
 	
-	$.ajax({ type: "GET", url: "menus.txt", success: function(text) {	// Get menus text tile
+	$.ajax({ type: "GET", url: menuFile, success: function(text) {		// Get menus text tile
 		var i,j,o,cp,cc,subs;
 		text=text.replace(/\n\r/g,"\n");									// LFCR -> LF
 		text=text.replace(/\r\n/g,"\n");									// CRLF -> LF
@@ -182,7 +198,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		var vpos=0;
 		var x=8,y;
 		var h=530;															
-		var i,j,o,p,xs,ys,start,end;
+		var i,j,o,p,xs,ys,start,end,str;
 		var mins=Math.ceil(maxTime/60);										// Number of minutes to show
 		$("#timePanel").height(h);											// Set panel height
 		var w=(mins*scaleSpan)+8;											// Width of timeline
@@ -230,7 +246,8 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				else if (end-start < 128)	j=10;
 				else if (end-start < 192)	j=20;
 				DrawText(x,460,"#e74c3c",12,ShortenString(o[i].d2,j),"middle").setAttribute("font-weight","bold");
-				DrawText(x,475,"#e74c3c",12,ShortenString(o[i].d3,j),"middle").setAttribute("font-weight","bold");;
+				str=o[i].d3+" ("+o[i].d4+"%)";
+				DrawText(x,475,"#e74c3c",12,ShortenString(str,j),"middle").setAttribute("font-weight","bold");;
 				}
 			else if (o[i].d1 == "Student actions") {						// Student actions	
 				DrawBox(start,416,end,435,"#999","#fff",1.5,3);				// Draw bar
@@ -243,12 +260,12 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 						break;												// Quit
 						}
 				p=DrawBox(start,y,start+8,y+8,"#e67e22","",0,8);			// Draw circle
-/*				p.setAttribute("id","dot-"+i);								// Id
-				$("#dot-"+i).on("mouseover", function(e) { 					// On click
+				p.setAttribute("id","dot-"+i);								// Id
+				$("#dot-"+i).on("click", function(e) { 						// On click
 					var id=e.target.id.substr(4);							// Get id
-					trace(obsEvents[id].d3);
+					ShowPopup(e.clientX+8,e.clientY+16,o[id].d3);			// Show popup
 					});
-*/				}
+				}
 			else if (o[i].d1 == "Visual Aid") {								// Visual Aid	
 				for (j=0;j<dataMedia.length;++j)							// For each media type
 					if (o[i].d2 == dataMedia[j]) {							// Matches
@@ -353,6 +370,15 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 // HELPERS
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	function ShowPopup(x, y, msg)										// SHOW A POPUP
+	{
+		if (!msg)															// Nothing to show
+			return;															// Quit
+		$("#popup").css({left:x,top:y});									// Position
+		$("#popup").html(msg);												// Add text										
+		$("#popup").show();													// Show it
+		$("#popup").delay(2000).fadeOut(400);								// Close after n seconds
+		}
 
 	function Query(query, callback) 
 	{

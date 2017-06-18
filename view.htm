@@ -35,6 +35,9 @@
 							text-align: center; border-radius: 6px; display: inline-block; user-select: none;
 							font-size: 12px; background-color: #27ae60; padding: 2px 8px 2px 8px; vertical-align:-3px;
 							}
+		.unselectable { 	-moz-user-select: none;     -khtml-user-select: none;
+		   			 		-webkit-user-select: none;  -ms-user-select: none;   user-select: none;
+		   				}
 		.ui-dialog-buttonpane.ui-widget-content.ui-helper-clearfix { border:none }
 		.ui-dialog { border-radius:6px; background-color:#eee }
 		.ui-button { border-radius:30px;outline:none }
@@ -80,9 +83,15 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 var curJson=null;															// Holds session results
+var menuFile="";															// Default menu
 
 $(document).ready(function() {								           	// ON PAGE LOADED
 
+	var menuFile="menus.txt";												// Default menu
+	var url=window.location.search.substring(1);							// Get query string
+	if (url) 																// If something on command line
+		menuFile=url;														// Get name
+	
 	Date.prototype.toDateInputValue = (function() {							// Set today's date
 			var local=new Date(this);										// Get UTC
 			return local.toJSON().slice(0,10);								// Get date portion
@@ -120,7 +129,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 					return;													// Quit	
 				for (i=0;i<curJson.length;++i) 								// For each session
 					if ($("#sessId-"+i).prop("checked")) 					// If checked
-						window.open("timeline.htm?"+curJson[i].id,"_blank")	// Open tab
+						window.open("timeline.htm?"+menuFile+"&"+curJson[i].id,"_blank")	// Open tab
 			Sound("ding");													// Ding sound	
 			});													
 		$("#showRaw").on("click", function(e) {								// ON SHOW RAW
