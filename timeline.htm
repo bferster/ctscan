@@ -123,7 +123,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			return;;														// Quit
 		d=$.parseJSON(d);													// Objectify result
 		curJson=d[0];														// Save data
-		obsEvents=$.parseJSON(curJson.events);
+		obsEvents=$.parseJSON(curJson.events);								// Objectify events
 		for (i=0;i<obsEvents.length;++i) {									// For each event
 			if (obsEvents[i].time > maxTime)								// If a longer time
 				maxTime=obsEvents[i].time;									// Use it
@@ -139,16 +139,16 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		$("#scaleAmt").text($("#scaleAmt").text()-1);						// Show scale
 		scaleSpan/=2;														// Show less
 		Sound("click");														// Click sound
-		Draw()
+		Draw();																// Redraw
 		});
 
 	$("#scaleUp").on("click", function(e) {									// SCALE UP
 		if (scaleSpan > 1024)												// At max
 			return;															// Quit
 		$("#scaleAmt").text($("#scaleAmt").text()-0+1);						// Show scale
-		scaleSpan*=2;														// Show less
+		scaleSpan*=2;														// Show more
 		Sound("click");														// Click sound
-		Draw()
+		Draw();																// Redraw
 		});
 	
 	$.ajax({ type: "GET", url: menuFile, success: function(text) {		// Get menus text tile
@@ -240,13 +240,13 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				}
 			else if (o[i].d1 == "Practice") {								// Practice	
 				DrawBox(start,85,end,489,"","#e74c3c",3,0);					// Draw box
-				j=100;
-				if (end-start < 16)			j=0;
+				j=100;														// Assume full width
+				if (end-start < 16)			j=0;							// Shrink if smaller box
 				else if (end-start < 64)	j=5;
 				else if (end-start < 128)	j=10;
 				else if (end-start < 192)	j=20;
 				DrawText(x,460,"#e74c3c",12,ShortenString(o[i].d2,j),"middle").setAttribute("font-weight","bold");
-				str=o[i].d3+" ("+o[i].d4+"%)";
+				str=o[i].d3+" ("+o[i].d4+"%)";								// Add % sub-practices completed
 				DrawText(x,475,"#e74c3c",12,ShortenString(str,j),"middle").setAttribute("font-weight","bold");;
 				}
 			else if (o[i].d1 == "Student actions") {						// Student actions	
@@ -351,15 +351,15 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			o.setAttribute("rx",rad);										// Set X radius
 			o.setAttribute("ry",rad);										// Y
 			}
-		if (ewid) {
+		if (ewid) {															// If an edge
 			o.style.stroke=ecol;  											// Stroke color
 			o.setAttribute("stroke-width",ewid+"px");						// Stroke width 
 			}
-		else
-			o.style.stroke="none";											// No edge	
-		if (col) 
+		else																// No edge
+			o.style.stroke="none";											// No stroke	
+		if (col) 															// If a fill color
 			o.style.fill=col;  												// Fill color
-		else
+		else																// No color
 			o.style.fill="none";											// No fill	
 		svg.appendChild(o);													// Add element to DOM
 		return o;															// Return pointer to element
@@ -390,33 +390,6 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			});		
 	}
 		
-	function GetTextBox(title, content, def, callback)					// GET TEXT LINE BOX
-	{
-		$("#alertBoxDiv").remove();											// Remove any old ones
-		$("body").append("<div class='unselectable' id='alertBoxDiv'></div>");														
-		var str="<p><img src='img/ctlogo32.png' style='vertical-align:-8px'/>&nbsp;&nbsp;";								
-		str+="<span class='ct-dialogTitle'>"+title+"</span><p>";
-		str+="<div style='font-size:12px;margin:14px'>"+content;
-		str+="<p><input class='ct-is' type='text' id='gtBoxTt' value='"+def+"'></p>";
-		str+="<div id='dialogOK' class='ct-but'>OK</div>";
-		str+="<div id='dialogCancel' class='ct-but' style='margin-left:8px;background-color:#990000'>Cancel</div></div>";
-		
-		$("#alertBoxDiv").append(str);	
-		$("#alertBoxDiv").dialog({ width:500 });	
-		$("#alertBoxDiv").dialog("option","position",{ my:"center", at:"center", of:viewPanel });
-		$("#alertBoxDiv").css({ border:"1px solid #990000","border-radius":"6px"});
-
-		$("#dialogOK").on("click", function() {								// ON OK BUT
-					callback($("#gtBoxTt").val());
-					$("#alertBoxDiv").remove();  
-				});
-
-		$("#dialogCancel").on("click", function() {							// ON CANCEL BUT
-				$("#alertBoxDiv").remove();									// Remove 
-				Sound("delete");											// Delete sound
-			});
-		}
-
 	function ShortenString(str, len)									// SHORTEN A STRING TO LENGTH
 	{
 		if (!len)															// No length
