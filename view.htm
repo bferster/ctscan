@@ -51,8 +51,12 @@
 	<br>
 	<div id="viewPanel" class="ct-viewPanel">
 	<div style="text-align:center">
+			<span style="float:right;color:#666">Help&nbsp;<a style="float:right" href="https://docs.google.com/document/d/19l87L5sZfLohU6rhQKLMERTNHhQr-jLiE4xQJeYN_3g/edit?usp=sharing" target="_blank">
+	<img src="img/helpicon.gif" style="vertical-align:bottom" title="Show help"></a></span>
+
 		<img src="img/ctlogo32.png"><br>
-		<b>Classroom Teaching Scan Viewer</b></div><br><hr>
+		<b>Classroom Teaching Scan Viewer</b></div>
+		<br><hr>
 		<div style="width:100%;max-height:75%;overflow-y:auto">
 			<table id="sessionTable" style="width:100%">	
 				<tr style="font-weight:bold"><td>&nbsp;&#x2610;&nbsp;&nbsp;</td><td>Observer</td><td>Email</td><td>Date</td><td>Teacher Id</td><td>Session Id</td><tr><tr>
@@ -75,7 +79,6 @@
 		</div>	
  	</div><br>
 	<div id="dataPanel" class="ct-dataPanel">No sessions selected...</div>
-
 <script>
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -170,7 +173,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		var str="<table>"
 		str+="<tr id='od-name'><td><b>Observer</b></td><td>"+curJson[num].obs+"<td></tr>";
 		str+="<tr id='od-email'><td><b>Email</b></td><td>"+curJson[num].email+"<td></tr>";
-		str+="<tr id='od-tid'><td><b>Teacher Id&nbsp;&nbsp</b></td><td>"+curJson[num].teacherId+"<td></tr>";
+		str+="<tr id='od-tid'><td><b>Teacher&nbsp;Id&nbsp;&nbsp</b></td><td>"+curJson[num].teacherId+"<td></tr>";
 		str+="<tr id='od-grade'><td><b>Grade</b></td><td>"+curJson[num].grade+"<td></tr>";
 		str+="<tr id='od-subject'><td><b>Subject:</b></td><td>"+curJson[num].subject+"<td></tr>";
 		str+="<tr id='od-date'><td><b>Date</b></td><td>"+curJson[num].date+"<td></tr>";

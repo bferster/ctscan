@@ -61,31 +61,35 @@
 			<img id="scaleDown" style="cursor:zoom-out" src="img/downbut.gif"><br>
 		</div>
 		<div>
-		<img src="img/ctlogo32.png"><br>
-		<b>Classroom Teaching Scan Timeline</b></div><br>
-			<div style="text-align:right;font-size:12px;width:150px;float:left;margin-top:8px;padding-right:10px;line-height:20px;font-weight:bold;user-select:none;">
-			<span style="color:#999;font-size:10px">100%</span><br>
-			<span style="color:#666;line-height:40px">Engagement</span><br>
-			<span style="color:#999;font-size:10px">0%</span><br><br>
+		<div class="unselectable">
+			<img src="img/ctlogo32.png"><br>
+			<b>Classroom Teaching Scan Timeline</b></div><br>
+		</div>	
+		<div style="text-align:right;font-size:12px;width:150px;float:left;margin-top:8px;padding-right:10px;line-height:20px;font-weight:bold;user-select:none;">
+			<span style="color:#e74c3c;line-height:60px">Practice</span><br>
+			<span style="color:#888">Student Actions</span><br><br>
+			<span style="color:#e67e22" id="evt-0">OTR</span><br>
+			<span style="color:#e67e22" id="evt-1">Feedback</span><br>
+			<span style="color:#e67e22" id="evt-2">Questions</span><br>
+			<span style="color:#e67e22" id="evt-3">Custom</span><br><br><br>
+			<span style="color:#3db1ff;line-height:30px">Vocab</span><br><br><br>
 			<span style="color:#27ae60" id="med-0">Diagram/Graphic</span><br>
 			<span style="color:#27ae60" id="med-1">Object/Manipulative</span><br>
 			<span style="color:#27ae60" id="med-2">Graphic Organizer</span><br>
 			<span style="color:#27ae60" id="med-3">Picture</span><br>
 			<span style="color:#27ae60" id="med-4">Movie</span><br>
-			<span style="color:#27ae60" id="med-5">Text</span><br><br>
-			<span style="color:#e67e22" id="evt-0">OTR</span><br>
-			<span style="color:#e67e22" id="evt-1">Feedback</span><br>
-			<span style="color:#e67e22" id="evt-2">Questions</span><br>
-			<span style="color:#e67e22" id="evt-3">Custom</span><br><br><br>
-			<span style="color:#3db1ff">Vocab</span><br><br><br>
-			<span style="color:#888">Student Actions</span><br>
-			<span style="color:#e74c3c;line-height:60px">Practice</span><br>
+			<span style="color:#27ae60" id="med-5">Text</span><br>
+			<span style="color:#999;font-size:10px;line-height:35px">100%</span><br>
+			<span style="color:#666">Engagement</span><br>
+			<span style="color:#999;font-size:10px">0%</span><br>
 			</div>
 		<div id="timePanel" class="ct-timePanel">
 		<svg id="svg" width="100%" height="99%"></svg>
 		</div>
 	</div>
 	<div id="dataPanel" class="ct-dataPanel"></div>
+	<span style="float:right;color:#666">Help&nbsp;<a style="float:right" href="https://docs.google.com/document/d/19l87L5sZfLohU6rhQKLMERTNHhQr-jLiE4xQJeYN_3g/edit?usp=sharing" target="_blank">
+	<img src="img/helpicon.gif" style="vertical-align:bottom" title="Show help"></a></span><br>
 	<div id="popup" class="ct-popup"></div>
 
 <script>
@@ -207,15 +211,16 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		if (w > $("#timePanel").width())									// If no scroller
 			h-=18;															// Reduce height
 		for (i=0;i<5;++i) {													// For each engagement line
-			y=i*16+5;														// Set height
+			y=i*16+425;														// Set height
 			DrawLine([x,w],[y,y],"#ccc",.5);								// Draw it
 			}
 		ys=[5, h-23 ];														// Line ys
-		DrawLine([x,w],[225,225],"#ccc",.5);								// Draw separators
-		DrawLine([x,w],[325,325],"#ccc",.5);
-		DrawLine([x,w],[410,410],"#ccc",.5);
-		DrawLine([x,w],[440,440],"#ccc",.5);
-		DrawLine([x,w],[490,490],"#ccc",.5);
+		DrawLine([x,w],[5,5],"#ccc",.5);									// Top line
+		DrawLine([x,w],[55,55],"#ccc",.5);									// Actions separator
+		DrawLine([x,w],[75,75],"#ccc",.5);									// OTR
+		DrawLine([x,w],[195,195],"#ccc",.5);								// Vocab
+		DrawLine([x,w],[275,275],"#ccc",.5);								// Media
+
 		for (i=0;i<=mins;++i) {												// For each minute
 			xs=[x,x];														// Xs
 			DrawLine(xs,ys,"#ccc",.5);										// Draw minute tic
@@ -230,33 +235,34 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			x=start+(end-start)/2;											// Center
 			if (o[i].d2 == "Percent engaged") {								// Engagement	
 				xs.push(GetPixFromTime(o[i].time));							// X pos
-				ys.push((100-o[i].d3)/100*64+5);							// Y pos
+				ys.push((100-o[i].d3)/100*60+427);							// Y pos
 				}
+	
 			else if (o[i].d1 == "Vocab Word") {								// Vocab	
-				y=(vpos*19)+330;											// Position 									
+				y=(vpos*19)+199;											// Position 									
 				DrawBox(start,y,end,y+15,"#3db1ff","",0,8);					// Draw bar
 				DrawText(x,y+11,"#fff",12,o[i].d2,"middle");				// Draw word
 				vpos=(vpos+1)%4;											// Next pos
 				}
 			else if (o[i].d1 == "Practice") {								// Practice	
-				DrawBox(start,85,end,489,"","#e74c3c",3,0);					// Draw box
+				DrawBox(start,5,end,489,"","#e74c3c",1,0);					// Draw box
 				j=100;														// Assume full width
 				if (end-start < 16)			j=0;							// Shrink if smaller box
 				else if (end-start < 64)	j=5;
 				else if (end-start < 128)	j=10;
 				else if (end-start < 192)	j=20;
-				DrawText(x,460,"#e74c3c",12,ShortenString(o[i].d2,j),"middle").setAttribute("font-weight","bold");
+				DrawText(x,22,"#e74c3c",12,ShortenString(o[i].d2,j),"middle").setAttribute("font-weight","bold");
 				str=o[i].d3+" ("+o[i].d4+"%)";								// Add % sub-practices completed
-				DrawText(x,475,"#e74c3c",12,ShortenString(str,j),"middle").setAttribute("font-weight","bold");;
+				DrawText(x,40,"#e74c3c",12,ShortenString(str,j),"middle").setAttribute("font-weight","normal");;
 				}
 			else if (o[i].d1 == "Student actions") {						// Student actions	
-				DrawBox(start,416,end,435,"#999","#fff",1.5,3);				// Draw bar
-				DrawText(x,430,"#fff",12,o[i].d2,"middle");					// Draw action
+				DrawBox(start,57,end,73,"#999","#fff",1.5,3);				// Draw bar
+				DrawText(x,68,"#fff",12,o[i].d2,"middle");					// Draw action
 				}
 			else if (o[i].d1 == "Event") {									// Events	
 				for (j=0;j<dataLabCats.length;++j)							// For each media type
 					if (o[i].d2 == dataLabCats[j]) {						// Matches
-						y=242+(j*20);										// Set pos
+						y=102+(j*20);										// Set pos
 						break;												// Quit
 						}
 				p=DrawBox(start,y,start+8,y+8,"#e67e22","",0,8);			// Draw circle
@@ -269,7 +275,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			else if (o[i].d1 == "Visual Aid") {								// Visual Aid	
 				for (j=0;j<dataMedia.length;++j)							// For each media type
 					if (o[i].d2 == dataMedia[j]) {							// Matches
-						y=103+(j*20);										// Set pos
+						y=295+(j*20);										// Set pos
 						DrawBox(start,y,end,y+5,"#27ae60","",0,5);			// Draw bar
 						break;												// Quit
 						}
@@ -295,7 +301,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		str+="<tr><td><b>Reminder:</b></td><td>"+curJson.remind+"<td></tr>";
 		str+="</table></div><br>";
 		$("#dataPanel").append(str);										// Add to panel										
-	}
+		}
 
 	function GetPixFromTime(time)											// GET TIMELINE POSITION FROM TIME
 	{
