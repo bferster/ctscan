@@ -129,8 +129,8 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		curJson=d[0];														// Save data
 		obsEvents=$.parseJSON(curJson.events);								// Objectify events
 		for (i=0;i<obsEvents.length;++i) {									// For each event
-			if (obsEvents[i].time > maxTime)								// If a longer time
-				maxTime=obsEvents[i].time;									// Use it
+			if (obsEvents[i].time-0 > maxTime)								// If a longer time
+				maxTime=obsEvents[i].time-0;								// Use it
 			}
 		Draw();
 		ShowData();
@@ -231,7 +231,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		o=obsEvents;														// Point at events
 		for (i=0;i<o.length;++i) {											// For each event
 			start=GetPixFromTime(o[i].time);								// Convert start to pixels
-			end=GetPixFromTime(o[i].time+o[i].d5);							// End
+			end=GetPixFromTime((o[i].time-0)+(o[i].d5-0));					// End
 			x=start+(end-start)/2;											// Center
 			if (o[i].d2 == "Percent engaged") {								// Engagement	
 				xs.push(GetPixFromTime(o[i].time));							// X pos
@@ -305,7 +305,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 
 	function GetPixFromTime(time)											// GET TIMELINE POSITION FROM TIME
 	{
-		return time*scaleSpan/60+8;												// Get pixels
+		return (time-0)*scaleSpan/60+8;												// Get pixels
 	}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

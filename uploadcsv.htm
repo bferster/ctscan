@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<script src="lib/jquery.min.js"></script>
+	<link REL="SHORTCUT ICON" HREF="img/favicon.ico">
+	<title>CTScan Data upload</title>
+	<style type="text/css">
+		 body { 			font-family: Verdana,Geneva,sans-serif; font-size:13px; box-sizing: border-box;
+							padding: 0px; margin: 0px; 
+							}
+		.ct-splash { 		position: absolute; top:50px; left: calc(50% - 200px); width: 400px;
+							font-size: 20px; text-align: center; font-weight: bold;
+							}
+	</style>
+</head>
+<body>
+	<div id="splashDiv" class="ct-splash">
+		<img src="img/ctlogo400.png" width="150"><br><br>
+		Classroom Teaching<br>Scan<br><br>
+		<p style="font-size:14px"><b>This utility will upload an observation CSV file to the CTScan server<b><br><br><br>
+		<input type="file" id="file-input"> 
+		</p>
+	<div id="outputDiv"></div>
+	</div>
+
+<script>
+
+	function readSingleFile(e) {
+		var file=e.target.files[0];
+		if (!file || !file.name.match(/\.csv/i)) 
+			return;
+		var reader = new FileReader();
+		reader.onload = function(e) {
+			var contents=e.target.result;
+			SaveToServer(contents);
+			};
+		reader.readAsText(file);
+	}
+
+	function SaveToServer(text)
+	{
+		var i,j,v,o;
+		var dat={},events=[];
+		text=text.replace(/\n\r/g,"\n");								// LFCR -> LF
+		text=text.replace(/\r\n/g,"\n");								// CRLF -> LF
+		text=text.replace(/\r/g,"");									// Remove CR
+		var rows=text.split("\n");										// Spit by line
+		if (!rows)														// No data
+			return;														// Quit
+		for (i=1;i<rows.length;++i) {									// For each row
+			if (!rows[i])												// Continue
+				continue;												// Skip
+			v=rows[i].split(",");										// Get fields
+			if (v[1] == "Session") {									// Session data
+				if (v[2] == "Observer") 			dat.obs=v[3];				
+				else if (v[2] == "Email") 			dat.email=v[3];				
+				else if (v[2] == "TeacherId") 		dat.teacherId=v[3];				
+				else if (v[2] == "Grade") 			dat.grade=v[3];				
+				else if (v[2] == "Subject") 		dat.subject=v[3];				
+				else if (v[2] == "NumStudents") 	dat.numStudents=v[3];				
+				else if (v[2] == "Date") 			dat.date=v[3];				
+				else if (v[2] == "Block") 			dat.block=v[3];				
+				else if (v[2] == "Setting") 		dat.setting=v[3];				
+				else if (v[2] == "Video") 			dat.video=v[3];				
+				else if (v[2] == "Video") 			dat.video=v[3];				
+				else if (v[2] == "Level") 			dat.level=v[3];				
+				else if (v[2] == "Reminder") 		dat.remind=v[3];				
+				}
+			else{														// An event
+				var o={};												// Fresh object
+				o.time=v[0];											// Set time
+				for (j=1;j<6;++j)										// For each field
+					o["d"+j]=v[j] ? v[j] : "";							// Set it
+				events.push(o);											// Add to array
+				}
+			}
+		dat.events=JSON.stringify(events)
+		var url="//classroomteachingscan.com/ctscan/saveobs.php";		// Target
+	
+		$.ajax({ url:url,dataType:'text',type:"POST",crossDomain:true,data:dat,  // Post data
+			success:function(d) { 			
+				if (isNaN(d)) {											// Error
+					trace(d);											// Show error
+					}
+				else
+					$("#outputDiv").html("<br><span style='color:#009900'>Successfully saved as index "+d);	// Alert
+				},
+			error:function(xhr,status,error) { 
+				$("#outputDiv").html("<br><span style='color:#990000'>Data NOT saved!");	// Alert
+				trace(error) },											// Show error
+			});	
+	}
+
+	document.getElementById('file-input').addEventListener('change', readSingleFile, false);
+
+	function trace(msg, p1, p2, p3, p4)										// CONSOLE 
+	{
+		if (p4 != undefined)
+			console.log(msg,p1,p2,p3,p4);
+		else if (p3 != undefined)
+			console.log(msg,p1,p2,p3);
+		else if (p2 != undefined)
+			console.log(msg,p1,p2);
+		else if (p1 != undefined)
+			console.log(msg,p1);
+		else
+			console.log(msg);
+	}
+
+
+</script>
+</body>
+</html>
+

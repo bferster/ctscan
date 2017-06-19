@@ -717,8 +717,6 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 				obsEvents[j].d5=now5-obsEvents[j].time;					// Add time	
 				now5=obsEvents[j].time;									// New now
 				}
-				
-
 		}
 	
 		ShowRawData();													// Fill in data table
@@ -821,6 +819,8 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 			rows.push(["0","Session","Date",obsData.date,""]);
 			rows.push(["0","Session","Block",obsData.block,""]);
 			rows.push(["0","Session","Setting",obsData.setting,""]);
+			rows.push(["0","Session","Level",obsData.level,""]);
+			rows.push(["0","Session","NumStudents",obsData.number,""]);
 			rows.push(["0","Session","Video",obsData.video,""]);
 			rows.push(["0","Session","Reminder",obsData.remind,""]);
 			for (i=0;i<obsEvents.length;++i) {
