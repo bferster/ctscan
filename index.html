@@ -763,7 +763,7 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 
 		var d=obsEvents;
 		for (i=0;i<d.length;++i){
-			str+="<tr id=oe-"+i+"><td><b>Event:</b></td><td style='overflow:hidden;white-space:nowrap'><div style='display:inline-block;width:40px'>"+d[i].time+"</div><b>";
+			str+="<tr id=oe-"+i+"><td><b>Event</b></td><td style='overflow:hidden;white-space:nowrap'><div style='display:inline-block;width:40px'>"+d[i].time+"</div><b>";
 				str+=d[i].d1+"</b>,"+ShortenString(d[i].d2,20)+","+ShortenString(d[i].d3,20)+","+ShortenString(d[i].d4,20)+","+d[i].d5+"</td></tr>";
 			}	
 		str+="</table>";

@@ -36,7 +36,7 @@
 							text-align: center; border-radius: 6px; display: inline-block; user-select: none;
 							font-size: 12px; background-color: #27ae60; padding: 2px 8px 2px 8px; vertical-align:-3px;
 							}
-		.ct-popup {			display: none; position: absolute; padding: 3px 8px 3px 8px; border-radius: 12px;
+		.ct-popup {			display: none; position: absolute; padding: 3px 8px 3px 8px; border-radius: 6px;
 							font-size: 11px; border: 1px solid #999; background-color: #eee;
 							}
 		
@@ -253,7 +253,22 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				else if (end-start < 192)	j=20;
 				DrawText(x,22,"#e74c3c",12,ShortenString(o[i].d2,j),"middle").setAttribute("font-weight","bold");
 				str=o[i].d3+" ("+o[i].d4+"%)";								// Add % sub-practices completed
-				DrawText(x,40,"#e74c3c",12,ShortenString(str,j),"middle").setAttribute("font-weight","normal");;
+				p=DrawText(x,40,"#e74c3c",12,ShortenString(str,j),"middle")
+				p.setAttribute("font-weight","normal");						// Normal
+				p.setAttribute("id","pra-"+i);								// Id
+				p.setAttribute("cursor","pointer");							// Pointer cursor
+				$("#pra-"+i).on("click", function(e) { 						// On click
+					var i,str="";
+					var id=e.target.id.substr(4)-0;							// Get id
+					for (i=id+1;i<o.length;++i) {							// Look for subs
+						if( o[i].d1 == "Practice")							// If into another practice
+							break;											// Quit
+						if  (o[i].d1 == "Teacher actions")					// Found a sub
+							str+="<br>"+o[i].d4;							// Add to popup		
+						}
+					ShowPopup(e.clientX+8,e.clientY+16,str.substr(4));		// Show popup
+					});
+	
 				}
 			else if (o[i].d1 == "Student actions") {						// Student actions	
 				DrawBox(start,57,end,73,"#999","#fff",1.5,3);				// Draw bar
@@ -267,6 +282,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 						}
 				p=DrawBox(start,y,start+8,y+8,"#e67e22","",0,8);			// Draw circle
 				p.setAttribute("id","dot-"+i);								// Id
+				p.setAttribute("cursor","pointer");							// Pointer cursor
 				$("#dot-"+i).on("click", function(e) { 						// On click
 					var id=e.target.id.substr(4);							// Get id
 					ShowPopup(e.clientX+8,e.clientY+16,o[id].d3);			// Show popup
@@ -383,7 +399,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		$("#popup").css({left:x,top:y});									// Position
 		$("#popup").html(msg);												// Add text										
 		$("#popup").show();													// Show it
-		$("#popup").delay(2000).fadeOut(400);								// Close after n seconds
+		$("#popup").delay(4000).fadeOut(400);								// Close after 4 seconds
 		}
 
 	function Query(query, callback) 
