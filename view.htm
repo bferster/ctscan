@@ -133,7 +133,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				for (i=0;i<curJson.length;++i) 								// For each session
 					if ($("#sessId-"+i).prop("checked")) 					// If checked
 						window.open("timeline.htm?"+menuFile+"&"+curJson[i].id,"_blank")	// Open tab
-			Sound("ding");													// Ding sound	
+			Sound("click");													// Click sound	
 			});													
 		$("#showRaw").on("click", function(e) {								// ON SHOW RAW
 			if (!curJson)													// If no data
@@ -181,6 +181,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		str+="<tr id='od-setting'><td><b>Setting</b></td><td>"+curJson[num].setting+"<td></tr>";
 		str+="<tr id='od-video'><td><b>Video</b></td><td>"+curJson[num].video+"<td></tr>";
 		str+="<tr><td><b>Reminder</b></td><td>"+curJson[num].remind+"<td></tr>";
+		str+="<tr><td><b>Research</b></td><td>"+curJson[num].research+"<td></tr>";
 		str+"<br>";
 		var d=$.parseJSON(curJson[num].events);
 		for (i=0;i<d.length;++i){

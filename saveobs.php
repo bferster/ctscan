@@ -20,9 +20,10 @@ require_once('config.php');
 	$level=$_REQUEST['level'];									
 	$video=$_REQUEST['video'];									
 	$remind=$_REQUEST['remind'];									
+	$research=$_REQUEST['research'];									
 	$events=$_REQUEST['events'];									
 
-	$query="INSERT INTO sessions (teacherId, obs, email, grade, subject, numStudents, date, block, setting, level, video, remind, events, ver) VALUES ('";
+	$query="INSERT INTO sessions (teacherId, obs, email, grade, subject, numStudents, date, block, setting, level, video, remind, research, events, ver) VALUES ('";
 		$query.=addEscapes($link,$teacherId)."','";
 		$query.=addEscapes($link,$obs)."','";
 		$query.=addEscapes($link,$email)."','";
@@ -35,6 +36,7 @@ require_once('config.php');
 		$query.=addEscapes($link,$level)."','";
 		$query.=addEscapes($link,$video)."','";
 		$query.=addEscapes($link,$remind)."','";
+		$query.=addEscapes($link,$research)."','";
 		$query.=addEscapes($link,$events)."','";
 		$query.=addEscapes($link,$ver)."')";
 		$result=mysqli_query($link,$query);						// Add row

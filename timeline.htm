@@ -19,7 +19,8 @@
 		.ct-mainPanel {		background-color:#eee; border-radius: 6px; margin-top: 16px; padding: 12px; max-width: 1200px;
 							margin-left: auto; margin-right: auto; opacity: 0;
 							}
-		.ct-dataPanel {		margin-top: 16px; max-width:1200px; margin-left: auto; margin-right: auto; opacity: 0;
+		.ct-dataPanel {		background-color:#fff; margin-top: 16px; max-width:1200px; margin-left: auto; margin-right: auto; opacity: 0; 
+							max-height: 2000px;  overflow-y:auto;
 							}
 		.ct-timePanel {		border-radius: 6px; background-color:#fff; padding: 12px; overflow-x:auto; margin-left:120px;
 							}
@@ -47,7 +48,7 @@
 		.ui-dialog { border-radius:6px; background-color:#eee }
 		.ui-button { border-radius:30px;outline:none }
 		.ui-dialog-titlebar { display:none }
-		 table {			border-spacing: 0px;  }
+		 table {			border-spacing: 0px; vertical-align:top}
 		 input {		    vertical-align: -2px; }
 
 </style>
@@ -60,7 +61,6 @@
 			<span id="scaleAmt">5</span><br>
 			<img id="scaleDown" style="cursor:zoom-out" src="img/downbut.gif"><br>
 		</div>
-		<div>
 		<div class="unselectable">
 			<img src="img/ctlogo32.png"><br>
 			<b>Classroom Teaching Scan Timeline</b></div><br>
@@ -72,7 +72,7 @@
 			<span style="color:#e67e22" id="evt-1">Feedback</span><br>
 			<span style="color:#e67e22" id="evt-2">Questions</span><br>
 			<span style="color:#e67e22" id="evt-3">Custom</span><br><br><br>
-			<span style="color:#3db1ff;line-height:30px">Vocab</span><br><br><br>
+			<span style="color:#3db1ff;line-height:30px">Vocab or Topic</span><br><br><br>
 			<span style="color:#27ae60" id="med-0">Diagram/Graphic</span><br>
 			<span style="color:#27ae60" id="med-1">Object/Manipulative</span><br>
 			<span style="color:#27ae60" id="med-2">Graphic Organizer</span><br>
@@ -86,10 +86,10 @@
 		<div id="timePanel" class="ct-timePanel">
 		<svg id="svg" width="100%" height="99%"></svg>
 		</div>
+		<span style="float:right;color:#666">Help&nbsp;<a style="float:right" href="https://docs.google.com/document/d/19l87L5sZfLohU6rhQKLMERTNHhQr-jLiE4xQJeYN_3g/edit?usp=sharing" target="_blank">
+			<img src="img/helpicon.gif" style="vertical-align:bottom" title="Show help"></a></span><br>
 	</div>
 	<div id="dataPanel" class="ct-dataPanel"></div>
-	<span style="float:right;color:#666">Help&nbsp;<a style="float:right" href="https://docs.google.com/document/d/19l87L5sZfLohU6rhQKLMERTNHhQr-jLiE4xQJeYN_3g/edit?usp=sharing" target="_blank">
-	<img src="img/helpicon.gif" style="vertical-align:bottom" title="Show help"></a></span><br>
 	<div id="popup" class="ct-popup"></div>
 
 <script>
@@ -99,16 +99,19 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 var curJson=null;															// Holds session results
+var sessionNum=15;															// Session index
 var obsEvents=null;															// Points at events
 var maxTime=0;																// Size of timeline
 var svgNS="http://www.w3.org/2000/svg";										// Name space
+var menuFile="menus.txt";													// Memu filename
 var scaleSpan=128;															// Scaling
 var dataMedia=[];															// Holds media buttons											
 var dataLabVals=[];															// Holds OTR button values											
 var dataLabCats=[];															// Holds OTR button categories											
 var dataActs=[];															// Holds media buttons											
 var dataAcad=[];															// Holds academic diciplines
-var menuFile="menus.txt";
+var menus=[];																// Holds menus
+var butCts=[];																// Button counts
 
 $(document).ready(function() {								           	// ON PAGE LOADED
 
@@ -118,25 +121,8 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		if (!menuFile.match(/\.txt/))	menuFile+=".txt";					// Add ext if not there
 		url=url.split("&")[1];												// Get id
 		}
-	else
-		url=15;																// Use default
-
-	document.title+=" ("+url+")";											// Add id to title		
-	Query("id = '"+url+"'", function(d) { 									// Send query
-		if (!d || d == "null")												// No hits													
-			return;;														// Quit
-		d=$.parseJSON(d);													// Objectify result
-		curJson=d[0];														// Save data
-		obsEvents=$.parseJSON(curJson.events);								// Objectify events
-		for (i=0;i<obsEvents.length;++i) {									// For each event
-			if (obsEvents[i].time-0 > maxTime)								// If a longer time
-				maxTime=obsEvents[i].time-0;								// Use it
-			}
-		Draw();
-		ShowData();
-		$("#mainPanel").animate({ opacity:1 },1500);						// Show timeline
-		$("#dataPanel").animate({ opacity:1 },1500);						// Show data
-		});
+	document.title+=" ("+sessionNum+")";									// Add id to title		
+	
 	$("#scaleDown").on("click", function(e) {								// SCALE DOWN
 		if (scaleSpan < 16)													// At max
 			return;															// Quit
@@ -176,6 +162,22 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				dataActs=o.substr(7).split(",");							// Get options
 			else if (o.match(/ACAD=/i)) 									// Disciplines
 				dataAcad=o.substr(5).split(",");							// Get options
+			else if (o.match(/:/)) {										// At new category
+				cc=menus.length;											// Get index
+				menus.push({});												// Add cat obj
+				menus[cc].cname=o.substr(0,o.length-1);						// Add cat name
+				menus[cc].prac=[];											// Add array for practices									
+				}
+			else if (o.match(/\*/)) {										// At new * category
+				cp=menus[cc].prac.length;									// Get prac index
+				menus[cc].prac.push({});									// Add practice obj
+				menus[cc].prac[cp].pname=o.split(" *")[0];					// Add prac name
+				menus[cc].prac[cp].subs=[];									// Add array for sub-practices									
+				subs=o.split("&")[1].split(",");							// Get subs, if any
+				for (j=0;j<subs.length;++j)									// For each sub
+					if (subs[j].length)										// If something there
+						menus[cc].prac[cp].subs.push(subs[j]);				// Add to practice
+				}
 			}
 		for (i=0;i<dataMedia.length;++i)									// For each media
 			$("#med-"+i).html(dataMedia[i]);								// Set label
@@ -188,9 +190,34 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		for (i=0;i<dataLabCats.length;++i)									// For each event category
 			$("#evt-"+i).html(dataLabCats[i]);								// Set label
 	
-	}});
+		Query("id = '"+sessionNum+"'", function(d) { 						// Send query
+			if (!d || d == "null")											// No hits													
+				return;;													// Quit
+			curJson=$.parseJSON(d)[0];										// Objectify result
+			Start();														// Start timeline
+			});
+	}});																	// On menus loaded
+});																			// On ready
 
-});		
+	function Start()
+	{
+		var i;
+		obsEvents=$.parseJSON(curJson.events);								// Objectify events
+		for (i=0;i<dataLabVals.length;++i)									// For each event button
+			butCts[dataLabVals[i]]=0;										// Null each one
+		
+		for (i=0;i<obsEvents.length;++i) {									// For each event
+			if (obsEvents[i].time-0 > maxTime)								// If a longer time
+				maxTime=obsEvents[i].time-0;								// Use it
+			if (obsEvents[i].d1 == "Event") 								// An event
+				butCts[obsEvents[i].d3]++;									// Add to count
+			}
+		Draw();
+		ShowData();
+		$("#mainPanel").animate({ opacity:1 },1500);					// Show timeline
+		$("#dataPanel").animate({ opacity:1 },1500);					// Show data
+	}
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -229,6 +256,8 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			}
 		xs=[];	ys=[];														// Engagement line arrays
 		o=obsEvents;														// Point at events
+		if (!o)																// If no events loaded yet
+			return;															// Quit
 		for (i=0;i<o.length;++i) {											// For each event
 			start=GetPixFromTime(o[i].time);								// Convert start to pixels
 			end=GetPixFromTime((o[i].time-0)+(o[i].d5-0));					// End
@@ -258,13 +287,29 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				p.setAttribute("id","pra-"+i);								// Id
 				p.setAttribute("cursor","pointer");							// Pointer cursor
 				$("#pra-"+i).on("click", function(e) { 						// On click
-					var i,str="";
+					var acts="";
+					var i,j,str="";
+					var curCat=0,curPrac=0;
 					var id=e.target.id.substr(4)-0;							// Get id
 					for (i=id+1;i<o.length;++i) {							// Look for subs
 						if( o[i].d1 == "Practice")							// If into another practice
 							break;											// Quit
-						if  (o[i].d1 == "Teacher actions")					// Found a sub
-							str+="<br>"+o[i].d4;							// Add to popup		
+						if (o[i].d1 == "Teacher actions")					// Found a sub
+							acts+="|"+o[i].d4;								// Add to list		
+						}
+					for (j=0;j<menus.length;++j)							// For each category
+						if (menus[j].cname == o[id].d2)						// A match
+							curCat=j;								 		// Save index
+					for (j=0;j<menus[curCat].prac.length;++j)				// For each practice
+						if (menus[curCat].prac[j].pname == o[id].d3)		// A match
+							curPrac=j;								 		// Save index
+					for (j=0;j<menus[curCat].prac[curPrac].subs.length;++j){ // For each practice
+						str+="<br><span style='color:";						// Add span
+						if (acts.indexOf("|"+menus[curCat].prac[curPrac].subs[j]) != -1) // A match
+							str+="#27ae60";									// Make it green
+						else												// Not chosen
+							str+="#999";									// Make it grey
+						str+="'>"+menus[curCat].prac[curPrac].subs[j]+"</span>"; // Add and end span
 						}
 					ShowPopup(e.clientX+8,e.clientY+16,str.substr(4));		// Show popup
 					});
@@ -300,24 +345,55 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		DrawLine(xs,ys,"#ccc",5).setAttribute("stroke-dasharray","5,5");	// Draw engagement line
 	}
 
-	function ShowData()														// SHOW DATA
+	function ShowData()													// SHOW DATA
 	{
-		var i
-		var str="<div><table>"
-		str+="<tr><td><b>Session Id:</b></td><td>"+curJson.id+"<td></tr>";
-		str+="<tr><td><b>Observer:</b></td><td>"+curJson.obs+"<td></tr>";
-		str+="<tr><td><b>Observer email:&nbsp;&nbsp;</b></td><td>"+curJson.email+"<td></tr>";
-		str+="<tr><td><b>Teacher Id:</b></td><td>"+curJson.teacherId+"<td></tr>";
-		str+="<tr><td><b>Grade:</b></td><td>"+curJson.grade+"<td></tr>";
-		str+="<tr><td><b>Subject:</b></td><td>"+curJson.subject+"<td></tr>";
-		str+="<tr><td><b>Date:</b></td><td>"+curJson.date+"<td></tr>";
-		str+="<tr><td><b>Block:</b></td><td>"+curJson.block+"<td></tr>";
-		str+="<tr><td><b>Setting:</b></td><td>"+curJson.setting+"<td></tr>";
-		str+="<tr><td><b>Video:</b></td><td>"+curJson.video+"<td></tr>";
-		str+="<tr><td><b>Reminder:</b></td><td>"+curJson.remind+"<td></tr>";
-		str+="</table></div><br>";
-		$("#dataPanel").append(str);										// Add to panel										
-		}
+		var i,o;
+		var str="<div style='display:inline-block;margin-right:32px;vertical-align:top'><table>"
+		str+="<tr><td><b>Setting</b></td><td><b>Value</b><td></tr>";
+		str+="<tr><td colspan='2'><hr></td></tr>";
+		str+="<tr><td><b>Session Id</b></td><td>"+curJson.id+"</td></tr>";
+		str+="<tr><td><b>Observer</b></td><td>"+curJson.obs+"</td></tr>";
+		str+="<tr><td><b>Observer email&nbsp;&nbsp;</b></td><td>"+curJson.email+"</td></tr>";
+		str+="<tr><td><b>Teacher Id</b></td><td>"+curJson.teacherId+"</td></tr>";
+		str+="<tr><td><b>Grade</b></td><td>"+curJson.grade+"</td></tr>";
+		str+="<tr><td><b>Subject</b></td><td>"+curJson.subject+"</td></tr>";
+		str+="<tr><td><b>Date</b></td><td>"+curJson.date+"</td></tr>";
+		str+="<tr><td><b>Block</b></td><td>"+curJson.block+"</td></tr>";
+		str+="<tr><td><b>Setting</b></td><td>"+curJson.setting+"</td></tr>";
+		str+="<tr><td><b>Video</b></td><td>"+curJson.video+"</td></tr>";
+		str+="<tr><td><b>Reminder</b></td><td>"+curJson.remind+"</td></tr>";
+		str+="<tr><td><b>Research</b></td><td>"+curJson.research+"</td></tr>";
+			
+		str+="</table></div>";
+		str+="<div style='display:inline-block;margin-right:32px;vertical-align:top'><table>"
+		str+="<tr><td><b>Event</b></td><td><b>(#)</b></td><td><b>C/M</b></td></tr>";
+		str+="<tr><td colspan='3'><hr></td></tr>";
+		for (i=0;i<dataLabVals.length;++i) {								// For each event button
+			str+="<tr><td><b>"+dataLabVals[i]+"&nbsp;&nbsp;</b></td>";		// Label
+			str+="<td>&nbsp;&nbsp("+butCts[dataLabVals[i]]+")&nbsp;&nbsp</td>";// Count
+			str+="<td>"+(butCts[dataLabVals[i]]/maxTime*60).toFixed(1)+"</td></tr>";	// Counts per minute
+			}
+		
+		str+="</table></div>";
+		str+="<div style='display:inline-block;vertical-align:top'><table>"
+		str+="<tr><td><b>Vocabulary Practices</b></td><td><b>Value</b></td></tr>";
+		str+="<tr><td colspan='2'><hr></td></tr>";
+		var all=0, c=0;
+		for (i=0;i<obsEvents.length;++i) {									// For each event
+			o=obsEvents[i];													// Point at event
+			if ((o.d1 == "Practice") && (o.d2 == "Vocabulary Instruction")) {	// If a vocab practice
+				str+="<tr><td><b>"+o.d3+"&nbsp;&nbsp;</b></td>";			// Label
+				str+="<td>&nbsp;&nbsp"+o.d4+"%&nbsp;&nbsp</td></tr>";		// Pct
+				if (o.d4 == 100)	all+=(o.d5-0)							// If all used, add to all count
+				++c;
+				}
+			}
+		str+="<tr><td><b>Total vocabulary practices used&nbsp;&nbsp;</b></td>";		// # vocabs
+		str+="<td>&nbsp;&nbsp"+c+"&nbsp;&nbsp</td></tr>";					// #
+		str+="<tr><td><b>Total time when all subs were used&nbsp;&nbsp;</b></td>";			// All 100%ers
+		str+="<td>&nbsp;&nbsp"+Math.floor(all/60)+":"+(all%60)+"&nbsp;&nbsp</td></tr>";		// time
+		$("#dataPanel").append(str);										// Add to panel	
+	}									
 
 	function GetPixFromTime(time)											// GET TIMELINE POSITION FROM TIME
 	{
