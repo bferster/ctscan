@@ -490,14 +490,15 @@ $(document).ready(function() {								           	// ON PAGE LOADED
     function DrawChart1() 												// DRAW CHART 1
 	{
 		var i,d=[];
+		var w=$("#chart1Chart").width()+50;
 		var data=new google.visualization.DataTable();						// Make new table
 		data.addColumn('string', 'Label');									// Add label column
  		data.addColumn('number', 'Time');									// Add time
 		for (i=0;i<obsEvents.length;++i) 									// For each event
 			if (obsEvents[i].d1 == "Practice")								// If a practice
-				d.push([ obsEvents[i].d3.replace(/ /,"&nbsp;"), obsEvents[i].d5 ]);				// Add slice								
+				d.push([ obsEvents[i].d3, obsEvents[i].d5 ]);				// Add slice								
 		data.addRows(d);													// Add data
-  		var options={width: 350, is3D: true,								// Set options
+  		var options={width: w, is3D: true,									// Set options
 		 			 title: "Teacher Time",									// Title
 					 titleTextStyle: { "fontSize": 12, color:"#666" }, 		// Title format
 					 chartArea:{left:"0%",top:"10%", width:"75%",height:"75%"}	//  Sizing
@@ -508,6 +509,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
   function DrawChart2() 												// DRAW CHART 2
 	{
 		var i,d=[];
+		var w=$("#chart1Chart").width()+50;
 		var data=new google.visualization.DataTable();						// Make new table
 		data.addColumn('string', 'Label');									// Add label column
  		data.addColumn('number', 'Time');									// Add time
@@ -515,7 +517,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			if (obsEvents[i].d1 == "Student actions")						// If a student action
 				d.push([ obsEvents[i].d2, obsEvents[i].d5 ]);				// Add slice								
 		data.addRows(d);													// Add data
-  		var options={width: 350, is3D: true, 								// Set options
+  		var options={width: w, is3D: true, 									// Set options
 		 			 title: "Student Time",									// Title
 					 titleTextStyle: { "fontSize": 12, color:"#666" }, 		// Title format
 					 chartArea:{left:"0%",top:"10%", width:"75%",height:"75%"}	//  Sizing
@@ -526,6 +528,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 	function DrawChart3() 												// DRAW CHART 3
 	{
 		var i,d=[];
+		var w=$("#chart1Chart").width()+50;
 		var data=new google.visualization.DataTable();						// Make new table
 		data.addColumn('string', 'Label');									// Add label column
  		data.addColumn('number', 'Time');									// Add time
@@ -533,7 +536,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			if (obsEvents[i].d1 == "Vocab Word")							// If a vocab
 				d.push([ obsEvents[i].d2, obsEvents[i].d5 ]);				// Add slice								
 		data.addRows(d);													// Add data
-  		var options={width: 350, is3D: true, 								// Set options
+  		var options={width: w, is3D: true, 									// Set options
 		 			 title: "Vocabulary/Topic Terms ",						// Title
 					 titleTextStyle: { "fontSize": 12, color:"#666" }, 		// Title format
 					 chartArea:{left:"0%",top:"10%", width:"75%",height:"75%"}	//  Sizing
@@ -543,19 +546,20 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 
 	function DrawChart4() 												// DRAW CHART 4
 	{
-			var i,d=[];
-		var data=new google.visualization.DataTable();						// Make new table
+		var i,d=[];
+		var w=$("#chart1Chart").width()+50;
+		var data=new google.visualization.DataTable();					// Make new table
 		data.addColumn('string', 'Label');									// Add label column
  		data.addColumn('number', 'Time');									// Add time
 		for (i=0;i<obsEvents.length;++i) 									// For each event
 			if (obsEvents[i].d2 == "Model")									// If a model
 				d.push([ obsEvents[i].d3, obsEvents[i].d5 ]);				// Add slice								
 		data.addRows(d);													// Add data
-  		var options={width: 350, is3D: true, 								// Set options
+  		var options={width: w, is3D: true, 								// Set options
 		 			 title: "Co-teaching Model ",										// Title
 					 titleTextStyle: { "fontSize": 12, color:"#666" }, 		// Title format
 					 chartArea:{left:"0%",top:"10%", width:"75%",height:"75%"}	//  Sizing
-		  			};
+	  			};
 		new google.visualization.PieChart(document.getElementById('chart4Chart')).draw(data,options);
 	}
 
