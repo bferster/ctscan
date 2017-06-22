@@ -296,7 +296,6 @@ function GetIntroData()												// GET INTRO DATA FROM USER
 	str+="<option>Co-taught</option><option>Inclusive</option><option>General Education only</option></select></td></tr>";
 	str+="<tr><td>Teacher level:</td><td><select id='intro-level' class='ct-is'><option>Preservice Teacher</option><option>Inservice Teacher</option></select></td></tr>";
 	str+="<tr><td>Video&nbsp;source:</td><td><input class='ct-is' id='intro-video' placeholder='URL of video, if not live' type='Text'></input></td></tr>";
-	str+="<tr><td>Teacher level:</td><td><select id='intro-level' class='ct-is'><option>Preservice Teacher</option><option>Inservice Teacher</option></select></td></tr>";
 	str+="<tr><td>Research only:</td><td><select id='intro-res' class='ct-is'><option></option><option>Pre-Intervention</option>";
 	str+="<option>Post-Intervention</option><option>Maintenance</option></select></td></tr>";
 	str+="<tr><td>Remind&nbsp;every:</td><td><select id='intro-tot' class='ct-is'>";
@@ -698,16 +697,19 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 			else if (obsEvents[j].d1 == "Practice") {					// Found a practice
 				obsEvents[j].d5=now2-obsEvents[j].time;					// Add time	
 				now2=obsEvents[j].time;									// New now
-				c=0;	n=1;											// Reset count
+				c=0;	n=0;											// Reset count
 				for (i=j+1;i<obsEvents.length;++i) {					// Look for subs
 					if (obsEvents[i].d1 == "Practice")					// If into another practice
 						break;											// Quit
 					if  (obsEvents[i].d1 == "Teacher actions")	{		// Found one
-						n=Math.max(obsEvents[i].d5,1);					// Get count
+						n=obsEvents[i].d5;								// Get count
 						++c;											// Add to count
 						}
 					}
-				obsEvents[j].d4=Math.round(c/n*100);					// Set percentage
+				if (n)													// If subs
+					obsEvents[j].d4=Math.round(c/n*100);				// Set percentage
+				else													// No subs	
+					obsEvents[j].d4=0;									// Set to 0
 				}
 			else if (obsEvents[j].d2 == "Which Teacher") {				// Found a which action
 				obsEvents[j].d5=now3-obsEvents[j].time;					// Add time	
@@ -751,7 +753,7 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 
 	function ShowRawData()											// SHOW RAW DATA
 	{
-		var i
+		var i,col;
 		var str="<table id='dataTable'>"
 		str+="<tr id='od-name'><td><b>Observer</b></td><td>"+obsData.name+"<td></tr>";
 		str+="<tr id='od-email'><td><b>Email</b></td><td>"+obsData.email+"<td></tr>";
@@ -768,7 +770,8 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 
 		var d=obsEvents;
 		for (i=0;i<d.length;++i){
-			str+="<tr id=oe-"+i+"><td><b>Event</b></td><td style='overflow:hidden;white-space:nowrap'><div style='display:inline-block;width:40px'>"+d[i].time+"</div><b>";
+			col=(d[i].d1 == "Practice") ? "#990000" : "#000";			// Color practices 
+			str+="<tr style='color:"+col+"' id=oe-"+i+"><td><b>Event</b></td><td style='overflow:hidden;white-space:nowrap'><div style='display:inline-block;width:40px'>"+d[i].time+"</div><b>";
 				str+=d[i].d1+"</b>,"+ShortenString(d[i].d2,20)+","+ShortenString(d[i].d3,20)+","+ShortenString(d[i].d4,20)+","+d[i].d5+"</td></tr>";
 			}	
 		str+="</table>";

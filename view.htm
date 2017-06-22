@@ -169,7 +169,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 
 	function ShowRawData(num)											// SHOW RAW DATA
 	{
-		var i
+		var i,col;
 		var str="<table>"
 		str+="<tr id='od-name'><td><b>Observer</b></td><td>"+curJson[num].obs+"<td></tr>";
 		str+="<tr id='od-email'><td><b>Email</b></td><td>"+curJson[num].email+"<td></tr>";
@@ -183,9 +183,10 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		str+="<tr><td><b>Reminder</b></td><td>"+curJson[num].remind+"<td></tr>";
 		str+="<tr><td><b>Research</b></td><td>"+curJson[num].research+"<td></tr>";
 		str+"<br>";
-		var d=$.parseJSON(curJson[num].events);
-		for (i=0;i<d.length;++i){
-			str+="<tr id=oe-"+i+"><td><b>Event</b></td><td style='overflow:hidden;white-space:nowrap'><div style='display:inline-block;width:40px'>"+d[i].time+"</div><b>";
+		var d=$.parseJSON(curJson[num].events);								// Objectify
+		for (i=0;i<d.length;++i) {											// For each event
+			col=(d[i].d1 == "Practice") ? "#990000" : "#000";				// Color practices 
+			str+="<tr style='color:"+col+"' id=oe-"+i+"><td><b>Event</b></td><td style='overflow:hidden;white-space:nowrap'><div style='display:inline-block;width:40px'>"+d[i].time+"</div><b>";
 				str+=d[i].d1+"</b>,"+ShortenString(d[i].d2,30)+","+ShortenString(d[i].d3,40)+","+ShortenString(d[i].d4,20)+","+d[i].d5+"</td></tr>";
 			}	
 		str+="</table><hr>";
