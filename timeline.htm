@@ -70,7 +70,7 @@
 			<b>Classroom Teaching Scan Timeline</b></div><br>
 		</div>	
 		<div style="text-align:right;font-size:12px;width:150px;float:left;margin-top:8px;padding-right:10px;line-height:20px;font-weight:bold;user-select:none;">
-			<span style="color:#e74c3c;line-height:60px">Practice</span><br>
+			<span style="color:#e74c3c;line-height:45px">Practice</span><br>
 			<span style="color:#888">Student Actions</span><br><br>
 			<span style="color:#e67e22" id="evt-0">OTR</span><br>
 			<span style="color:#e67e22" id="evt-1">Feedback</span><br>
@@ -83,9 +83,9 @@
 			<span style="color:#27ae60" id="med-3">Picture</span><br>
 			<span style="color:#27ae60" id="med-4">Movie</span><br>
 			<span style="color:#27ae60" id="med-5">Text</span><br>
-			<span style="color:#999;font-size:10px;line-height:35px">100%</span><br>
+			<span style="color:#999;font-size:10px;line-height:40px">100%</span><br>
 			<span style="color:#666">Engagement</span><br>
-			<span style="color:#999;font-size:10px">0%</span><br>
+			<span style="color:#999;font-size:10px;line-height:45px">0%</span><br>
 			</div>
 		<div id="timePanel" class="ct-timePanel">
 		<svg id="svg" width="100%" height="99%"></svg>
@@ -340,7 +340,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			else if (o[i].d1 == "Event") {									// Events	
 				for (j=0;j<dataLabCats.length;++j)							// For each media type
 					if (o[i].d2 == dataLabCats[j]) {						// Matches
-						y=102+(j*20);										// Set pos
+						y=100+(j*20);										// Set pos
 						break;												// Quit
 						}
 				p=DrawBox(start,y,start+8,y+8,"#e67e22","",0,8);			// Draw circle
@@ -354,7 +354,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			else if (o[i].d1 == "Visual Aid") {								// Visual Aid	
 				for (j=0;j<dataMedia.length;++j)							// For each media type
 					if (o[i].d2 == dataMedia[j]) {							// Matches
-						y=295+(j*20);										// Set pos
+						y=290+(j*20);										// Set pos
 						DrawBox(start,y,end,y+5,"#27ae60","",0,5);			// Draw bar
 						break;												// Quit
 						}
