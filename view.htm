@@ -16,10 +16,10 @@
 		 body { 			font-family: Verdana,Geneva,sans-serif; font-size:13px; box-sizing: border-box;
 							padding: 0px; margin: 0px; 
 							}
-		.ct-viewPanel {		background-color:#ddd; border-radius: 6px; margin-top: 24px; padding: 12px; max-width:800px;
+		.ct-viewPanel {		background-color:#ddd; border-radius: 6px; margin-top: 24px; padding: 12px; max-width:920px;
 							margin-left: auto; margin-right: auto;
 							}
-		.ct-dataPanel {		border-radius: 6px; background-color:#eee;padding: 12px; max-width: 800px; margin-left: auto; margin-right: auto; max-height:800px;
+		.ct-dataPanel {		border-radius: 6px; background-color:#eee;padding: 12px; max-width: 920px; margin-left: auto; margin-right: auto; max-height:800px;
 							overflow-x:hidden; overflow-y:auto;
 							}
 		.ct-is 	{			border-radius:4px; padding-left:8px; border: 1px solid #999; margin-bottom: 3px;
@@ -59,16 +59,18 @@
 		<br><hr>
 		<div style="width:100%;max-height:75%;overflow-y:auto">
 			<table id="sessionTable" style="width:100%">	
-				<tr style="font-weight:bold"><td>&nbsp;&#x2610;&nbsp;&nbsp;</td><td>Observer</td><td>Email</td><td>Date</td><td>Teacher Id</td><td>Session Id</td><tr><tr>
-					<tr><td colspan='7'><hr></td></tr>
+				<tr style="font-weight:bold"><td>&nbsp;&#x2610;&nbsp;&nbsp;</td><td>Observer</td><td>Email</td><td>Date</td><td>Teacher</td><td>Research</td><td>ID</tr>
+					<tr><td colspan='8'><hr></td></tr>
 					<td><input type="checkbox" id="chooseAll"/></td>
 					<td><input id="viewObs" class="ct-is"/></td>
 					<td><input id="viewEmail" class="ct-is"/></td>
 					<td nowrap><select id="viewDateComp" class="ct-is" style="height:19px;vertical-align:-2px;margin-right:-3px;"><option></option><option selected>=</option><option>!=</option><option><</option><option><=</option><option>></option><option>>=</option></select>
 					<input id="viewDate" class="ct-is"style="height:17px" type="date"/></td>
 					<td><input id="viewTid" class="ct-is" style="width:80px"/></td>
-					<td><input id="viewSid" class="ct-is" style="width:80px"/></td></tr>
-					<tr><td colspan='7'><hr></td></tr>
+					<td><select id="ResType" class="ct-is"><option></option><option>Pre-Intervention</option>";
+						<option>Post-Intervention</option><option>Maintenance</option></select></td>
+					<td><input id="viewSid" class="ct-is" style="width:30px"/></td></tr>
+				<tr><td colspan='8'><hr></td></tr>
 			</table>
 			<hr>
 			<div id="showRaw" class="ct-actionBut">View raw data</div>&nbsp;&nbsp;
@@ -123,6 +125,9 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			});													
 		$("#viewSid").on("change", function(e) {							// ON SESSSION ID CHANGE
 			GetObservations("sid");											// Show matching observations
+			});													
+		$("#ResType").on("change", function(e) {							// ON RESEARCH CHANGE
+			GetObservations("res");											// Show matching observations
 			});													
 		$("#chooseAll").on("click", function(e) {							// ON CHECK ALL
 			$("input:checkbox").prop("checked",$(this).prop("checked"));	// Toggle
@@ -200,8 +205,9 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		var now=$("#viewDate").val();										// Get date
 		var tid=$("#viewTid").val();										// Get teacher id
 		var sid=$("#viewSid").val();										// Get session id
+		var res=$("#ResType").val();										// Get research type
 		var dc=$("#viewDateComp").val();									// Get date comparator
-	
+
 		var q="id != '0'";													// Query base (all)
 		if (sid)															// If a session is set
 			q="id = '"+sid+"'";												// Base query on id			
@@ -211,11 +217,13 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			q+=" AND obs LIKE '%"+obs+"%'";									// Add to query				
 		if (email)															// If an set
 			q+=" AND email LIKE '%"+email+"%'";								// Add to query				
-		if (tid)															// If a tis set
+		if (tid)															// If an tid set
 			q+=" AND teacherId LIKE '%"+tid+"%'";							// Add to query				
+		if (res)															// If a res set
+			q+=" AND research = '"+res+"'";									// Add to query				
 	
 		q+=" ORDER BY date DESC";											// Sort by
-	 	$("#sessionTable").find("tr:gt(5)").remove();						// Clear sessions
+	 	$("#sessionTable").find("tr:gt(3)").remove();						// Clear sessions
 
 		Query(q, function(d) { 												// Send query
 			var i,str;
@@ -231,6 +239,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				str+="<td>"+d[i].email+"</td>";								// Fill email
 				str+="<td>"+d[i].date+"</td>";								// Fill date
 				str+="<td>"+d[i].teacherId+"</td>";							// Fill tid
+				str+="<td>"+d[i].research+"</td>";							// Fill res
 				str+="<td>"+d[i].id+"</td>";								// Fill id
 				$("#sessionTable").append("<tr>"+str+"</tr>");
 				}
