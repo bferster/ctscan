@@ -381,10 +381,11 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		str+="<tr><td><b>Video</b></td><td>"+curJson.video+"</td></tr>";
 		str+="<tr><td><b>Reminder</b></td><td>"+curJson.remind+"</td></tr>";
 		str+="<tr><td><b>Research</b></td><td>"+curJson.research+"</td></tr>";
+		str+="<tr><td><b>Template</b></td><td>"+curJson.template+"</td></tr>";
 			
 		str+="</table></div>";
 		str+="<div style='display:inline-block;margin-right:32px;vertical-align:top'><table>"
-		str+="<tr><td><b>Event</b></td><td><b>(#)</b></td><td><b>C/M</b></td></tr>";
+		str+="<tr><td><b>Event</b></td><td><b>(#)</b></td><td><b>#/M</b></td></tr>";
 		str+="<tr><td colspan='3'><hr></td></tr>";
 		for (i=0;i<dataLabVals.length;++i) {								// For each event button
 			str+="<tr><td><b>"+dataLabVals[i]+"&nbsp;&nbsp;</b></td>";		// Label

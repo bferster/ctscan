@@ -204,6 +204,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		menu=url;														// Get name
 		if (!menu.match(/\.txt/))	menu+=".txt";						// Add ext if not there
 		}
+	obsData.template=menu;												// Save template name
 	$.ajax({ type: "GET", url: menu, success: function(text) {			// Get menus text tile
 		var i,j,o,cp,cc,subs;
 		text=text.replace(/\n\r/g,"\n");								// LFCR -> LF
@@ -773,6 +774,7 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 		str+="<tr id='od-video'><td><b>Video</b></td><td>"+obsData.video+"<td></tr>";
 		str+="<tr><td><b>Reminder</b></td><td>"+obsData.remind+"<td></tr>";
 		str+="<tr><td><b>Research</b></td><td>"+obsData.research+"<td></tr>";
+		str+="<tr><td><b>Template</b></td><td>"+obsData.template+"<td></tr>";
 		str+"<br>";
 
 		var d=obsEvents;
@@ -839,6 +841,7 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 			rows.push(["0","Session","Video",obsData.video,""]);
 			rows.push(["0","Session","Reminder",obsData.remind,""]);
 			rows.push(["0","Session","Research",obsData.research,""]);
+			rows.push(["0","Session","Template",obsData.template,""]);
 			for (i=0;i<obsEvents.length;++i) {
 				o=obsEvents[i];
 				rows.push([o.time,o.d1,o.d2,o.d3,o.d4,o.d5]);
@@ -853,7 +856,8 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 				  grade:obsData.grade, subject:obsData.subject, numStudents:obsData.number,
 				  date:obsData.date,   block:obsData.block,	    setting:obsData.setting, 
 				  level:obsData.level, video:obsData.video,		remind:obsData.remind, 
-				  research:obsData.research,				  	events: JSON.stringify(obsEvents)
+				  research:obsData.research,					template:obsData.template,				  	
+				  events: JSON.stringify(obsEvents)
 				  };
 
 		var url="//classroomteachingscan.com/ctscan/saveobs.php";		// Target
