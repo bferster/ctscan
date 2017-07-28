@@ -291,6 +291,7 @@ function GetIntroData()												// GET INTRO DATA FROM USER
 	str+="<tr><td>Teacher&nbsp;ID:</td><td><input class='ct-is' id='intro-id' type='Text'></input></td></tr>";
 	str+="<tr><td>Observer&nbsp;name:</td><td><input class='ct-is' id='intro-name' type='Text'></input></td></tr>";
 	str+="<tr><td>Observer&nbsp;email:</td><td><input class='ct-is' id='intro-email' type='Text'></input></td></tr>";
+	str+="<tr><td>Password</td><td><input class='ct-is' id='intro-pass' type='Password'></input> (Not required)</td></tr>";
 	str+="<tr><td>Grade:</td><td><select id='intro-grade' class='ct-is'>";
 	str+="<option>K</option><option>1</option><option>2</option><option>3</option><option>4</option>";
 	str+="<option>5</option><option>6</option><option>7</option><option>8</option><option>9</option>";
@@ -314,6 +315,7 @@ function GetIntroData()												// GET INTRO DATA FROM USER
 		obsData.tid=$("#intro-id").val();
 		obsData.name=$("#intro-name").val();
 		obsData.email=$("#intro-email").val();
+		obsData.password=$("#intro-pass").val();
 		obsData.grade=$("#intro-grade").val();
 		obsData.subject=$("#intro-sub").val();
 		obsData.number=$("#intro-numkids").val();
@@ -861,7 +863,7 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 				  date:obsData.date,   block:obsData.block,	    setting:obsData.setting, 
 				  level:obsData.level, video:obsData.video,		remind:obsData.remind, 
 				  research:obsData.research,					template:obsData.template,				  	
-				  events: JSON.stringify(obsEvents)
+				  events: JSON.stringify(obsEvents),			password:obsData.password
 				  };
 
 		var url="//classroomteachingscan.com/ctscan/saveobs.php";		// Target
