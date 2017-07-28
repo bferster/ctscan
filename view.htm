@@ -129,6 +129,9 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		$("#ResType").on("change", function(e) {							// ON RESEARCH CHANGE
 			GetObservations("res");											// Show matching observations
 			});													
+		$("#password").on("change", function(e) {							// ON PASSWORD CHANGE
+			GetObservations("pass");										// Show matching observations
+			});													
 		$("#chooseAll").on("click", function(e) {							// ON CHECK ALL
 			$("input:checkbox").prop("checked",$(this).prop("checked"));	// Toggle
 			});													
@@ -208,6 +211,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		var sid=$("#viewSid").val();										// Get session id
 		var res=$("#ResType").val();										// Get research type
 		var dc=$("#viewDateComp").val();									// Get date comparator
+		var pass=$("#password").val();										// Get password
 
 		var q="id != '0'";													// Query base (all)
 		if (sid)															// If a session is set
@@ -222,7 +226,10 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			q+=" AND teacherId LIKE '%"+tid+"%'";							// Add to query				
 		if (res)															// If a res set
 			q+=" AND research = '"+res+"'";									// Add to query				
-	
+		if (pass && (pass != "7001"))										// If a password set and not magic one
+			q+=" AND password = '"+pass+"'";								// Add to query				
+		else if (!pass)														// If no password, show all blank ones
+			q+=" AND password IS NULL";										// Add to query				
 		q+=" ORDER BY date DESC";											// Sort by
 	 	$("#sessionTable").find("tr:gt(3)").remove();						// Clear sessions
 
