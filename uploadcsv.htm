@@ -51,35 +51,68 @@
 		var rows=text.split("\n");										// Spit by line
 		if (!rows)														// No data
 			return;														// Quit
-		for (i=1;i<rows.length;++i) {									// For each row
-			if (!rows[i])												// Continue
-				continue;												// Skip
-			v=rows[i].split(",");										// Get fields
-			if (v[1] == "Session") {									// Session data
-				if (v[2] == "Observer") 			dat.obs=v[3];				
-				else if (v[2] == "Email") 			dat.email=v[3];				
-				else if (v[2] == "TeacherId") 		dat.teacherId=v[3];				
-				else if (v[2] == "Grade") 			dat.grade=v[3];				
-				else if (v[2] == "Subject") 		dat.subject=v[3];				
-				else if (v[2] == "NumStudents") 	dat.numStudents=v[3];				
-				else if (v[2] == "Date") 			dat.date=v[3];				
-				else if (v[2] == "Block") 			dat.block=v[3];				
-				else if (v[2] == "Setting") 		dat.setting=v[3];				
-				else if (v[2] == "Video") 			dat.video=v[3];				
-				else if (v[2] == "Level") 			dat.level=v[3];				
-				else if (v[2] == "Reminder") 		dat.remind=v[3];				
-				else if (v[2] == "Research") 		dat.research=v[3];				
-				else if (v[2] == "Template") 		dat.template=v[3];				
-				}
-			else{														// An event
-				var o={};												// Fresh object
+		if (rows[0].match(/Session Time/)) {
+			dat.date=rows[1].substr(7);									// Get date			
+			dat.teacherId=rows[2].substr(13);							// Get id			
+			dat.grade=rows[3].substr(8);								// Get grade			
+			dat.obs=rows[4].substr(16);									// Get observer
+			dat.subject=rows[5].substr(10);								// Get subject		
+			dat.block=rows[6].substr(8);								// Get block			
+			dat.setting=rows[7].substr(10).split(",")[0];				// Get setting		
+			dat.email="";												// Set email
+			dat.video="Live";											// Set video
+			dat.level="";												// Set level
+			dat.numStudents="";											// Set num
+			dat.remind="";												// Set reminder
+			dat.research="";											// Set research
+			dat.template="Old version";									// Set template
+			
+			for (i=8;i<rows.length;++i) {								// For each row
+				if (!rows[i])											// Continue
+					continue;											// Skip
+				v=rows[i].split(",");									// Get fields
 				o.time=v[0];											// Set time
 				for (j=1;j<6;++j)										// For each field
 					o["d"+j]=v[j] ? v[j] : "";							// Set it
 				events.push(o);											// Add to array
 				}
 			}
+		else{
+			for (i=1;i<rows.length;++i) {								// For each row
+				if (!rows[i])											// Continue
+					continue;											// Skip
+				v=rows[i].split(",");									// Get fields
+				if (v[1] == "Session") {								// Session data
+					if (v[2] == "Observer") 			dat.obs=v[3];				
+					else if (v[2] == "Email") 			dat.email=v[3];				
+					else if (v[2] == "TeacherId") 		dat.teacherId=v[3];				
+					else if (v[2] == "Grade") 			dat.grade=v[3];				
+					else if (v[2] == "Subject") 		dat.subject=v[3];				
+					else if (v[2] == "NumStudents") 	dat.numStudents=v[3];				
+					else if (v[2] == "Date") 			dat.date=v[3];				
+					else if (v[2] == "Block") 			dat.block=v[3];				
+					else if (v[2] == "Setting") 		dat.setting=v[3];				
+					else if (v[2] == "Video") 			dat.video=v[3];				
+					else if (v[2] == "Level") 			dat.level=v[3];				
+					else if (v[2] == "Reminder") 		dat.remind=v[3];				
+					else if (v[2] == "Research") 		dat.research=v[3];				
+					else if (v[2] == "Template") 		dat.template=v[3];				
+					}
+				else{													// An event
+					var o={};											// Fresh object
+					o.time=v[0];										// Set time
+					for (j=1;j<6;++j)									// For each field
+						o["d"+j]=v[j] ? v[j] : "";						// Set it
+					events.push(o);										// Add to array
+					}
+				}
+			}
 		dat.events=JSON.stringify(events)
+
+trace(dat)
+
+//return;
+
 		var url="//classroomteachingscan.com/ctscan/saveobs.php";		// Target
 	
 		$.ajax({ url:url,dataType:'text',type:"POST",crossDomain:true,data:dat,  // Post data
