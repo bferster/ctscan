@@ -191,7 +191,7 @@ var dataLabCats=[];														// Holds OTR button categories
 var dataLabCols=[];														// Holds OTR button colors											
 var dataActs=[];														// Holds media buttons											
 var dataAcad=[];														// Holds academic diciplines
-
+var dataInSet=[];														// Holds instructional settings
 var obsEvents=[];														// Holds events										
 var obsData={};															// Obs info
 var assessData=[];														// Hold assessments
@@ -228,6 +228,8 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				dataActs=o.substr(7).split(",");						// Get options
 			else if (o.match(/ACAD=/i)) 								// Disciplines
 				dataAcad=o.substr(5).split(",");						// Get options
+			else if (o.match(/INSET=/i)) 								// Instructional settings
+				dataInSet=o.substr(6).split(",");						// Get options
 			else if (o.match(/ASSESS=/i)) 								// Assessment
 				assessData.push(o);										// Get pages
 			else if (o.match(/:/)) {									// At new category
@@ -297,8 +299,7 @@ function GetIntroData()												// GET INTRO DATA FROM USER
 	str+="<tr><td>Number&nbsp;of&nbsp;students:&nbsp;&nbsp;</td><td><input class='ct-is' id='intro-numkids' type='Text'></input></td></tr>";
 	str+="<tr><td>Date:</td><td><input class='ct-is' id='intro-date' type='date'></td></tr>";
 	str+="<tr><td>Block/Time:</td><td><input class='ct-is' id='intro-block' type='text'></td></tr>";
-	str+="<tr><td>Instructional setting:</td><td><select id='intro-setting' class='ct-is'><option>Self-contained (Academic)</option><option>Self-contained (Severe/Profound)</option>";
-	str+="<option>Co-taught</option><option>Inclusive</option><option>General Education only</option></select></td></tr>";
+	str+="<tr><td>Instructional setting:</td><td><select id='intro-setting' class='ct-is'></select></td></tr>";
 	str+="<tr><td>Teacher level:</td><td><select id='intro-level' class='ct-is'><option>Preservice Teacher</option><option>Inservice Teacher</option></select></td></tr>";
 	str+="<tr><td>Video&nbsp;source:</td><td><input class='ct-is' id='intro-video' placeholder='URL of video, if not live' type='Text'></input></td></tr>";
 	str+="<tr><td>Research only:</td><td><select id='intro-res' class='ct-is'><option></option><option>Pre-Intervention</option>";
@@ -338,6 +339,9 @@ function GetIntroData()												// GET INTRO DATA FROM USER
 
 	for (i=0;i<dataAcad.length;++i)
 		$("#intro-sub").append("<option>"+dataAcad[i]+"</option>");
+
+	for (i=0;i<dataInSet.length;++i)
+		$("#intro-setting").append("<option>"+dataInSet[i]+"</option>");
 
 	for (i=0;i<menus.length;++i)
 		$("#intro-cat").append("<option>"+menus[i].cname+"</option>");
