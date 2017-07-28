@@ -67,7 +67,8 @@
 			dat.research="";											// Set research
 			dat.template="Old version";									// Set template
 			
-			for (i=8;i<rows.length;++i) {								// For each row
+			for (i=9;i<rows.length;++i) {								// For each row
+				o={};													// Fresh object
 				if (!rows[i])											// Continue
 					continue;											// Skip
 				v=rows[i].split(",");									// Get fields
@@ -99,7 +100,7 @@
 					else if (v[2] == "Template") 		dat.template=v[3];				
 					}
 				else{													// An event
-					var o={};											// Fresh object
+					o={};												// Fresh object
 					o.time=v[0];										// Set time
 					for (j=1;j<6;++j)									// For each field
 						o["d"+j]=v[j] ? v[j] : "";						// Set it
@@ -109,7 +110,7 @@
 			}
 		dat.events=JSON.stringify(events)
 
-trace(dat)
+trace(events)
 
 //return;
 
