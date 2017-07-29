@@ -45,12 +45,14 @@
 	{
 		var i,j,v,o;
 		var dat={},events=[];
+		dat.password="";												// No password
 		text=text.replace(/\n\r/g,"\n");								// LFCR -> LF
 		text=text.replace(/\r\n/g,"\n");								// CRLF -> LF
 		text=text.replace(/\r/g,"");									// Remove CR
 		var rows=text.split("\n");										// Spit by line
 		if (!rows)														// No data
 			return;														// Quit
+		rows.length=100
 		if (rows[0].match(/Session Time/)) {
 			var endTime=rows[0].split("Session Time = ")[1];			// Get end
 			dat.date=rows[1].substr(7);									// Get date			
@@ -99,22 +101,9 @@
 					}
 				}
 			}
-		dat.events=JSON.stringify(events)
-
-		function findDurForward(tv,num) {								// FIND DURATION FORWARD
-			var i,v,dur=0;
-			var n=rows.length-2;										// End of data
-			for (i=num+1;i<n;i++) {										// Work backwards
-				v=rows[i].split(",");									// Get fields
-				if ((tv[2] == v[2]) && (tv[3] == v[3])) {				// If 2 match
-					dur=v[0]-tv[0];										// Get delta
-					}
-				}
-			return ""+dur;												// Return dur as string
-			}
 
 		function setDurations() {										// SET DURATIONS
-			var i,v,o;
+			var i,v,o,s;
 			var now=[endTime,endTime,endTime,endTime];
 			for (i=rows.length-1;i>=9;--i) {							// Work backwards
 				v=rows[i].split(",");									// Get fields
@@ -150,12 +139,27 @@
 					v[4]=lookAheadStart(i)-v[0];						// Find ending
 					rows[i]=v.toString();								// Put back into row
 					}
+				else if (v[1] == "Teacher actions") {					// Teacher actions
+					if (v[3] == "END")									// If an end
+						continue;										// Continue
+					v[1]="Practice";									// Rename
+					s=v[3].split(" ->")[1].split("=True");				// Save subs
+					v[3]=v[3].split(" ->")[0];							// Practice
+					rows[i]=v.toString();								// Put back into row
+					v[1]="Teacher actions";								// Action
+					for (j=0;j<s.length-1;++j) {						// For each sub
+						v[4]=s[j].replace(/; /,"");						// Remove ;
+						rows.splice(++i,0,v.toString());				// Put back into row
+						}
+				}
 
 				if ((v[1] == "Vocab Word") && (v[3] == "Stopped"))		// Vocab word stop
 					rows.splice(i--,1);									// Remove it
 				if ((v[1] == "Visual Aid") && (v[3] == "inactive"))		// Visual aid stop
 					rows.splice(i--,1);									// Remove it
 				if (v[3] == "OFF")										// Other stop
+					rows.splice(i--,1);									// Remove it
+				if (v[1] == "Followup questions")						// Follow ups
 					rows.splice(i--,1);									// Remove it
 				}
 
@@ -181,13 +185,7 @@
 			return endTime;												// Runs til end													
 			}
 
-
-
-
-trace(events)
-
-return;
-
+		dat.events=JSON.stringify(events);								// Add events
 		var url="//classroomteachingscan.com/ctscan/saveobs.php";		// Target
 	
 		$.ajax({ url:url,dataType:'text',type:"POST",crossDomain:true,data:dat,  // Post data
