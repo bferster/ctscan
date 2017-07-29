@@ -52,6 +52,7 @@
 		if (!rows)														// No data
 			return;														// Quit
 		if (rows[0].match(/Session Time/)) {
+			var endTime=rows[0].split("Session Time = ")[1];			// Get end
 			dat.date=rows[1].substr(7);									// Get date			
 			dat.teacherId=rows[2].substr(13);							// Get id			
 			dat.grade=rows[3].substr(8);								// Get grade			
@@ -66,17 +67,7 @@
 			dat.remind="";												// Set reminder
 			dat.research="";											// Set research
 			dat.template="Old version";									// Set template
-			
-			for (i=9;i<rows.length;++i) {								// For each row
-				o={};													// Fresh object
-				if (!rows[i])											// Continue
-					continue;											// Skip
-				v=rows[i].split(",");									// Get fields
-				o.time=v[0];											// Set time
-				for (j=1;j<6;++j)										// For each field
-					o["d"+j]=v[j] ? v[j] : "";							// Set it
-				events.push(o);											// Add to array
-				}
+			setDurations();												// Set duration on some events
 			}
 		else{
 			for (i=1;i<rows.length;++i) {								// For each row
@@ -110,9 +101,92 @@
 			}
 		dat.events=JSON.stringify(events)
 
+		function findDurForward(tv,num) {								// FIND DURATION FORWARD
+			var i,v,dur=0;
+			var n=rows.length-2;										// End of data
+			for (i=num+1;i<n;i++) {										// Work backwards
+				v=rows[i].split(",");									// Get fields
+				if ((tv[2] == v[2]) && (tv[3] == v[3])) {				// If 2 match
+					dur=v[0]-tv[0];										// Get delta
+					}
+				}
+			return ""+dur;												// Return dur as string
+			}
+
+		function setDurations() {										// SET DURATIONS
+			var i,v,o;
+			var now=[endTime,endTime,endTime,endTime];
+			for (i=rows.length-1;i>=9;--i) {							// Work backwards
+				v=rows[i].split(",");									// Get fields
+				if ((v[2] == "Which Teacher") && (v[3] != "END")) {		// Change in which teacher			
+					v[4]=now[0]-v[0];									// Add time	
+					now[0]=v[0];										// New now
+					rows[i]=v.toString();								// Put back into row
+					}
+				else if ((v[2] == "Talking to") || (v[2] == "Grouping") && (v[3] != "END")) {	// Grouping			
+					v[2]="Grouping";									// Change name
+					v[4]=now[1]-v[0];									// Add time	
+					now[1]=v[0];										// New now
+					rows[i]=v.toString();								// Put back into row
+						}
+				else if ((v[2] == "Model") && (v[3] != "END")) {		// Model		
+					v[4]=now[2]-v[0];									// Add time	
+					now[2]=v[0];										// New now
+					rows[i]=v.toString();								// Put back into row
+					}
+				}
+			
+			for (i=9;i<rows.length;++i) {								// Go forward
+				v=rows[i].split(",");									// Get fields
+				if ((v[2] == "Text")    || (v[2] == "Graphic Organizer") || // Visual aids	
+					(v[2] == "Picture") || (v[2] == "Object/Manipulative") ||
+					(v[2] == "Movie")   || (v[2] == "Diagram/Graph")) {	
+					v[1]="visual Aid";									// Rename
+					v[4]=lookAheadStart(i)-v[0];						// Find ending
+					rows[i]=v.toString();								// Put back into row
+					}
+				else if (v[1] == "Vocab word") {						// Vocab word	
+					v[1]="Vocab Word";									// Rename
+					v[4]=lookAheadStart(i)-v[0];						// Find ending
+					rows[i]=v.toString();								// Put back into row
+					}
+
+				if ((v[1] == "Vocab Word") && (v[3] == "Stopped"))		// Vocab word stop
+					rows.splice(i--,1);									// Remove it
+				if ((v[1] == "Visual Aid") && (v[3] == "inactive"))		// Visual aid stop
+					rows.splice(i--,1);									// Remove it
+				if (v[3] == "OFF")										// Other stop
+					rows.splice(i--,1);									// Remove it
+				}
+
+			for (i=9;i<rows.length;++i) {								// For each row
+				v=rows[i].split(",");									// Get fields
+				o={};													// Fresh object
+				o.time=v[0];											// Set time
+				o.d1=v[1];	o.d2=v[2]; o.d3=v[3];						// First 3 fields
+				o.d5=v[4];												// Duration
+				events.push(o);											// Add to array
+				}
+		}
+
+		function lookAheadStart(i) {								// LOOK FOR END MATCH AND GET TIME
+			var v;
+			var tv=rows[i++].split(",");								// Current row
+			while (i < rows.length) {									// Look until end
+				v=rows[i].split(",");									// Get fields
+				if ((v[1] == tv[1]) && (v[2] == tv[2]))					// A match
+					return v[0];										// Return start
+				++i;													// Advance
+				}												
+			return endTime;												// Runs til end													
+			}
+
+
+
+
 trace(events)
 
-//return;
+return;
 
 		var url="//classroomteachingscan.com/ctscan/saveobs.php";		// Target
 	
