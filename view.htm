@@ -194,6 +194,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		str+"<br>";
 		var d=$.parseJSON(curJson[num].events);								// Objectify
 		for (i=0;i<d.length;++i) {											// For each event
+			trace(d[i].d1)
 			col=(d[i].d1 == "Practice") ? "#990000" : "#000";				// Color practices 
 			str+="<tr style='color:"+col+"' id=oe-"+i+"><td><b>Event</b></td><td style='overflow:hidden;white-space:nowrap'><div style='display:inline-block;width:40px'>"+d[i].time+"</div><b>";
 				str+=d[i].d1+"</b>,"+ShortenString(d[i].d2,30)+","+ShortenString(d[i].d3,40)+","+ShortenString(d[i].d4,20)+","+d[i].d5+"</td></tr>";
@@ -229,7 +230,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		if (pass && (pass != "7001"))										// If a password set and not magic one
 			q+=" AND password = '"+pass+"'";								// Add to query				
 		else if (!pass)														// If no password, show all blank ones
-			q+=" AND password IS NULL";										// Add to query				
+			q+=" AND (password IS NULL OR password ='')";					// Add to query				
 		q+=" ORDER BY date DESC";											// Sort by
 	 	$("#sessionTable").find("tr:gt(3)").remove();						// Clear sessions
 

@@ -45,6 +45,7 @@
 	{
 		var i,j,v,o;
 		var dat={},events=[];
+		var lastPractice="notset";										// No practice set
 		dat.password="";												// No password
 		text=text.replace(/\n\r/g,"\n");								// LFCR -> LF
 		text=text.replace(/\r\n/g,"\n");								// CRLF -> LF
@@ -52,7 +53,6 @@
 		var rows=text.split("\n");										// Spit by line
 		if (!rows)														// No data
 			return;														// Quit
-		rows.length=100
 		if (rows[0].match(/Session Time/)) {
 			var endTime=rows[0].split("Session Time = ")[1];			// Get end
 			dat.date=rows[1].substr(7);									// Get date			
@@ -67,8 +67,8 @@
 			dat.level="";												// Set level
 			dat.numStudents="";											// Set num
 			dat.remind="";												// Set reminder
-			dat.research="";											// Set research
-			dat.template="Old version";									// Set template
+			dat.template="";											// Set research
+			dat.research="Old version";									// Set template
 			setDurations();												// Set duration on some events
 			}
 		else{
@@ -106,6 +106,8 @@
 			var i,v,o,s;
 			var now=[endTime,endTime,endTime,endTime];
 			for (i=rows.length-1;i>=9;--i) {							// Work backwards
+				if (!rows[i]) 											// No data
+					continue;											// Skip
 				v=rows[i].split(",");									// Get fields
 				if ((v[2] == "Which Teacher") && (v[3] != "END")) {		// Change in which teacher			
 					v[4]=now[0]-v[0];									// Add time	
@@ -126,11 +128,15 @@
 				}
 			
 			for (i=9;i<rows.length;++i) {								// Go forward
+				if (!rows[i]) 											// No data
+					continue;											// Skip
 				v=rows[i].split(",");									// Get fields
 				if ((v[2] == "Text")    || (v[2] == "Graphic Organizer") || // Visual aids	
 					(v[2] == "Picture") || (v[2] == "Object/Manipulative") ||
 					(v[2] == "Movie")   || (v[2] == "Diagram/Graph")) {	
-					v[1]="visual Aid";									// Rename
+					if (v[2] == "Picture")								// If picture
+						v[2]="Picture/CPU";								// Rename
+					v[1]="Visual Aid";									// Rename
 					v[4]=lookAheadStart(i)-v[0];						// Find ending
 					rows[i]=v.toString();								// Put back into row
 					}
@@ -138,10 +144,13 @@
 					v[1]="Vocab Word";									// Rename
 					v[4]=lookAheadStart(i)-v[0];						// Find ending
 					rows[i]=v.toString();								// Put back into row
-					}
+				}
 				else if (v[1] == "Teacher actions") {					// Teacher actions
 					if (v[3] == "END")									// If an end
 						continue;										// Continue
+					if (lastPractice == v[3])							// Same as last
+						continue;										// Skip it
+					lastPractice=v[3];									// Then is now
 					v[1]="Practice";									// Rename
 					s=v[3].split(" ->")[1].split("=True");				// Save subs
 					v[3]=v[3].split(" ->")[0];							// Practice
@@ -151,21 +160,37 @@
 						v[4]=s[j].replace(/; /,"");						// Remove ;
 						rows.splice(++i,0,v.toString());				// Put back into row
 						}
-				}
-
+					}
+				else if ((v[1] == "OTR") || (v[1] == "FB")  || (v[1] == "Student Q") || (v[1] == "Custom")) {				// OTR/FB/Etc
+					v[3]=v[2];
+					v[2]=v[1];											// Set type
+					v[1]="Event";										// Rename
+					rows[i]=v.toString();								// Put back into row
+					}
+				else if (v[0] == "***----NOTES----***") {				// At end
+					rows.length=i;										// End here
+					break;												// Quit
+					}
+				
 				if ((v[1] == "Vocab Word") && (v[3] == "Stopped"))		// Vocab word stop
 					rows.splice(i--,1);									// Remove it
 				if ((v[1] == "Visual Aid") && (v[3] == "inactive"))		// Visual aid stop
 					rows.splice(i--,1);									// Remove it
-				if (v[3] == "OFF")										// Other stop
+				if (v[3] == "OFF")										// OFF
+					rows.splice(i--,1);									// Remove it
+				if (v[3] == "END")										// End
 					rows.splice(i--,1);									// Remove it
 				if (v[1] == "Followup questions")						// Follow ups
 					rows.splice(i--,1);									// Remove it
 				}
 
 			for (i=9;i<rows.length;++i) {								// For each row
+				if (!rows[i]) 											// No data
+					continue;											// Skip
 				v=rows[i].split(",");									// Get fields
 				o={};													// Fresh object
+				for (j=1;j<6;++j)										// For each field
+					o["d"+j]="";										// Null it
 				o.time=v[0];											// Set time
 				o.d1=v[1];	o.d2=v[2]; o.d3=v[3];						// First 3 fields
 				o.d5=v[4];												// Duration
@@ -177,6 +202,10 @@
 			var v;
 			var tv=rows[i++].split(",");								// Current row
 			while (i < rows.length) {									// Look until end
+				if (!rows[i]) {											// No data
+					++i;												// Advance
+					continue;											// Skip
+					}
 				v=rows[i].split(",");									// Get fields
 				if ((v[1] == tv[1]) && (v[2] == tv[2]))					// A match
 					return v[0];										// Return start
@@ -184,7 +213,6 @@
 				}												
 			return endTime;												// Runs til end													
 			}
-
 		dat.events=JSON.stringify(events);								// Add events
 		var url="//classroomteachingscan.com/ctscan/saveobs.php";		// Target
 	

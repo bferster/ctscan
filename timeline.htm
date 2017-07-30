@@ -497,7 +497,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
  		data.addColumn('number', 'Time');									// Add time
 		for (i=0;i<obsEvents.length;++i) 									// For each event
 			if (obsEvents[i].d1 == "Practice")								// If a practice
-				d.push([ obsEvents[i].d3, obsEvents[i].d5 ]);				// Add slice								
+				d.push([ obsEvents[i].d3, obsEvents[i].d5-0]);				// Add slice								
 		data.addRows(d);													// Add data
   		var options={width: w, is3D: true,									// Set options
 		 			 title: "Teacher Time",									// Title
@@ -516,7 +516,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
  		data.addColumn('number', 'Time');									// Add time
 		for (i=0;i<obsEvents.length;++i) 									// For each event
 			if (obsEvents[i].d1 == "Student actions")						// If a student action
-				d.push([ obsEvents[i].d2, obsEvents[i].d5 ]);				// Add slice								
+				d.push([ obsEvents[i].d2, obsEvents[i].d5-0 ]);				// Add slice								
 		data.addRows(d);													// Add data
   		var options={width: w, is3D: true, 									// Set options
 		 			 title: "Student Time",									// Title
@@ -535,7 +535,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
  		data.addColumn('number', 'Time');									// Add time
 		for (i=0;i<obsEvents.length;++i) 									// For each event
 			if (obsEvents[i].d1 == "Vocab Word")							// If a vocab
-				d.push([ obsEvents[i].d2, obsEvents[i].d5 ]);				// Add slice								
+				d.push([ obsEvents[i].d2, obsEvents[i].d5-0 ]);				// Add slice								
 		data.addRows(d);													// Add data
   		var options={width: w, is3D: true, 									// Set options
 		 			 title: "Vocabulary/Topic Terms ",						// Title
@@ -554,10 +554,10 @@ $(document).ready(function() {								           	// ON PAGE LOADED
  		data.addColumn('number', 'Time');									// Add time
 		for (i=0;i<obsEvents.length;++i) 									// For each event
 			if (obsEvents[i].d2 == "Model")									// If a model
-				d.push([ obsEvents[i].d3, obsEvents[i].d5 ]);				// Add slice								
+				d.push([ obsEvents[i].d3, obsEvents[i].d5-0 ]),trace(obsEvents[i].d3,obsEvents[i].d5-0);				// Add slice								
 		data.addRows(d);													// Add data
-  		var options={width: w, is3D: true, 								// Set options
-		 			 title: "Co-teaching Model ",										// Title
+  		var options={width: w, is3D: true, 									// Set options
+		 			 title: "Co-teaching Model ",							// Title
 					 titleTextStyle: { "fontSize": 12, color:"#666" }, 		// Title format
 					 chartArea:{left:"0%",top:"10%", width:"75%",height:"75%"}	//  Sizing
 	  			};
