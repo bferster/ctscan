@@ -554,7 +554,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
  		data.addColumn('number', 'Time');									// Add time
 		for (i=0;i<obsEvents.length;++i) 									// For each event
 			if (obsEvents[i].d2 == "Model")									// If a model
-				d.push([ obsEvents[i].d3, obsEvents[i].d5-0 ]),trace(obsEvents[i].d3,obsEvents[i].d5-0);				// Add slice								
+				d.push([ obsEvents[i].d3, obsEvents[i].d5-0 ]);				// Add slice								
 		data.addRows(d);													// Add data
   		var options={width: w, is3D: true, 									// Set options
 		 			 title: "Co-teaching Model ",							// Title
