@@ -56,6 +56,12 @@
 		if (rows[0].match(/Session Time/)) {
 			var endTime=rows[0].split("Session Time = ")[1];			// Get end
 			dat.date=rows[1].substr(7);									// Get date			
+			if (dat.date) {												// If a date
+				v=dat.date.split("-");									// Split by dash
+				if (v.length < 3)										// Not enough
+					v=dat.date.split("/");								// Split by slash
+				dat.date=v[2]+"/"+v[0]+"/"+v[1];						// Reorder
+				}
 			dat.teacherId=rows[2].substr(13);							// Get id			
 			dat.grade=rows[3].substr(8);								// Get grade			
 			dat.obs=rows[4].substr(16);									// Get observer
@@ -213,6 +219,7 @@
 				}												
 			return endTime;												// Runs til end													
 			}
+
 		dat.events=JSON.stringify(events);								// Add events
 		var url="//classroomteachingscan.com/ctscan/saveobs.php";		// Target
 	
