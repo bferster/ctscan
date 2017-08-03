@@ -31,6 +31,10 @@
 							}
 		.ct-dialogTitle {	font-size: 20px; font-weight: bold; color: #000; margin-bottom: 8px; user-select: none;
 							}
+		.ct-listItem { 		cursor:pointer;
+							}
+		.ct-listItem:hover{ background-color: #e8e8e8;
+							}
 		.ct-actionBut {		cursor: pointer; color:#fff; 
 							text-align: center; border-radius: 6px; display: inline-block; user-select: none;
 							font-size: 12px; background-color: #27ae60; padding: 2px 8px 2px 8px; vertical-align:-3px;
@@ -202,6 +206,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		$("#dataPanel").append(str);										// Add to data panel										
 	}
 
+
 	function GetObservations()											// GET SELECTED OBSERVATIONS FROM DB
 	{
 		var obs=$("#viewObs").val();										// Get observer name
@@ -249,8 +254,17 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				str+="<td>"+d[i].teacherId+"</td>";							// Fill tid
 				str+="<td>"+d[i].research+"</td>";							// Fill res
 				str+="<td>"+d[i].id+"</td>";								// Fill id
-				$("#sessionTable").append("<tr>"+str+"</tr>");
+				$("#sessionTable").append("<tr class='ct-listItem' id='rowId-"+i+"' >"+str+"</tr>");
+			
+				$("#rowId-"+i).on("click", function(e) {					// ROW CLICK HANDLER
+					var id=e.currentTarget.id.substr(6);					// Get id			
+					if (!e.target.id.match(/sessId-/))						// If on row
+						$("#sessId-"+id).trigger("click");					// Click checkbox
+					Sound("click");											// Click
+					});		
+
 				}
+
 			});
 	
 	Sound("click");															// Click sound	
