@@ -151,7 +151,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		Draw();																// Redraw
 		});
 	
-	$.ajax({ type: "GET", url: menuFile, success: function(text) {		// Get menus text tile
+	$.ajax({ type: "GET", url: "/menus/"+menuFile, success: function(text) { // Get menus text tile
 		var i,j,o,cp,cc,subs;
 		text=text.replace(/\n\r/g,"\n");									// LFCR -> LF
 		text=text.replace(/\r\n/g,"\n");									// CRLF -> LF

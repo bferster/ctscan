@@ -92,15 +92,9 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 var curJson=null;															// Holds session results
-var menuFile="";															// Default menu
 
 $(document).ready(function() {								           	// ON PAGE LOADED
 
-	var menuFile="menus.txt";												// Default menu
-	var url=window.location.search.substring(1);							// Get query string
-	if (url) 																// If something on command line
-		menuFile=url;														// Get name
-	
 	Date.prototype.toDateInputValue = (function() {							// Set today's date
 			var local=new Date(this);										// Get UTC
 			return local.toJSON().slice(0,10);								// Get date portion
