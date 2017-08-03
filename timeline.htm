@@ -151,7 +151,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		Draw();																// Redraw
 		});
 	
-	$.ajax({ type: "GET", url: "/menus/"+menuFile, success: function(text) { // Get menus text tile
+	$.ajax({ type: "GET", url: "menus/"+menuFile, success: function(text) { // Get menus text tile
 		var i,j,o,cp,cc,subs;
 		text=text.replace(/\n\r/g,"\n");									// LFCR -> LF
 		text=text.replace(/\r\n/g,"\n");									// CRLF -> LF
@@ -205,14 +205,14 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				return;;													// Quit
 			curJson=$.parseJSON(d)[0];										// Objectify result
 			Start();														// Start timeline
+			google.charts.load('current', {'packages':['corechart']});		// Load chart library
+			google.charts.setOnLoadCallback(DrawChart1);					// Draw chart 1
+			google.charts.setOnLoadCallback(DrawChart2);					// Draw chart 2
+			google.charts.setOnLoadCallback(DrawChart3);					// Draw chart 3
+			google.charts.setOnLoadCallback(DrawChart4);					// Draw chart 4
 			});
 	}});																	// On menus loaded
 	
-	google.charts.load('current', {'packages':['corechart']});				// Load chart library
-	google.charts.setOnLoadCallback(DrawChart1);							// Draw chart 1
-	google.charts.setOnLoadCallback(DrawChart2);							// Draw chart 2
-	google.charts.setOnLoadCallback(DrawChart3);							// Draw chart 3
-	google.charts.setOnLoadCallback(DrawChart4);							// Draw chart 4
 
 });																			// On ready
 
