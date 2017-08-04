@@ -395,21 +395,22 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		
 		str+="</table></div>";
 		str+="<div style='display:inline-block;vertical-align:top'><table>"
-		str+="<tr><td><b>Vocabulary Practices</b></td><td><b>Value</b></td></tr>";
+		str+="<tr><td><b>Vocabulary Practices</b></td><td><b>Time / %</b></td></tr>";
 		str+="<tr><td colspan='2'><hr></td></tr>";
 		var all=0, c=0;
 		for (i=0;i<obsEvents.length;++i) {									// For each event
 			o=obsEvents[i];													// Point at event
 			if ((o.d1 == "Practice") && (o.d2 == "Vocabulary Instruction")) {	// If a vocab practice
 				str+="<tr><td><b>"+o.d3+"&nbsp;&nbsp;</b></td>";			// Label
-				str+="<td>&nbsp;&nbsp"+o.d4+"%&nbsp;&nbsp</td></tr>";		// Pct
+				str+="<td>&nbsp;&nbsp"+o.d5+" / "+o.d4+"%&nbsp;&nbsp</td></tr>";	// Pct
 				if (o.d4 == 100)	all+=(o.d5-0)							// If all used, add to all count
 				++c;
 				}
 			}
+		str+="<tr><td colspan='3'><hr></td></tr>";
 		str+="<tr><td><b>Total vocabulary practices used&nbsp;&nbsp;</b></td>";		// # vocabs
 		str+="<td>&nbsp;&nbsp"+c+"&nbsp;&nbsp</td></tr>";					// #
-		str+="<tr><td><b>Total time when all subs were used&nbsp;&nbsp;</b></td>";			// All 100%ers
+		str+="<tr><td><b>Total time when all markers were used&nbsp;&nbsp;</b></td>";		// All 100%ers
 		str+="<td>&nbsp;&nbsp"+Math.floor(all/60)+":"+(all%60)+"&nbsp;&nbsp</td></tr>";		// time
 		$("#dataPanel").append(str);										// Add to panel	
 	}									
