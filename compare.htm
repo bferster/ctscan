@@ -8,7 +8,7 @@
 	<script src="lib/jquery.min.js"></script>
  	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   	<link REL="SHORTCUT ICON" HREF="img/favicon.ico">
-	<title>CTScan Timeline</title>
+	<title>CTScan Compare</title>
 
 	<style type="text/css">
 		 
@@ -21,7 +21,7 @@
 		.ct-chartPanel {	background-color:#fff; margin-top: 16px; opacity: 0; 
 							font-size: 12px; padding-bottom:0px; border-radius: 6px;
 							}
-		.ct-chart {			display: inline-block; width:250px;
+		.ct-chart {			display: inline-block; width:100%;
 							}
 		.ct-dataPanel {		background-color:#fff; max-width:1000px; margin-left: auto; margin-right: auto; opacity: 0; 
 							max-height: 2000px;  overflow-y:auto;
@@ -43,14 +43,12 @@
 		</div>
 		<div id="chartPanel" class="ct-chartPanel">
 			<div class="ct-chart" id="chart1Chart"></div>
-			<div class="ct-chart" id="chart2Chart"></div>
-			<div class="ct-chart" id="chart3Chart"></div>
-			<div class="ct-chart" id="chart4Chart"></div>
 		</div>
 		<br>
 		Compare this session with session: <select id="compGrade" class="ct-is"><option>in all grades</option><option>in this grade only</option></select>&nbsp;&nbsp;
 		<select id="compSubject" class="ct-is"><option>for all subjects</option><option>for this subject only</option></select>&nbsp;&nbsp;
-		<select id="compSetting" class="ct-is"><option>in all settings</option><option>in this setting only.</option></select>
+		<select id="compSetting" class="ct-is"><option>in all settings</option><option>in this setting only.</option></select>&nbsp;
+        or just this Id:&nbsp;<input id="compId" class="ct-is" style="width:30px"/></td></tr>
 	</div>
 	<div id="dataPanel" class="ct-dataPanel"></div>
 
@@ -99,6 +97,9 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		$("#compGrade").on("change", function(e) {							// ON GRADE CHANGE
 			GetObservations("grade");										// Show matching observations
 			});													
+		$("#compId").on("change", function(e) {								// ON ID CHANGE
+			GetObservations("id");											// Show matching observations
+			});													
 		
 });																			// On ready
 
@@ -125,6 +126,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		var sub=$("#compSubject").val();									// Get subject
 		var set=$("#compSetting").val();									// Get setting
 		var gra=$("#compGrade").val();										// Get grade
+		var id=$("#compId").val();											// Get id
 		var q="SELECT id FROM sessions WHERE id != '0'";					// Query base 
 		if (sub.match(/this/)) 												// Just looking for this subject							
 			q+=" AND subject LIKE '%"+curJson.subject+"%'"; 				// Add to query				
@@ -132,24 +134,28 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			q+=" AND setting LIKE '%"+curJson.setting+"%'"; 				// Add to query				
 		if (gra.match(/this/)) 												// Just looking for this grade							
 			q+=" AND grade LIKE '%"+curJson.grade+"%'"; 					// Add to query				
-		Query(q, function(d) { 												// Send query
-			
-			var i,str;
-			if (!d || d == "null")	{										// No hits													
-				return;;													// Quit
-				}
-			d=$.parseJSON(d);												// Objectify result
+		if (id)																// If an id spec's
+			getTheData([id]);												// Get the data on that id																
+		else
+			Query(q, function(d) { 											// Send query
+				var i,str,ids=[];
+				if (!d || d == "null")										// No hits													
+					return;													// Quit
+				d=$.parseJSON(d);											// Objectify result
+				for (i=0;i<d.length;++i)									// For each result
+					ids.push(d[i].id);										// Add to array
+				getTheData(ids);											// Send list of ids
+				});
 
-		google.charts.load('current', {'packages':['corechart']});			// Load chart library
-		google.charts.setOnLoadCallback(DrawChart1);						// Draw chart 1
-		google.charts.setOnLoadCallback(DrawChart2);						// Draw chart 2
-		google.charts.setOnLoadCallback(DrawChart3);						// Draw chart 3
-		google.charts.setOnLoadCallback(DrawChart4);						// Draw chart 4
-		$("#mainPanel").animate({ opacity:1 },1500);						// Show main
-		$("#chartPanel").animate({ opacity:1 },1500);						// Show charts
-		$("#dataPanel").animate({ opacity:1 },1500);						// Show data
-			});
-	
+		function getTheData(ids)											// GET THE DATA
+		{
+			trace(ids)
+			google.charts.load('current', {'packages':['corechart']});		// Load chart library
+			google.charts.setOnLoadCallback(DrawChart1);					// Draw chart 1
+			$("#mainPanel").animate({ opacity:1 },1500);					// Show main
+			$("#chartPanel").animate({ opacity:1 },1500);					// Show charts
+			$("#dataPanel").animate({ opacity:1 },1500);					// Show data
+			}
 	}
 
 	function ShowData()													// SHOW DATA
@@ -188,78 +194,26 @@ $(document).ready(function() {								           	// ON PAGE LOADED
     function DrawChart1() 												// DRAW CHART 1
 	{
 		var i,d=[];
-		var w=$("#chart1Chart").width()+50;
 		var data=new google.visualization.DataTable();						// Make new table
 		data.addColumn('string', 'Label');									// Add label column
  		data.addColumn('number', 'Time');									// Add time
-		for (i=0;i<obsEvents.length;++i) 									// For each event
-			if (obsEvents[i].d1 == "Practice")								// If a practice
-				d.push([ obsEvents[i].d3, obsEvents[i].d5-0]);				// Add slice								
-		data.addRows(d);													// Add data
-  		var options={width: w, is3D: true,									// Set options
-		 			 title: "Teacher Time",									// Title
-					 titleTextStyle: { "fontSize": 12, color:"#666" }, 		// Title format
-					 chartArea:{left:"0%",top:"10%", width:"75%",height:"75%"}	//  Sizing
-		  			};
-		new google.visualization.PieChart(document.getElementById('chart1Chart')).draw(data,options);
-      }
+	    var data = google.visualization.arrayToDataTable([
+          ['', 'This session', 'All sessions', 'With others'],
+          ['Ratio of this to that', 100, 40, 20],
+          ['All markers used', 89, 46, 30],
+          ['Student engagement', 66, 56, 40],
+          ['Teacher engagement', 19, 12, 80],
+	      ['Time on task', 99, 72, 60]
+          ]);
 
-  function DrawChart2() 												// DRAW CHART 2
-	{
-		var i,d=[];
-		var w=$("#chart1Chart").width()+50;
-		var data=new google.visualization.DataTable();						// Make new table
-		data.addColumn('string', 'Label');									// Add label column
- 		data.addColumn('number', 'Time');									// Add time
-		for (i=0;i<obsEvents.length;++i) 									// For each event
-			if (obsEvents[i].d1 == "Student actions")						// If a student action
-				d.push([ obsEvents[i].d2, obsEvents[i].d5-0 ]);				// Add slice								
-		data.addRows(d);													// Add data
-  		var options={width: w, is3D: true, 									// Set options
-		 			 title: "Student Time",									// Title
-					 titleTextStyle: { "fontSize": 12, color:"#666" }, 		// Title format
-					 chartArea:{left:"0%",top:"10%", width:"75%",height:"75%"}	//  Sizing
-		  			};
-		new google.visualization.PieChart(document.getElementById('chart2Chart')).draw(data,options);
-      }
-
-	function DrawChart3() 												// DRAW CHART 3
-	{
-		var i,d=[];
-		var w=$("#chart1Chart").width()+50;
-		var data=new google.visualization.DataTable();						// Make new table
-		data.addColumn('string', 'Label');									// Add label column
- 		data.addColumn('number', 'Time');									// Add time
-		for (i=0;i<obsEvents.length;++i) 									// For each event
-			if (obsEvents[i].d1 == "Vocab Word")							// If a vocab
-				d.push([ obsEvents[i].d2, obsEvents[i].d5-0 ]);				// Add slice								
-		data.addRows(d);													// Add data
-  		var options={width: w, is3D: true, 									// Set options
-		 			 title: "Vocabulary/Topic Terms ",						// Title
-					 titleTextStyle: { "fontSize": 12, color:"#666" }, 		// Title format
-					 chartArea:{left:"0%",top:"10%", width:"75%",height:"75%"}	//  Sizing
-		  			};
-		new google.visualization.PieChart(document.getElementById('chart3Chart')).draw(data,options);
-      }
-
-	function DrawChart4() 												// DRAW CHART 4
-	{
-		var i,d=[];
-		var w=$("#chart1Chart").width()+50;
-		var data=new google.visualization.DataTable();					// Make new table
-		data.addColumn('string', 'Label');									// Add label column
- 		data.addColumn('number', 'Time');									// Add time
-		for (i=0;i<obsEvents.length;++i) 									// For each event
-			if (obsEvents[i].d2 == "Model")									// If a model
-				d.push([ obsEvents[i].d3, obsEvents[i].d5-0 ]);				// Add slice								
-		data.addRows(d);													// Add data
-  		var options={width: w, is3D: true, 									// Set options
-		 			 title: "Co-teaching Model ",							// Title
-					 titleTextStyle: { "fontSize": 12, color:"#666" }, 		// Title format
-					 chartArea:{left:"0%",top:"10%", width:"75%",height:"75%"}	//  Sizing
-	  			};
-		new google.visualization.PieChart(document.getElementById('chart4Chart')).draw(data,options);
-	}
+		var options={														// Set options
+			seriesType: 'bars',
+			chartArea:{ left:32, top:16, width:"80%" }
+			};
+ 
+ 	   	var chart=new google.visualization.ComboChart(document.getElementById('chart1Chart'));
+  		chart.draw(data,options);
+  	}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // HELPERS
