@@ -122,7 +122,6 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 
 	function GetObservations()											// GET SELECTED OBSERVATIONS FROM DB
 	{
-		Sound("click");														// Click sound	
 		var sub=$("#compSubject").val();									// Get subject
 		var set=$("#compSetting").val();									// Get setting
 		var gra=$("#compGrade").val();										// Get grade
@@ -195,7 +194,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 	{
 		var i,d=[];
 		var data=new google.visualization.DataTable();						// Make new table
-		data.addColumn('string', 'Label');									// Add label column
+		data.addColumn('string', 'Label');									// Add label click
  		data.addColumn('number', 'Time');									// Add time
 	    var data = google.visualization.arrayToDataTable([
           ['', 'This session', 'All sessions', 'With others'],

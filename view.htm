@@ -81,7 +81,8 @@
 			<div id="showRaw" class="ct-actionBut">View raw data</div>&nbsp;&nbsp;
 			<div id="saveCSV" class="ct-actionBut">Save as CSV file</div>&nbsp;&nbsp;
 			<div id="showTimeline" class="ct-actionBut">View timeline</div>&nbsp;&nbsp;
-			<div id="showReport" class="ct-actionBut">View Report</div>
+			<div id="showReport" class="ct-actionBut">View Report</div>&nbsp;&nbsp;
+			<div id="showCompare" class="ct-actionBut">Compare</div>
 			<input style="float:right" id="password" type="password" class="ct-is" placeholder="Type password here"/>
  	</div><br>
 	<div id="dataPanel" class="ct-dataPanel">No sessions selected...</div>
@@ -139,6 +140,16 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				for (i=0;i<curJson.length;++i) 								// For each session
 					if ($("#sessId-"+i).prop("checked")) 					// If checked
 						window.open("timeline.htm?"+curJson[i].template+"&"+curJson[i].id,"_blank")	// Open tab
+			Sound("click");													// Click sound	
+			});													
+		$("#showCompare").on("click", function(e) {							// ON COMPARE
+				if (!curJson)												// If no data
+					return;													// Quit	
+				for (i=0;i<curJson.length;++i) 								// For each session
+					if ($("#sessId-"+i).prop("checked")) {					// If checked
+						window.open("compare.htm?"+curJson[i].id,"_blank")	// Open tab
+						break;
+					}
 			Sound("click");													// Click sound	
 			});													
 		$("#showRaw").on("click", function(e) {								// ON SHOW RAW
