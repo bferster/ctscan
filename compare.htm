@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<script src="lib/jquery.min.js"></script>
+ 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  	<link REL="SHORTCUT ICON" HREF="img/favicon.ico">
+	<title>CTScan Timeline</title>
+
+	<style type="text/css">
+		 
+		 body { 			font-family: Verdana,Geneva,sans-serif; font-size:13px; box-sizing: border-box;
+							padding: 0px; margin: 0px; 
+							}
+		.ct-mainPanel {		background-color:#eee; border-radius: 6px; margin-top: 16px; padding: 12px; max-width: 1000px;
+							margin-left: auto; margin-right: auto; opacity: 0;
+							}
+		.ct-chartPanel {	background-color:#fff; margin-top: 16px; opacity: 0; 
+							font-size: 12px; padding-bottom:0px; border-radius: 6px;
+							}
+		.ct-chart {			display: inline-block; width:250px;
+							}
+		.ct-dataPanel {		background-color:#fff; max-width:1000px; margin-left: auto; margin-right: auto; opacity: 0; 
+							max-height: 2000px;  overflow-y:auto;
+							}
+		.ct-is 	{			border-radius:4px; padding-left:8px; border: 1px solid #999; margin-bottom: 3px;
+							}
+		.ct-unselectable { 	-moz-user-select: none;     -khtml-user-select: none;
+		   			 		-webkit-user-select: none;  -ms-user-select: none;   user-select: none;
+		   					}
+
+</style>
+</head>
+<body>
+	<div id="mainPanel" class="ct-mainPanel">
+		<div style="text-align:center">
+		<div class="ct-unselectable">
+			<img src="img/ctlogo32.png"><br>
+			<b>Classroom Teaching Scan Compare</b></div><br>
+		</div>
+		<div id="chartPanel" class="ct-chartPanel">
+			<div class="ct-chart" id="chart1Chart"></div>
+			<div class="ct-chart" id="chart2Chart"></div>
+			<div class="ct-chart" id="chart3Chart"></div>
+			<div class="ct-chart" id="chart4Chart"></div>
+		</div>
+		<br>
+		Compare this session with session: <select id="compGrade" class="ct-is"><option>in all grades</option><option>in this grade only</option></select>&nbsp;&nbsp;
+		<select id="compSubject" class="ct-is"><option>for all subjects</option><option>for this subject only</option></select>&nbsp;&nbsp;
+		<select id="compSetting" class="ct-is"><option>in all settings</option><option>in this setting only.</option></select>
+	</div>
+	<div id="dataPanel" class="ct-dataPanel"></div>
+
+<script>
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// MAIN 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+var curJson=null;															// Holds session results
+var sessionNum=28;															// Session index
+var obsEvents=null;															// Points at events
+var maxTime=0;																// Size of timeline
+var svgNS="http://www.w3.org/2000/svg";										// Name space
+var menuFile="menus.txt";													// Memu filename
+var scaleSpan=128;															// Scaling
+var dataMedia=[];															// Holds media buttons											
+var dataLabVals=[];															// Holds OTR button values											
+var dataLabCats=[];															// Holds OTR button categories											
+var dataActs=[];															// Holds media buttons											
+var dataAcad=[];															// Holds academic diciplines
+var menus=[];																// Holds menus
+var butCts=[];																// Button counts
+
+$(document).ready(function() {								           	// ON PAGE LOADED
+
+	var url=window.location.search.substring(1);							// Get query string
+	if (url) {																// If something	
+		sessionNum=url;														// Get session id
+		}
+	document.title+=" ("+sessionNum+")";									// Add id to title		
+	
+	Query("id = '"+sessionNum+"'", function(d) { 						// Send query
+		if (!d || d == "null")											// No hits													
+			return;;													// Quit
+		curJson=$.parseJSON(d)[0];										// Objectify result
+		Start();														// Start timeline
+		});
+
+		$("#compSubject").on("change", function(e) {						// ON SUBJECT CHANGE
+			GetObservations("subject");										// Show matching observations
+			});													
+		$("#compSetting").on("change", function(e) {						// ON SETTING CHANGE
+			GetObservations("setting");										// Show matching observations
+			});													
+		$("#compGrade").on("change", function(e) {							// ON GRADE CHANGE
+			GetObservations("grade");										// Show matching observations
+			});													
+		
+});																			// On ready
+
+	function Start()
+	{
+		var i;
+		obsEvents=$.parseJSON(curJson.events);								// Objectify events
+		for (i=0;i<dataLabVals.length;++i)									// For each event button
+			butCts[dataLabVals[i]]=0;										// Null each one
+		
+		for (i=0;i<obsEvents.length;++i) {									// For each event
+			if (obsEvents[i].time-0 > maxTime)								// If a longer time
+				maxTime=obsEvents[i].time-0;								// Use it
+			if (obsEvents[i].d1 == "Event") 								// An event
+				butCts[obsEvents[i].d3]++;									// Add to count
+			}
+	 	ShowData();															// Show data
+ 		GetObservations();
+ 	 }
+
+	function GetObservations()											// GET SELECTED OBSERVATIONS FROM DB
+	{
+		Sound("click");														// Click sound	
+		var sub=$("#compSubject").val();									// Get subject
+		var set=$("#compSetting").val();									// Get setting
+		var gra=$("#compGrade").val();										// Get grade
+		var q="SELECT id FROM sessions WHERE id != '0'";					// Query base 
+		if (sub.match(/this/)) 												// Just looking for this subject							
+			q+=" AND subject LIKE '%"+curJson.subject+"%'"; 				// Add to query				
+		if (set.match(/this/)) 												// Just looking for this setting							
+			q+=" AND setting LIKE '%"+curJson.setting+"%'"; 				// Add to query				
+		if (gra.match(/this/)) 												// Just looking for this grade							
+			q+=" AND grade LIKE '%"+curJson.grade+"%'"; 					// Add to query				
+		Query(q, function(d) { 												// Send query
+			
+			var i,str;
+			if (!d || d == "null")	{										// No hits													
+				return;;													// Quit
+				}
+			d=$.parseJSON(d);												// Objectify result
+
+		google.charts.load('current', {'packages':['corechart']});			// Load chart library
+		google.charts.setOnLoadCallback(DrawChart1);						// Draw chart 1
+		google.charts.setOnLoadCallback(DrawChart2);						// Draw chart 2
+		google.charts.setOnLoadCallback(DrawChart3);						// Draw chart 3
+		google.charts.setOnLoadCallback(DrawChart4);						// Draw chart 4
+		$("#mainPanel").animate({ opacity:1 },1500);						// Show main
+		$("#chartPanel").animate({ opacity:1 },1500);						// Show charts
+		$("#dataPanel").animate({ opacity:1 },1500);						// Show data
+			});
+	
+	}
+
+	function ShowData()													// SHOW DATA
+	{
+		var i,o,str="<br>";
+		str+="<div style='display:inline-block;margin-right:32px;vertical-align:top'><table>"
+		str+="<tr><td style='width:100px'><b>Session Id:</b></td><td>"+curJson.id+"</td></tr>";
+		str+="<tr><td><b>Observer:</b></td><td>"+curJson.obs+"</td></tr>";
+		str+="<tr><td><b>Email:&nbsp;&nbsp;</b></td><td>"+curJson.email+"</td></tr>";
+		str+="<tr><td><b>Teacher Id:</b></td><td>"+curJson.teacherId+"</td></tr>";
+		str+="<tr><td><b>Grade:</b></td><td>"+curJson.grade+"</td></tr>";
+		str+="</table></div>";
+		
+		str+="<div style='display:inline-block;margin-right:32px;vertical-align:top'><table>"
+		str+="<tr><td style='width:100px'><b>Subject:</b></td><td>"+curJson.subject+"</td></tr>";
+		str+="<tr><td><b>Date:</b></td><td>"+curJson.date+"</td></tr>";
+		str+="<tr><td><b>Block:</b></td><td>"+curJson.block+"</td></tr>";
+		str+="<tr><td><b>Setting:</b></td><td>"+curJson.setting+"</td></tr>";
+		str+="<tr><td><b>Video:</b></td><td>"+curJson.video+"</td></tr>";
+		str+="</table></div>";
+		
+		str+="<div style='display:inline-block;margin-right:32px;vertical-align:top'><table>"
+		str+="<tr><td style='width:100px'><b>Reminder:</b></td><td>"+curJson.remind+"</td></tr>";
+		str+="<tr><td><b>Research:</b></td><td>"+curJson.research+"</td></tr>";
+		str+="<tr><td><b>Template:</b></td><td>"+curJson.template+"</td></tr>";
+		str+="</table></div>";
+		$("#dataPanel").append(str);										// Add to panel	
+	}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// CHARTS
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    function DrawChart1() 												// DRAW CHART 1
+	{
+		var i,d=[];
+		var w=$("#chart1Chart").width()+50;
+		var data=new google.visualization.DataTable();						// Make new table
+		data.addColumn('string', 'Label');									// Add label column
+ 		data.addColumn('number', 'Time');									// Add time
+		for (i=0;i<obsEvents.length;++i) 									// For each event
+			if (obsEvents[i].d1 == "Practice")								// If a practice
+				d.push([ obsEvents[i].d3, obsEvents[i].d5-0]);				// Add slice								
+		data.addRows(d);													// Add data
+  		var options={width: w, is3D: true,									// Set options
+		 			 title: "Teacher Time",									// Title
+					 titleTextStyle: { "fontSize": 12, color:"#666" }, 		// Title format
+					 chartArea:{left:"0%",top:"10%", width:"75%",height:"75%"}	//  Sizing
+		  			};
+		new google.visualization.PieChart(document.getElementById('chart1Chart')).draw(data,options);
+      }
+
+  function DrawChart2() 												// DRAW CHART 2
+	{
+		var i,d=[];
+		var w=$("#chart1Chart").width()+50;
+		var data=new google.visualization.DataTable();						// Make new table
+		data.addColumn('string', 'Label');									// Add label column
+ 		data.addColumn('number', 'Time');									// Add time
+		for (i=0;i<obsEvents.length;++i) 									// For each event
+			if (obsEvents[i].d1 == "Student actions")						// If a student action
+				d.push([ obsEvents[i].d2, obsEvents[i].d5-0 ]);				// Add slice								
+		data.addRows(d);													// Add data
+  		var options={width: w, is3D: true, 									// Set options
+		 			 title: "Student Time",									// Title
+					 titleTextStyle: { "fontSize": 12, color:"#666" }, 		// Title format
+					 chartArea:{left:"0%",top:"10%", width:"75%",height:"75%"}	//  Sizing
+		  			};
+		new google.visualization.PieChart(document.getElementById('chart2Chart')).draw(data,options);
+      }
+
+	function DrawChart3() 												// DRAW CHART 3
+	{
+		var i,d=[];
+		var w=$("#chart1Chart").width()+50;
+		var data=new google.visualization.DataTable();						// Make new table
+		data.addColumn('string', 'Label');									// Add label column
+ 		data.addColumn('number', 'Time');									// Add time
+		for (i=0;i<obsEvents.length;++i) 									// For each event
+			if (obsEvents[i].d1 == "Vocab Word")							// If a vocab
+				d.push([ obsEvents[i].d2, obsEvents[i].d5-0 ]);				// Add slice								
+		data.addRows(d);													// Add data
+  		var options={width: w, is3D: true, 									// Set options
+		 			 title: "Vocabulary/Topic Terms ",						// Title
+					 titleTextStyle: { "fontSize": 12, color:"#666" }, 		// Title format
+					 chartArea:{left:"0%",top:"10%", width:"75%",height:"75%"}	//  Sizing
+		  			};
+		new google.visualization.PieChart(document.getElementById('chart3Chart')).draw(data,options);
+      }
+
+	function DrawChart4() 												// DRAW CHART 4
+	{
+		var i,d=[];
+		var w=$("#chart1Chart").width()+50;
+		var data=new google.visualization.DataTable();					// Make new table
+		data.addColumn('string', 'Label');									// Add label column
+ 		data.addColumn('number', 'Time');									// Add time
+		for (i=0;i<obsEvents.length;++i) 									// For each event
+			if (obsEvents[i].d2 == "Model")									// If a model
+				d.push([ obsEvents[i].d3, obsEvents[i].d5-0 ]);				// Add slice								
+		data.addRows(d);													// Add data
+  		var options={width: w, is3D: true, 									// Set options
+		 			 title: "Co-teaching Model ",							// Title
+					 titleTextStyle: { "fontSize": 12, color:"#666" }, 		// Title format
+					 chartArea:{left:"0%",top:"10%", width:"75%",height:"75%"}	//  Sizing
+	  			};
+		new google.visualization.PieChart(document.getElementById('chart4Chart')).draw(data,options);
+	}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// HELPERS
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	function Query(query, callback) 
+	{
+		var dat={ q:query.replace(/'/g,"~") };
+		var url="//classroomteachingscan.com/ctscan/query.php";				// Target
+		$.ajax({ url:url,dataType:'text',type:"GET",crossDomain:true,data:dat,  // Get data
+			success:function(d) { callback(d) },							// Run callback				
+			error:function(xhr,status,error) { trace(error) },				// Show error
+			});		
+	}
+		
+	function ShortenString(str, len)									// SHORTEN A STRING TO LENGTH
+	{
+		if (!len)															// No length
+			return "";														// Return null
+		if (str && str.length > len)										// Too long
+			str=str.substr(0,(len-3)/2)+"..."+str.slice((len-3)/-2);		// Shorten	
+		return str;															// Return string
+	}
+
+	function trace(msg, p1, p2, p3, p4)										// CONSOLE 
+	{
+		if (p4 != undefined)
+			console.log(msg,p1,p2,p3,p4);
+		else if (p3 != undefined)
+			console.log(msg,p1,p2,p3);
+		else if (p2 != undefined)
+			console.log(msg,p1,p2);
+		else if (p1 != undefined)
+			console.log(msg,p1);
+		else
+			console.log(msg);
+	}
+
+	function Sound(sound, mute)												// PLAY SOUND
+	{
+		var snd=new Audio();													// Init audio object
+		if (!snd.canPlayType("audio/mpeg") || (snd.canPlayType("audio/mpeg") == "maybe")) 
+			snd=new Audio("img/"+sound+".ogg");									// Use ogg
+		else	
+			snd=new Audio("img/"+sound+".mp3");									// Use mp3
+		if (!mute)	{															// If not initing or muting	
+			snd.volume=50/100;													// Set volume
+			snd.play();															// Play it
+			}
+		}
+	
+</script>
+</body>
+</html>
