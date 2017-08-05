@@ -45,7 +45,7 @@
 			<div class="ct-chart" id="chart1Chart"></div>
 		</div>
 		<br>
-		Compare this session with session: <select id="compGrade" class="ct-is"><option>in all grades</option><option>in this grade only</option></select>&nbsp;&nbsp;
+		Compare with other sessions: <select id="compGrade" class="ct-is"><option>in all grades</option><option>in this grade only</option></select>&nbsp;&nbsp;
 		<select id="compSubject" class="ct-is"><option>for all subjects</option><option>for this subject only</option></select>&nbsp;&nbsp;
 		<select id="compSetting" class="ct-is"><option>in all settings</option><option>in this setting only.</option></select>&nbsp;
         or just this Id:&nbsp;<input id="compId" class="ct-is" style="width:30px"/></td></tr>
@@ -63,7 +63,8 @@ var sessionNum=28;															// Session index
 var obsEvents=null;															// Points at events
 var maxTime=0;																// Size of timeline
 var svgNS="http://www.w3.org/2000/svg";										// Name space
-var menuFile="menus.txt";													// Memu filename
+var menuFile="menus.txt";													// Menu filename
+var firstTime=0;															// First time flag
 var scaleSpan=128;															// Scaling
 var dataMedia=[];															// Holds media buttons											
 var dataLabVals=[];															// Holds OTR button values											
@@ -126,6 +127,8 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		var set=$("#compSetting").val();									// Get setting
 		var gra=$("#compGrade").val();										// Get grade
 		var id=$("#compId").val();											// Get id
+		LoadingIcon(true,64);												// Show loading icon
+		
 		var q="SELECT id FROM sessions WHERE id != '0'";					// Query base 
 		if (sub.match(/this/)) 												// Just looking for this subject							
 			q+=" AND subject LIKE '%"+curJson.subject+"%'"; 				// Add to query				
@@ -149,11 +152,14 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		function getTheData(ids)											// GET THE DATA
 		{
 			trace(ids)
-			google.charts.load('current', {'packages':['corechart']});		// Load chart library
+			LoadingIcon(false);												// Hide loading icon
+					google.charts.load('current', {'packages':['corechart']});	// Load chart library
 			google.charts.setOnLoadCallback(DrawChart1);					// Draw chart 1
-			$("#mainPanel").animate({ opacity:1 },1500);					// Show main
-			$("#chartPanel").animate({ opacity:1 },1500);					// Show charts
-			$("#dataPanel").animate({ opacity:1 },1500);					// Show data
+			if (!firstTime++) {												// Only once
+				$("#mainPanel").animate({ opacity:1 },1500);				// Show main
+				$("#chartPanel").animate({ opacity:1 },1500);				// Show charts
+				$("#dataPanel").animate({ opacity:1 },1500);				// Show data
+				}
 			}
 	}
 
@@ -217,6 +223,17 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // HELPERS
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	function LoadingIcon(mode, size)									// SHOW/HIDE LOADING ICON		
+	{
+		if (!mode) {														// If hiding
+			$("#sf-loadingIcon").remove();									// Remove it
+			return;															// Quit
+			}
+		var str="<img src='img/loading.gif' width='"+size+"' ";				// Img
+		str+="id='sf-loadingIcon' style='position:absolute;top:160px;left:calc(50% - "+size/2+"px);z-index:5000'>";	
+		$("body").append(str);												// Add icon to container
+	}
 
 	function Query(query, callback) 
 	{
