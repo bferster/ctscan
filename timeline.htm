@@ -386,32 +386,34 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		str+="</table></div>";
 		str+="<div style='display:inline-block;margin-right:32px;vertical-align:top'><table>"
 		str+="<tr><td><b>Event</b></td><td><b>(#)</b></td><td><b>#/M</b></td></tr>";
-		str+="<tr><td colspan='3'><hr></td></tr>";
+		str+="<tr><td colspan='5'><hr></td></tr>";
 		for (i=0;i<dataLabVals.length;++i) {								// For each event button
 			str+="<tr><td><b>"+dataLabVals[i]+"&nbsp;&nbsp;</b></td>";		// Label
-			str+="<td>&nbsp;&nbsp("+butCts[dataLabVals[i]]+")&nbsp;&nbsp</td>";// Count
-			str+="<td>"+(butCts[dataLabVals[i]]/maxTime*60).toFixed(1)+"</td></tr>";	// Counts per minute
+			str+="<td>("+butCts[dataLabVals[i]]+")&nbsp;&nbsp</td>";		// Count
+			str+="<td  style='text-align:right'>"+(butCts[dataLabVals[i]]/maxTime*60).toFixed(1)+"</td></tr>";	// Counts per minute
 			}
 		
 		str+="</table></div>";
 		str+="<div style='display:inline-block;vertical-align:top'><table>"
-		str+="<tr><td><b>Vocabulary Practices</b></td><td><b>Time / %</b></td></tr>";
-		str+="<tr><td colspan='2'><hr></td></tr>";
+		str+="<tr><td><b>Vocabulary Practices</b></td><td><b>Time&nbsp;&nbsp;</b></td><td><b>Markers used&nbsp;&nbsp;</td><td></b><b>Total</b></td></tr>";
+		str+="<tr><td colspan='4'><hr></td></tr>";
 		var all=0, c=0;
 		for (i=0;i<obsEvents.length;++i) {									// For each event
 			o=obsEvents[i];													// Point at event
 			if ((o.d1 == "Practice") && (o.d2 == "Vocabulary Instruction")) {	// If a vocab practice
 				str+="<tr><td><b>"+o.d3+"&nbsp;&nbsp;</b></td>";			// Label
-				str+="<td>&nbsp;&nbsp"+o.d5+" / "+o.d4+"%&nbsp;&nbsp</td></tr>";	// Pct
+				str+="<td>"+Math.floor(o.d5/60)+":"+(o.d5%60);				// Time
+				str+="</td><td  style='text-align:center'>"+o.d4+"%";		// Pct marker
+				str+="</td><td  style='text-align:right'>"+Math.round(o.d5/maxTime*100)+"%</td></tr>";// Pct of total
 				if (o.d4 == 100)	all+=(o.d5-0)							// If all used, add to all count
 				++c;
 				}
 			}
-		str+="<tr><td colspan='3'><hr></td></tr>";
-		str+="<tr><td><b>Total vocabulary practices used&nbsp;&nbsp;</b></td>";		// # vocabs
-		str+="<td>&nbsp;&nbsp"+c+"&nbsp;&nbsp</td></tr>";					// #
+		str+="<tr><td colspan='4'><hr></td></tr>";
+		str+="<tr><td><b>Total vocabulary practices used</b></td>";			// # vocabs
+		str+="<td>"+c+"&nbsp;&nbsp</td></tr>";								// #
 		str+="<tr><td><b>Total time when all markers were used&nbsp;&nbsp;</b></td>";		// All 100%ers
-		str+="<td>&nbsp;&nbsp"+Math.floor(all/60)+":"+(all%60)+"&nbsp;&nbsp</td></tr>";		// time
+		str+="<td>"+Math.floor(all/60)+":"+(all%60)+"&nbsp;&nbsp</td></tr>";		// time
 		$("#dataPanel").append(str);										// Add to panel	
 	}									
 
