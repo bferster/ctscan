@@ -74,8 +74,10 @@
 			dat.numStudents="";											// Set num
 			dat.remind="";												// Set reminder
 			dat.template="";											// Set research
+			dat.stats="";												// Set stats
 			dat.research="Old version";									// Set template
 			setDurations();												// Set duration on some events
+			dat.stats=CalcStats();										// Calculate stats
 			}
 		else{
 			for (i=1;i<rows.length;++i) {								// For each row
@@ -97,6 +99,7 @@
 					else if (v[2] == "Reminder") 		dat.remind=v[3];				
 					else if (v[2] == "Research") 		dat.research=v[3];				
 					else if (v[2] == "Template") 		dat.template=v[3];				
+					dat.stats=CalcStats();								// Calculate stats
 					}
 				else{													// An event
 					o={};												// Fresh object
@@ -239,6 +242,12 @@
 
 	document.getElementById('file-input').addEventListener('change', readSingleFile, false);
 
+	function CalcStats()											// CALCULATE SAVED STATS
+	{
+		return "";
+	}
+
+	
 	function trace(msg, p1, p2, p3, p4)										// CONSOLE 
 	{
 		if (p4 != undefined)

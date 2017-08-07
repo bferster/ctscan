@@ -863,7 +863,8 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 				  date:obsData.date,   block:obsData.block,	    setting:obsData.setting, 
 				  level:obsData.level, video:obsData.video,		remind:obsData.remind, 
 				  research:obsData.research,					template:obsData.template,				  	
-				  events: JSON.stringify(obsEvents),			password:obsData.password
+				  events: JSON.stringify(obsEvents),			password:obsData.password,
+				  stats:CalcStats()
 				  };
 
 		var url="//classroomteachingscan.com/ctscan/saveobs.php";		// Target
@@ -880,6 +881,11 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 				},
 			error:function(xhr,status,error) { trace(error) },			// Show error
 			});		
+	}
+
+	function CalcStats()											// CALCULATE SAVED STATS
+	{
+		return "";
 	}
 
 

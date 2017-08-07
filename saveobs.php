@@ -23,10 +23,11 @@ require_once('config.php');
 	$research=$_REQUEST['research'];									
 	$template=$_REQUEST['template'];									
 	$events=$_REQUEST['events'];									
+	$stats=$_REQUEST['stats'];									
 	$password=$_REQUEST['password'];									
 
 
-	$query="INSERT INTO sessions (teacherId, obs, email, grade, subject, numStudents, date, block, setting, level, video, remind, research, template, events, password, ver) VALUES ('";
+	$query="INSERT INTO sessions (teacherId, obs, email, grade, subject, numStudents, date, block, setting, level, video, remind, research, template, events, password, stats, ver) VALUES ('";
 		$query.=addEscapes($link,$teacherId)."','";
 		$query.=addEscapes($link,$obs)."','";
 		$query.=addEscapes($link,$email)."','";
@@ -43,6 +44,7 @@ require_once('config.php');
 		$query.=addEscapes($link,$template)."','";
 		$query.=addEscapes($link,$events)."','";
 		$query.=addEscapes($link,$password)."','";
+		$query.=addEscapes($link,$stats)."','";
 		$query.=addEscapes($link,$ver)."')";
 		$result=mysqli_query($link,$query);						// Add row
 		if ($result == false)									// Bad save
