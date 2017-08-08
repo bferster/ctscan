@@ -134,6 +134,11 @@
 					now[2]=v[0];										// New now
 					rows[i]=v.toString();								// Put back into row
 					}
+				else if ((v[1] == "Student actions") && (v[3] != "END")) {		// Student actions		
+					v[2]=v[3];											// Change
+					v[3]="";
+					rows[i]=v.toString();								// Put back into row
+					}
 				}
 			
 			for (i=9;i<rows.length;++i) {								// Go forward
@@ -225,7 +230,7 @@
 
 		dat.events=JSON.stringify(events);								// Add events
 		var url="//classroomteachingscan.com/ctscan/saveobs.php";		// Target
-	
+
 		$.ajax({ url:url,dataType:'text',type:"POST",crossDomain:true,data:dat,  // Post data
 			success:function(d) { 			
 				if (isNaN(d)) {											// Error
@@ -244,7 +249,7 @@
 
 	function CalcStats()											// CALCULATE SAVED STATS
 	{
-		return "";
+		return "{}";
 	}
 
 	

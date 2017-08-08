@@ -18,10 +18,12 @@
 		.ct-mainPanel {		background-color:#eee; border-radius: 6px; margin-top: 16px; padding: 12px; max-width: 1000px;
 							margin-left: auto; margin-right: auto; opacity: 0;
 							}
-		.ct-chartPanel {	background-color:#fff; margin-top: 16px; opacity: 0; 
+		.ct-chartPanel {	background-color:#fff; margin-top: 16px; opacity: 0; text-align:left;
 							font-size: 12px; padding-bottom:0px; border-radius: 6px;
 							}
 		.ct-chart {			display: inline-block; width:100%;
+							}
+		.ct-chartBox {		display: inline-block; text-align: center; font-weight: bold; width:240px;
 							}
 		.ct-dataPanel {		background-color:#fff; max-width:1000px; margin-left: auto; margin-right: auto; opacity: 0; 
 							max-height: 2000px;  overflow-y:auto;
@@ -42,7 +44,10 @@
 			<b>Classroom Teaching Scan Compare</b></div><br>
 		</div>
 		<div id="chartPanel" class="ct-chartPanel">
-			<div class="ct-chart" id="chart1Chart"></div>
+			<div class="ct-chartBox"><br>Events/min<br><div class="ct-chart" id="chart1Chart"></div></div>
+			<div class="ct-chartBox"><br>Teacher status<br><div class="ct-chart" id="chart2Chart"></div></div>
+			<div class="ct-chartBox"><br>Student actions<br><div class="ct-chart" id="chart4Chart"></div></div>
+			<div class="ct-chartBox"><br>Engagement<br><div class="ct-chart" id="chart3Chart"></div></div>
 		</div>
 		<br>
 		Compare with other sessions: <select id="compGrade" class="ct-is"><option>in all grades</option><option>in this grade only</option></select>&nbsp;&nbsp;
@@ -58,7 +63,8 @@
 // MAIN 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-var curJson=null;															// Holds session results
+var curJson=null;															// Holds this session results
+var allJson=null;															// Holds all session results
 var sessionNum=28;															// Session index
 var obsEvents=null;															// Points at events
 var maxTime=0;																// Size of timeline
@@ -73,6 +79,7 @@ var dataActs=[];															// Holds media buttons
 var dataAcad=[];															// Holds academic diciplines
 var menus=[];																// Holds menus
 var butCts=[];																// Button counts
+var ss,os,ts;																// Stat data
 
 $(document).ready(function() {								           	// ON PAGE LOADED
 
@@ -81,7 +88,6 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		sessionNum=url;														// Get session id
 		}
 	document.title+=" ("+sessionNum+")";									// Add id to title		
-	
 	Query("id = '"+sessionNum+"'", function(d) { 						// Send query
 		if (!d || d == "null")											// No hits													
 			return;;													// Quit
@@ -129,32 +135,36 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		var id=$("#compId").val();											// Get id
 		LoadingIcon(true,64);												// Show loading icon
 		
-		var q="SELECT id FROM sessions WHERE id != '0'";					// Query base 
+		var q="id != '0'";													// Query base 
 		if (sub.match(/this/)) 												// Just looking for this subject							
 			q+=" AND subject LIKE '%"+curJson.subject+"%'"; 				// Add to query				
 		if (set.match(/this/)) 												// Just looking for this setting							
 			q+=" AND setting LIKE '%"+curJson.setting+"%'"; 				// Add to query				
 		if (gra.match(/this/)) 												// Just looking for this grade							
 			q+=" AND grade LIKE '%"+curJson.grade+"%'"; 					// Add to query				
-		if (id)																// If an id spec's
-			getTheData([id]);												// Get the data on that id																
-		else
-			Query(q, function(d) { 											// Send query
+		if (id)																// If an id spec'd
+			 q="id = '"+id+"'";												// Look for that one
+
+		Query(q, function(d) { 												// Send query
 				var i,str,ids=[];
 				if (!d || d == "null")										// No hits													
 					return;													// Quit
 				d=$.parseJSON(d);											// Objectify result
-				for (i=0;i<d.length;++i)									// For each result
-					ids.push(d[i].id);										// Add to array
-				getTheData(ids);											// Send list of ids
+				allJson=d;													// Store all data
+				showCharts();												// Send list of ids
 				});
 
-		function getTheData(ids)											// GET THE DATA
+		function showCharts()												// SHOW CHARTS
 		{
-			trace(ids)
+			ss=CalcStats([curJson]);										// Get this session stats
+			ts=CalcStats(allJson,curJson.teacherId);						// Get this teacher's stats
+			os=CalcStats(allJson);											// Get all teacher's stats
 			LoadingIcon(false);												// Hide loading icon
-					google.charts.load('current', {'packages':['corechart']});	// Load chart library
+			google.charts.load('current', {'packages':['corechart']});		// Load chart library
 			google.charts.setOnLoadCallback(DrawChart1);					// Draw chart 1
+			google.charts.setOnLoadCallback(DrawChart2);					// Draw chart 2
+			google.charts.setOnLoadCallback(DrawChart3);					// Draw chart 3
+			google.charts.setOnLoadCallback(DrawChart4);					// Draw chart 4
 			if (!firstTime++) {												// Only once
 				$("#mainPanel").animate({ opacity:1 },1500);				// Show main
 				$("#chartPanel").animate({ opacity:1 },1500);				// Show charts
@@ -162,6 +172,82 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				}
 			}
 	}
+
+	function CalcStats(d, onlyThisID)									// CALC STATS
+	{
+		var i,j,k,o,e;
+		var trt,engNum,engTot;				
+		var s=[],stats={};													// Holds stats
+		if (!d || !d.length)												// No data
+			return;															// Quit
+	
+		for (i=0;i<d.length;++i) {											// For each session
+			if (onlyThisID && (d[i].teacherId != onlyThisID))				// If looking for this teacher's data only
+				continue;													// Not right teacher	
+			k=s.length;														// Stats index
+			s.push({ events:[], tstatus:[], sactions:[], engaged:0 });		// Add session stats object
+			e=$.parseJSON(d[i].events);										// Objectify events
+			trt=0;	engNum=.001;	engTot=0;								// Null out
+			for (j=0;j<e.length;++j) {										// For each event
+				o=e[j];														// Point at event
+				trt=Math.max(trt,o.time);									// Get max time
+				if (o.d1 == "Event") {										// If an OTR type event
+					if (s[k].events[o.d2])	s[k].events[o.d2]++;			// Add to count
+					else					s[k].events[o.d2]=1;			// Add event type
+					}
+				if (o.d1 == "Teacher status") {								// If a teacher status
+					if (isNaN(o.d5))										// Not a number
+						continue;											// Skip it
+					if (s[k].events[o.d3])	s[k].tstatus[o.d3]+=(o.d5-0);	// Add to tot time
+					else					s[k].tstatus[o.d3]=o.d5-0;		// Add status type
+					}
+				if (o.d1 == "Student actions") {							// If a student status
+					if (isNaN(o.d5) || !o.d2)								// Not a number
+						continue;											// Skip it
+					if (s[k].events[o.d3])	s[k].sactions[o.d2]+=(o.d5-0);	// Add to tot time
+					else					s[k].sactions[o.d2]=o.d5-0;		// Add status type
+					}
+				else if (o.d2 == "Percent engaged") {						// If engagement
+					++engNum;												// Add to count
+					engTot+=(o.d3-0);										// Add pct
+					}
+				}
+			if (trt)
+				for (var key in s[k].events) 								// For each event
+					s[k].events[key]=(s[k].events[key]/(trt/60)).toFixed(2);	// Events/min
+			s[k].engaged=(engTot/engNum).toFixed(2)							// Copy average engagement to global
+			}																// Session closure
+		
+		engTot=0;															// Null out
+		stats.events=[];													// Add array
+		stats.tstatus=[];													// Add array
+		stats.sactions=[];													// Add array
+		for (i=0;i<s.length;++i) {											// For each session
+			engTot+=(s[i].engaged-0);										// Add to engagement tot
+			for (var key in s[i].events) {									// For each event
+				if (stats.events[key])	stats.events[key]+=s[i].events[key]-0; // Add to count
+				else					stats.events[key]=s[i].events[key]-0;	// Add first
+				}
+			for (var key in s[i].tstatus) {									// For each teacher status
+				if (stats.tstatus[key])	stats.tstatus[key]+=s[i].tstatus[key]-0; // Add to count
+				else					stats.tstatus[key]=s[i].tstatus[key]-0;  // Add first
+				}
+			for (var key in s[i].sactions) {								// For each student action
+				if (stats.sactions[key])	stats.sactions[key]+=s[i].sactions[key]-0; // Add to count
+				else						stats.sactions[key]=s[i].sactions[key]-0;  // Add first
+				}
+			}
+		for (var key in stats.events) 										// For each event
+			stats.events[key]=(stats.events[key]/s.length).toFixed(2);		// Average each event
+		for (var key in stats.tstatus) 										// For each status
+			stats.tstatus[key]=(stats.tstatus[key]/s.length).toFixed(2);	// Average
+		for (var key in stats.sactions) 									// For each action
+			stats.sactions[key]=(stats.sactions[key]/s.length).toFixed(2);	// Average
+		stats.engaged=(engTot/s.length).toFixed(2)							// Average engagement 
+
+		return stats;														// Return stats
+	}
+
 
 	function ShowData()													// SHOW DATA
 	{
@@ -198,27 +284,79 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 
     function DrawChart1() 												// DRAW CHART 1
 	{
-		var i,d=[];
 		var data=new google.visualization.DataTable();						// Make new table
-		data.addColumn('string', 'Label');									// Add label click
- 		data.addColumn('number', 'Time');									// Add time
-	    var data = google.visualization.arrayToDataTable([
-          ['', 'This session', 'All sessions', 'With others'],
-          ['Ratio of this to that', 100, 40, 20],
-          ['All markers used', 89, 46, 30],
-          ['Student engagement', 66, 56, 40],
-          ['Teacher engagement', 19, 12, 80],
-	      ['Time on task', 99, 72, 60]
-          ]);
-
+		var t=[ [""],["This"],["All"],["Others"] ];							// Base
+		for (var key in os.events) {										// For each event
+			t[0].push(key);													// Add label
+			t[1].push(ss.events[key] ? ss.events[key]-0 : 0);				// This data
+			t[2].push(ts.events[key] ? ts.events[key]-0 : 0);				// All data
+			t[3].push(os.events[key] ? os.events[key]-0 : 0);				// Others
+			}
 		var options={														// Set options
-			seriesType: 'bars',
-			chartArea:{ left:32, top:16, width:"80%" }
+			height:250,
+			isStacked:true, legend: {position:"none" },
+ 			chartArea:{top:16, bottom:16, left:40, right:40 }		
 			};
- 
- 	   	var chart=new google.visualization.ComboChart(document.getElementById('chart1Chart'));
-  		chart.draw(data,options);
+ 	   	var chart=new google.visualization.ColumnChart(document.getElementById('chart1Chart'));
+  		chart.draw(google.visualization.arrayToDataTable(t),options);
   	}
+
+    function DrawChart2() 												// DRAW CHART 2
+	{
+		var data=new google.visualization.DataTable();						// Make new table
+		var t=[ [""],["This"],["All"],["Others"] ];							// Base
+		for (var key in os.tstatus) {										// For each status
+			t[0].push(key);													// Add label
+			t[1].push(ss.tstatus[key] ? ss.tstatus[key]-0 : 0);				// This data
+			t[2].push(ts.tstatus[key] ? ts.tstatus[key]-0 : 0);				// All data
+			t[3].push(os.tstatus[key] ? os.tstatus[key]-0 : 0);				// Others
+			}
+		var options={														// Set options
+			height:250,
+			isStacked:true, legend: {position:"none" },
+ 			chartArea:{top:16, bottom:16, left:40, right:40 }		
+			};
+  	   	var chart=new google.visualization.ColumnChart(document.getElementById('chart2Chart'));
+  		chart.draw(google.visualization.arrayToDataTable(t),options);
+  	}
+
+	function DrawChart3() 													// DRAW CHART 3
+	{
+		var data=new google.visualization.DataTable();						// Make new table
+		var t=[ ["",""],["This"],["All"],["Others"] ];						// Base
+		t[1].push(ss.engaged/100);											// This data
+		t[2].push(ts.engaged/100);											// All data
+		t[3].push(os.engaged/100);											// Others
+		var options={														// Set options
+			height:250,
+			isStacked:false, legend: {position:"none" },
+			vAxis:{format:"percent", minValue:0,  maxValue:1},
+ 			chartArea:{top:16, bottom:16, left:40, right:40 }		
+			};
+  	   	var chart=new google.visualization.ColumnChart(document.getElementById('chart3Chart'));
+  		chart.draw(google.visualization.arrayToDataTable(t),options);
+  	}
+
+  function DrawChart4() 												// DRAW CHART 4
+	{
+		var data=new google.visualization.DataTable();						// Make new table
+		var t=[ [""],["This"],["All"],["Others"] ];							// Base
+		for (var key in os.sactions) {										// For each status
+			t[0].push(key);													// Add label
+			t[1].push(ss.sactions[key] ? ss.sactions[key]-0 : 0);			// This data
+			t[2].push(ts.sactions[key] ? ts.sactions[key]-0 : 0);			// All data
+			t[3].push(os.sactions[key] ? os.sactions[key]-0 : 0);			// Others
+			}
+		var options={														// Set options
+			height:250,
+			isStacked:true, legend: {position:"none" },
+ 			chartArea:{top:16, bottom:16, left:40, right:40 }		
+			};
+  	   	var chart=new google.visualization.ColumnChart(document.getElementById('chart4Chart'));
+  		chart.draw(google.visualization.arrayToDataTable(t),options);
+  	}
+
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // HELPERS
