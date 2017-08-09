@@ -6,7 +6,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
 	<script src="lib/jquery.min.js"></script>
- 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+ 	<script src="lib/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   	<link REL="SHORTCUT ICON" HREF="img/favicon.ico">
 	<title>CTScan Compare</title>
 
@@ -19,11 +20,12 @@
 							margin-left: auto; margin-right: auto; opacity: 0;
 							}
 		.ct-chartPanel {	background-color:#fff; margin-top: 16px; opacity: 0; text-align:left;
-							font-size: 12px; padding-bottom:0px; border-radius: 6px;
+							font-size: 12px; padding: 8px; border-radius: 6px;
 							}
 		.ct-chart {			display: inline-block; width:100%;
 							}
-		.ct-chartBox {		display: inline-block; text-align: center; font-weight: bold; width:240px;
+		.ct-chartBox {		display: inline-block; text-align: center; font-weight: bold; width: 181px; padding: 1px;
+							border: 1px solid #999; margin: 4px; margin-bottom: 7px; border-radius: 4px;  user-select: none;
 							}
 		.ct-dataPanel {		background-color:#fff; max-width:1000px; margin-left: auto; margin-right: auto; opacity: 0; 
 							max-height: 2000px;  overflow-y:auto;
@@ -43,13 +45,14 @@
 			<img src="img/ctlogo32.png"><br>
 			<b>Classroom Teaching Scan Compare</b></div><br>
 		</div>
-		<div id="chartPanel" class="ct-chartPanel">
-			<div class="ct-chartBox"><br>Events/min<br><div class="ct-chart" id="chart1Chart"></div></div>
-			<div class="ct-chartBox"><br>Teacher status<br><div class="ct-chart" id="chart2Chart"></div></div>
-			<div class="ct-chartBox"><br>Student actions<br><div class="ct-chart" id="chart4Chart"></div></div>
-			<div class="ct-chartBox"><br>Engagement<br><div class="ct-chart" id="chart3Chart"></div></div>
-		</div>
-		<br>
+		<ul id="chartPanel" class="ct-chartPanel">
+			<li id="chart1" class="ct-chartBox"><div class="ct-chart" id="chart1Chart"></div><br>Events/min<br><br></li>
+			<li id="chart2" class="ct-chartBox"><div class="ct-chart" id="chart2Chart"></div><br>Teacher status<br><br></li>
+			<li id="chart3" class="ct-chartBox"><div class="ct-chart" id="chart3Chart"></div><br>Student actions<br><br></li>
+			<li id="chart4" class="ct-chartBox"><div class="ct-chart" id="chart4Chart"></div><br>Engagement<br><br></li>
+			<li id="chart5" class="ct-chartBox"><div class="ct-chart" id="chart5Chart"></div><br>Vocab words #<br><br></li>
+			<li id="chart6" class="ct-chartBox"><div class="ct-chart" id="chart6Chart"></div><br>Vocab words time<br><br></li>
+		</ul>
 		Compare with other sessions: <select id="compGrade" class="ct-is"><option>in all grades</option><option>in this grade only</option></select>&nbsp;&nbsp;
 		<select id="compSubject" class="ct-is"><option>for all subjects</option><option>for this subject only</option></select>&nbsp;&nbsp;
 		<select id="compSetting" class="ct-is"><option>in all settings</option><option>in this setting only.</option></select>&nbsp;
@@ -80,34 +83,48 @@ var dataAcad=[];															// Holds academic diciplines
 var menus=[];																// Holds menus
 var butCts=[];																// Button counts
 var ss,os,ts;																// Stat data
+var othersLabel="Others";													// Others chart label
+var numCharts=6;															// Number of charts
+var chartOptions={															// Chart base options
+	height:250, legend: {position:"none" },
+	chartArea:{top:16, bottom:16, left:40, right:16 }		
+	};
+
 
 $(document).ready(function() {								           	// ON PAGE LOADED
 
+	var i;
 	var url=window.location.search.substring(1);							// Get query string
 	if (url) {																// If something	
 		sessionNum=url;														// Get session id
 		}
 	document.title+=" ("+sessionNum+")";									// Add id to title		
-	Query("id = '"+sessionNum+"'", function(d) { 						// Send query
-		if (!d || d == "null")											// No hits													
-			return;;													// Quit
-		curJson=$.parseJSON(d)[0];										// Objectify result
-		Start();														// Start timeline
+	Query("id = '"+sessionNum+"'", function(d) { 							// Send query
+		if (!d || d == "null")												// No hits													
+			return;;														// Quit
+		curJson=$.parseJSON(d)[0];											// Objectify result
+		Start();															// Start timeline
 		});
 
-		$("#compSubject").on("change", function(e) {						// ON SUBJECT CHANGE
-			GetObservations("subject");										// Show matching observations
-			});													
-		$("#compSetting").on("change", function(e) {						// ON SETTING CHANGE
-			GetObservations("setting");										// Show matching observations
-			});													
-		$("#compGrade").on("change", function(e) {							// ON GRADE CHANGE
-			GetObservations("grade");										// Show matching observations
-			});													
-		$("#compId").on("change", function(e) {								// ON ID CHANGE
-			GetObservations("id");											// Show matching observations
-			});													
-		
+	$("#compSubject").on("change", function(e) {							// ON SUBJECT CHANGE
+		GetObservations("subject");											// Show matching observations
+		});													
+	$("#compSetting").on("change", function(e) {							// ON SETTING CHANGE
+		GetObservations("setting");											// Show matching observations
+		});													
+	$("#compGrade").on("change", function(e) {								// ON GRADE CHANGE
+		GetObservations("grade");											// Show matching observations
+		});													
+	$("#compId").on("change", function(e) {									// ON ID CHANGE
+		GetObservations("id");												// Show matching observations
+		if (!$(this).val())		othersLabel="Others";						// If blank
+		else					othersLabel=$(this).val();					// Use id for label
+	});													
+
+ 	$("#chartPanel" ).sortable();											// Make it sortable
+	for (i=1;i<=numCharts;++i)												// For each chart
+		$("#chart"+i).draggable({ connectToSortable: "#chartPanel" });		// Draggable
+
 });																			// On ready
 
 	function Start()
@@ -165,6 +182,8 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			google.charts.setOnLoadCallback(DrawChart2);					// Draw chart 2
 			google.charts.setOnLoadCallback(DrawChart3);					// Draw chart 3
 			google.charts.setOnLoadCallback(DrawChart4);					// Draw chart 4
+			google.charts.setOnLoadCallback(DrawChart5);					// Draw chart 5
+			google.charts.setOnLoadCallback(DrawChart6);					// Draw chart 6
 			if (!firstTime++) {												// Only once
 				$("#mainPanel").animate({ opacity:1 },1500);				// Show main
 				$("#chartPanel").animate({ opacity:1 },1500);				// Show charts
@@ -188,6 +207,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			s.push({ events:[], tstatus:[], sactions:[], engaged:0 });		// Add session stats object
 			e=$.parseJSON(d[i].events);										// Objectify events
 			trt=0;	engNum=.001;	engTot=0;								// Null out
+			s[k].vocabNum=0;	s[k].vocabTime=0;							// No vocabs yet
 			for (j=0;j<e.length;++j) {										// For each event
 				o=e[j];														// Point at event
 				trt=Math.max(trt,o.time);									// Get max time
@@ -211,7 +231,13 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 					++engNum;												// Add to count
 					engTot+=(o.d3-0);										// Add pct
 					}
-				}
+				else if (o.d1 == "Vocab Word") {							// If vocab
+					if (isNaN(o.d5) || !o.d2)								// Not a number
+						continue;											// Skip it
+					s[k].vocabNum++;										// Add to count
+					s[k].vocabTime+=(o.d5-0);								// Add to tot time
+					}
+					}
 			if (trt)
 				for (var key in s[k].events) 								// For each event
 					s[k].events[key]=(s[k].events[key]/(trt/60)).toFixed(2);	// Events/min
@@ -244,7 +270,8 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		for (var key in stats.sactions) 									// For each action
 			stats.sactions[key]=(stats.sactions[key]/s.length).toFixed(2);	// Average
 		stats.engaged=(engTot/s.length).toFixed(2)							// Average engagement 
-
+		stats.vocabNum=(s[k].vocabNum/s.length).toFixed(2)					// Average words 
+		stats.vocabTime=(s[k].vocabTime/s.length).toFixed(2)					// Average words 
 		return stats;														// Return stats
 	}
 
@@ -285,74 +312,86 @@ $(document).ready(function() {								           	// ON PAGE LOADED
     function DrawChart1() 												// DRAW CHART 1
 	{
 		var data=new google.visualization.DataTable();						// Make new table
-		var t=[ [""],["This"],["All"],["Others"] ];							// Base
+		var t=[ [""],["This"],["All"],[othersLabel] ];						// Base
 		for (var key in os.events) {										// For each event
 			t[0].push(key);													// Add label
 			t[1].push(ss.events[key] ? ss.events[key]-0 : 0);				// This data
 			t[2].push(ts.events[key] ? ts.events[key]-0 : 0);				// All data
 			t[3].push(os.events[key] ? os.events[key]-0 : 0);				// Others
 			}
-		var options={														// Set options
-			height:250,
-			isStacked:true, legend: {position:"none" },
- 			chartArea:{top:16, bottom:16, left:40, right:40 }		
-			};
- 	   	var chart=new google.visualization.ColumnChart(document.getElementById('chart1Chart'));
+		var options=JSON.parse(JSON.stringify(chartOptions));				// Deep copy base options
+  		options.isStacked=true;												// Stack		
+	   	var chart=new google.visualization.ColumnChart(document.getElementById('chart1Chart'));
   		chart.draw(google.visualization.arrayToDataTable(t),options);
   	}
 
     function DrawChart2() 												// DRAW CHART 2
 	{
 		var data=new google.visualization.DataTable();						// Make new table
-		var t=[ [""],["This"],["All"],["Others"] ];							// Base
+		var t=[ [""],["This"],["All"],[othersLabel] ];						// Base
 		for (var key in os.tstatus) {										// For each status
 			t[0].push(key);													// Add label
 			t[1].push(ss.tstatus[key] ? ss.tstatus[key]-0 : 0);				// This data
 			t[2].push(ts.tstatus[key] ? ts.tstatus[key]-0 : 0);				// All data
 			t[3].push(os.tstatus[key] ? os.tstatus[key]-0 : 0);				// Others
 			}
-		var options={														// Set options
-			height:250,
-			isStacked:true, legend: {position:"none" },
- 			chartArea:{top:16, bottom:16, left:40, right:40 }		
-			};
+		var options=JSON.parse(JSON.stringify(chartOptions));				// Deep copy base options
+		options.isStacked=true;												// Stack		
   	   	var chart=new google.visualization.ColumnChart(document.getElementById('chart2Chart'));
   		chart.draw(google.visualization.arrayToDataTable(t),options);
   	}
 
-	function DrawChart3() 													// DRAW CHART 3
+	function DrawChart4() 													// DRAW CHART 4
 	{
 		var data=new google.visualization.DataTable();						// Make new table
-		var t=[ ["",""],["This"],["All"],["Others"] ];						// Base
+		var t=[ ["",""],["This"],["All"],[othersLabel] ];					// Base
 		t[1].push(ss.engaged/100);											// This data
 		t[2].push(ts.engaged/100);											// All data
 		t[3].push(os.engaged/100);											// Others
-		var options={														// Set options
-			height:250,
-			isStacked:false, legend: {position:"none" },
-			vAxis:{format:"percent", minValue:0,  maxValue:1},
- 			chartArea:{top:16, bottom:16, left:40, right:40 }		
-			};
-  	   	var chart=new google.visualization.ColumnChart(document.getElementById('chart3Chart'));
+		var options=JSON.parse(JSON.stringify(chartOptions));				// Deep copy base options
+		options.vAxis={format:"percent", minValue:0,  maxValue:1};			// Values
+		options.colors=["#27ae60"];											// Color
+ 		var chart=new google.visualization.ColumnChart(document.getElementById('chart4Chart'));
   		chart.draw(google.visualization.arrayToDataTable(t),options);
   	}
 
-  function DrawChart4() 												// DRAW CHART 4
+  function DrawChart3() 												// DRAW CHART 3
 	{
 		var data=new google.visualization.DataTable();						// Make new table
-		var t=[ [""],["This"],["All"],["Others"] ];							// Base
+		var t=[ [""],["This"],["All"],[othersLabel] ];						// Base
 		for (var key in os.sactions) {										// For each status
 			t[0].push(key);													// Add label
 			t[1].push(ss.sactions[key] ? ss.sactions[key]-0 : 0);			// This data
 			t[2].push(ts.sactions[key] ? ts.sactions[key]-0 : 0);			// All data
 			t[3].push(os.sactions[key] ? os.sactions[key]-0 : 0);			// Others
 			}
-		var options={														// Set options
-			height:250,
-			isStacked:true, legend: {position:"none" },
- 			chartArea:{top:16, bottom:16, left:40, right:40 }		
-			};
-  	   	var chart=new google.visualization.ColumnChart(document.getElementById('chart4Chart'));
+		var options=JSON.parse(JSON.stringify(chartOptions));				// Deep copy base options
+   		options.isStacked=true;												// Stack		
+	   	var chart=new google.visualization.ColumnChart(document.getElementById('chart3Chart'));
+  		chart.draw(google.visualization.arrayToDataTable(t),options);
+  	}
+
+	function DrawChart5() 													// DRAW CHART 5
+	{
+		var data=new google.visualization.DataTable();						// Make new table
+		var t=[ ["",""],["This"],["All"],[othersLabel] ];					// Base
+		t[1].push(ss.vocabNum-0);											// This data
+		t[2].push(ts.vocabNum-0);											// All data
+		t[3].push(os.vocabNum-0);											// Others
+		var options=JSON.parse(JSON.stringify(chartOptions));				// Deep copy base options
+  	   	var chart=new google.visualization.ColumnChart(document.getElementById('chart5Chart'));
+  		chart.draw(google.visualization.arrayToDataTable(t),options);
+  	}
+
+	function DrawChart6() 													// DRAW CHART 6
+	{
+		var data=new google.visualization.DataTable();						// Make new table
+		var t=[ ["",""],["This"],["All"],[othersLabel] ];					// Base
+		t[1].push(ss.vocabTime-0);											// This data
+		t[2].push(ts.vocabTime-0);											// All data
+		t[3].push(os.vocabTime-0);											// Others
+		var options=JSON.parse(JSON.stringify(chartOptions));				// Deep copy base options
+   	   	var chart=new google.visualization.ColumnChart(document.getElementById('chart6Chart'));
   		chart.draw(google.visualization.arrayToDataTable(t),options);
   	}
 
