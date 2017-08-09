@@ -164,8 +164,10 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 
 		Query(q, function(d) { 												// Send query
 				var i,str,ids=[];
-				if (!d || d == "null")										// No hits													
+				if (!d || d == "null")	{									// No hits													
+					LoadingIcon(false);										// Hide loading icon
 					return;													// Quit
+					}
 				d=$.parseJSON(d);											// Objectify result
 				allJson=d;													// Store all data
 				showCharts();												// Send list of ids
@@ -178,6 +180,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			os=CalcStats(allJson);											// Get all teacher's stats
 			LoadingIcon(false);												// Hide loading icon
 			google.charts.load('current', {'packages':['corechart']});		// Load chart library
+		
 			google.charts.setOnLoadCallback(DrawChart1);					// Draw chart 1
 			google.charts.setOnLoadCallback(DrawChart2);					// Draw chart 2
 			google.charts.setOnLoadCallback(DrawChart3);					// Draw chart 3
@@ -274,7 +277,6 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		stats.vocabTime=(s[k].vocabTime/s.length).toFixed(2)					// Average words 
 		return stats;														// Return stats
 	}
-
 
 	function ShowData()													// SHOW DATA
 	{
@@ -404,11 +406,11 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 	function LoadingIcon(mode, size)									// SHOW/HIDE LOADING ICON		
 	{
 		if (!mode) {														// If hiding
-			$("#sf-loadingIcon").remove();									// Remove it
+			$("#ct-loadingIcon").remove();									// Remove it
 			return;															// Quit
 			}
 		var str="<img src='img/loading.gif' width='"+size+"' ";				// Img
-		str+="id='sf-loadingIcon' style='position:absolute;top:160px;left:calc(50% - "+size/2+"px);z-index:5000'>";	
+		str+="id='ct-loadingIcon' style='position:absolute;top:160px;left:calc(50% - "+size/2+"px);z-index:5000'>";	
 		$("body").append(str);												// Add icon to container
 	}
 
