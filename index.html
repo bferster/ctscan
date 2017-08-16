@@ -150,7 +150,7 @@
 			<td><input id="md-6" type="checkbox"> <span id="ml-6">Text</span></input></td></tr>
 		</table><hr>
 		Teacher: <select select id="whichTeacher" class="ct-is" ><option/><option>General</option><option>Special Ed</option><option>Para/IA</option></select>
-		&nbsp;&nbsp;Grouping: &nbsp;<select id="teacherTalk" class="ct-is"><option/><option>Whole group</option><option>Small group</option>
+		&nbsp;&nbsp;Talking&nbsp;To: &nbsp;<select id="teacherTalk" class="ct-is"><option/><option>Whole group</option><option>Small group</option>
 		<option>Individual</option><option>Other adult</option><option>No one</option></select>&nbsp;&nbsp;
 		Co-teaching?&nbsp;&nbsp;<select id="teacherModel" class="ct-is"><option/><option>NONE</option><option>Alternative</option>
 		<option>1-teach/1-observe</option><option>1-teach/1-assist</option><option>Parallel</option><option>Stations</option><option>Team</option></select>
@@ -1093,6 +1093,17 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 			}
 		}
 
+/////////////////////// GOOGLE ANALYTICS //////////////////////////////////////////
+
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-104678642-1', 'auto');
+  ga('send', 'pageview');
+
+  
 </script>
 </body>
 </html>
