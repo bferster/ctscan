@@ -70,8 +70,9 @@
 							margin-top: 2px; margin-left:4px; user-select: none; font-size: 10px; 
 							padding-bottom: 2px; padding-left: 6px; padding-right: 6px; background-color:#27ae60
 							}
-		.ct-dataPanel {		border-radius: 6px; background-color:#eee;padding: 12px; max-width: 600px; margin-left: auto; margin-right: auto; max-height:400px;
-							overflow-x:hidden; overflow-y:auto;
+		.ct-dataPanel {		border-radius: 6px; background-color:#eee;padding: 12px;
+							}
+		.ct-video {			border-radius: 6px; background-color:#eee;padding: 12px; max-width: 600px; margin-left: auto; margin-right: auto; max-height:400px;
 							}
 		.ct-is 	{			border-radius:4px; padding-left:8px; border: 1px solid #999; margin-bottom: 3px;
 							}
@@ -168,6 +169,7 @@
 	</div> <!-- ObsPanel --> 
 	<div id="popup" class="ct-popup"></div>
 
+
 <script>
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -196,6 +198,7 @@ var obsEvents=[];														// Holds events
 var obsData={};															// Obs info
 var assessData=[];														// Hold assessments
 var assessNum=1;														// Save asssess number
+var videoFile=null;														// Holds video file name
 
 $(document).ready(function() {								           	// ON PAGE LOADED
 	var menu="menus.txt";												// Default menu
@@ -302,7 +305,8 @@ function GetIntroData()												// GET INTRO DATA FROM USER
 	str+="<tr><td>Block/Time:</td><td><input class='ct-is' id='intro-block' type='text'></td></tr>";
 	str+="<tr><td>Instructional setting:</td><td><select id='intro-setting' class='ct-is'></select></td></tr>";
 	str+="<tr><td>Teacher level:</td><td><select id='intro-level' class='ct-is'><option>Preservice Teacher</option><option>Inservice Teacher</option></select></td></tr>";
-	str+="<tr><td>Video&nbsp;source:</td><td><input class='ct-is' id='intro-video' placeholder='URL of video, if not live' type='Text'></input></td></tr>";
+	str+="<tr><td valign='top'>Video&nbsp;source:</td><td><input class='ct-is' id='intro-video' placeholder='URL of video, if not live' type='Text'></input>";
+	str+="<br><input id='intro-locvid' type='file' accept='video/*'/></td></tr>";
 	str+="<tr><td>Research only:</td><td><select id='intro-res' class='ct-is'><option></option><option>Pre-Intervention</option>";
 	str+="<option>Post-Intervention</option><option>Maintenance</option></select></td></tr>";
 	str+="<tr><td>Remind&nbsp;every:</td><td><select id='intro-tot' class='ct-is'>";
@@ -330,6 +334,20 @@ function GetIntroData()												// GET INTRO DATA FROM USER
 	
 		if ($("#intro-numkids").val()) 								// If num kids set
 			kidsInClass=isNaN($("#intro-numkids").val()) ? 0 : $("#intro-numkids").val()-0;	// Set it
+		});
+
+		$("#intro-locvid").on("change", function(e) { 				// Local video handler
+			videoFile=e.currentTarget.files[0];						// Get file
+			$("#intro-video").val(videoFile.name);					// Save it
+			var str="<div id='videoDiv' class='ct-video'><video controls width='100% height='100%'></video></div>"
+			$("#videoDiv").remove();								// Remove any old ones
+			$("body").append(str);									// Add to body
+			$("#videoDiv").draggable();								// Draggable
+			$("#videoDiv").resizable({ aspectRatio:true });			// Allow resizing
+			
+			var videoNode=document.querySelector('video');			// Point at video
+			var fileURL=URL.createObjectURL(videoFile);				// Create local url
+		    videoNode.src=fileURL;									// Set as source
 		});
 
 	Date.prototype.toDateInputValue = (function() {
