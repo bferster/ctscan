@@ -131,5 +131,6 @@ BUTCAT=OTR,OTR,OTR,OTR,FB,FB,FB,FB,Student Q,Student Q,Behavior Redirect,Custom,
 BUTCOL=#e67e22,#e67e22,#e67e22,#e67e22,#27ae60,#27ae60,#27ae60,#27ae60,#3db1ff,#3db1ff,#aaaaaa,#aaaaaa,#aaaaaa,#aaaaaa
 STUACT=Answering Qs,Asking Qs,Academic convo w/ peers,Building/Creating,Group Work (Discussion),Group work (Hands On),Group work (Worksheet),Listening,No clear direction,Practicing Skill,Present/share learning,Reading,Researching,Seatwork learning,Taking notes,Transitioning,Writing
 ACAD=CTE,English,Fine Arts,Math,Reading,History,PE,Science,World Languages,Other
+INSET=Self-contained (Academic),Self-contained (Severe/Profound),Co-taught,Inclusive,General Education only
 
 

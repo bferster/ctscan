@@ -70,9 +70,9 @@
 							margin-top: 2px; margin-left:4px; user-select: none; font-size: 10px; 
 							padding-bottom: 2px; padding-left: 6px; padding-right: 6px; background-color:#27ae60
 							}
-		.ct-dataPanel {		border-radius: 6px; background-color:#eee;padding: 12px;
+		.ct-dataPanel {		border-radius: 6px; background-color:#eee;padding: 12px; max-width: 600px; margin-left: auto; margin-right: auto; max-height:400px;
 							}
-		.ct-video {			border-radius: 6px; background-color:#eee;padding: 12px; max-width: 600px; margin-left: auto; margin-right: auto; max-height:400px;
+		.ct-video {			border-radius: 6px; background-color:#eee;padding: 12px; box-shadow: 4px 4px 8px #ccc; width:25%;
 							}
 		.ct-is 	{			border-radius:4px; padding-left:8px; border: 1px solid #999; margin-bottom: 3px;
 							}
@@ -198,7 +198,6 @@ var obsEvents=[];														// Holds events
 var obsData={};															// Obs info
 var assessData=[];														// Hold assessments
 var assessNum=1;														// Save asssess number
-var videoFile=null;														// Holds video file name
 
 $(document).ready(function() {								           	// ON PAGE LOADED
 	var menu="menus.txt";												// Default menu
@@ -331,24 +330,19 @@ function GetIntroData()												// GET INTRO DATA FROM USER
 		obsData.remind=$("#intro-tot").val();
 		obsData.research=$("#intro-res").val();
 		totTiming=$("#intro-tot").val();
+		ShowTime(curTime);												// Show time
 	
-		if ($("#intro-numkids").val()) 								// If num kids set
+		if ($("#intro-numkids").val()) 									// If num kids set
 			kidsInClass=isNaN($("#intro-numkids").val()) ? 0 : $("#intro-numkids").val()-0;	// Set it
 		});
 
-		$("#intro-locvid").on("change", function(e) { 				// Local video handler
-			videoFile=e.currentTarget.files[0];						// Get file
-			$("#intro-video").val(videoFile.name);					// Save it
-			var str="<div id='videoDiv' class='ct-video'><video controls width='100% height='100%'></video></div>"
-			$("#videoDiv").remove();								// Remove any old ones
-			$("body").append(str);									// Add to body
-			$("#videoDiv").draggable();								// Draggable
-			$("#videoDiv").resizable({ aspectRatio:true });			// Allow resizing
-			
-			var videoNode=document.querySelector('video');			// Point at video
-			var fileURL=URL.createObjectURL(videoFile);				// Create local url
-		    videoNode.src=fileURL;									// Set as source
-		});
+		$("#intro-locvid").on("change", function(e) { 					// Local video handler
+			VideoInit(e.currentTarget.files[0]);						// Init video window
+			});
+	
+		$("#intro-video").on("change", function(e) { 					// Online video handler
+			VideoInit($(this).val());									// Init video window
+			});
 
 	Date.prototype.toDateInputValue = (function() {
     	var local = new Date(this);
@@ -614,11 +608,13 @@ function InitObs() 													// INIT OBSERVATION PANEL
 			$("#obsStart").prop("src","img/pausebut.png");				// Pause but		
 			Sound("click");												// Click sound	
 			SetTimer("start");											// Start timer
+			VideoPlay();												// Play video, if active
 			}
 		else{		
 			$("#obsStart").prop("src","img/playbut.png");				// Play but		
 			Sound("delete");											// Delete sound	
 			SetTimer("pause");											// Stop timer
+			VideoPause();												// Pause video, if active
 			}
 		}
 
@@ -635,22 +631,30 @@ function InitObs() 													// INIT OBSERVATION PANEL
 		if (mode == "start") {											// Timing
 			inPlay=true;												// In play
 			timingInterval=setInterval(function() {						// Start timer
-				showTime(++curTime);									// Add to count and show
+				var videoNode=document.querySelector('video');			// Point at video
+				if (videoNode) 	curTime=VideoTime();					// Get time from player
+				else			curTime++;								// Advance
+				ShowTime(curTime);										// Add to count and show
 				} ,1000);												// 1fps
 			}
-		else if (mode == "reset")										// Reset
-			curTime=0;													// To 0
-	
-		function showTime(time) {										// DISPLAY CURRENT TIME
-			var secs=time%60;											// Get secs
-			if (secs == 0)		secs="00";								// Double 0
-			else if (secs < 10) secs="0"+secs;							// Add leading 0
-			var mins=Math.floor(time/60);								// Get mins
-			if (mins == 0)		mins="00";								// Double 0
-			else if (mins < 10) mins="0"+mins;							// Add leading 0
-			$("#obsTimerText").text(mins+":"+secs);						// Set display
+		else if (mode == "reset") {										// Reset
+			var videoNode=document.querySelector('video');				// Point at video
+			if (videoNode) 	curTime=VideoTime();						// Get time from player
+			else			curTime=0;									// Advance
 			}
 	}
+
+	function ShowTime(time) 										// DISPLAY CURRENT TIME
+	{
+		var secs=time%60;												// Get secs
+		if (secs == 0)		secs="00";									// Double 0
+		else if (secs < 10) secs="0"+secs;								// Add leading 0
+		var mins=Math.floor(time/60);									// Get mins
+		if (mins == 0)		mins="00";									// Double 0
+		else if (mins < 10) mins="0"+mins;								// Add leading 0
+		$("#obsTimerText").text(mins+":"+secs);							// Set display
+	}
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // MISC
@@ -906,6 +910,50 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 		return "{}";
 	}
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// VIDEO
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	function VideoInit(file)										// LOAD AND SHOW VIDEO
+	{
+		$("#videoDiv").remove();										// Remove any old ones
+		if (!file)														// If no file
+			return;														// Quit
+		if (file.name)													// If local
+			$("#intro-video").val(file.name);							// Save it
+		var str="<div id='videoDiv' class='ct-video'><video controls width='100%'></video></div>"
+		$("body").append(str);											// Add to body
+		$("#videoDiv").draggable();										// Draggable
+		$("#videoDiv").resizable({ aspectRatio:true });					// Allow resizing
+		var videoNode=document.querySelector('video');					// Point at video
+		if (file.name)													// If local
+			file=URL.createObjectURL(file);								// Create local url
+		videoNode.src=file;												// Setas source
+		videoNode.ontimeupdate=function() {								// When time changes
+			 ShowTime(curTime=VideoTime());								// Show
+			 };
+	}
+
+	function VideoPlay()											// PLAY VIDEO
+	{
+		var videoNode=document.querySelector('video');					// Point at video
+		if (videoNode)													// If valid
+			videoNode.play();											// Play
+	}
+
+	function VideoPause()											// PAUSE VIDEO
+	{
+		var videoNode=document.querySelector('video');					// Point at video
+		if (videoNode)													// If valid
+			videoNode.pause();											// Pause
+	}
+
+	function VideoTime()											// GET VIDEO TIME
+	{
+		var videoNode=document.querySelector('video');					// Point at video
+		if (videoNode) 	return Math.floor(videoNode.currentTime);		// Get time from player
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // HELPERS
@@ -1028,7 +1076,7 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 		str+="<br><br><div id='dialogOK' class='ct-obsNewPrac'>OK</div>";
 		str+="<div id='dialogCancel' class='ct-obsNewPrac' style='margin-left:8px;background-color:#e74c3c'>Cancel</div></div>";
 		$("#dialogDiv").append(str);	
-		$("#dialogDiv").dialog({ width:$("#obsPanel").width()+16, height:$("#obsPanel").height()+24 });
+		$("#dialogDiv").dialog({ width:$("#obsPanel").width()+16, height:$("#obsPanel").height()+36 });
 		$("#dialogDiv").dialog("option","position",{ my:"left top", at:"left top", of:obsPanel });
 
 		$("#dialogOK").on("click", function() {							// ON OK BUT
