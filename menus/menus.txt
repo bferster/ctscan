@@ -1,5 +1,18 @@
+Explicit Instruction:
+Gain Student Attention *Gain Attention &Ritualized,Quick Student Response,Students Engaged with Teacher
+Preview Lesson/Anticipatory Set *Preview &States Goal,States Relevance
+Review Prerequisite Skills *Review Prereq Skills &All Students Involved, Students Complete Task Requiring Skills Use,Evidence of Pre-Identification,Students Demonstrate Understanding
+Modeling/I Do It *I Do It &Demonstrates Skill,Think Aloud,Clear Concise and Consistent Language,Provides Several Models,Involves Students
+Guided Practice/We Do It *We Do It &Clear Language,Telling Prompts,Asking Prompts,Reminding Prompts,Evidence of Fading
+Independent Practice/You Do It *You Do It &Clear Directions,Aligned with Objective,Appropriate Release,Monitors Understanding,Provides Individual Feedback
+Closing *Closing &Brief,Reviews what was Learned,Previews Next Lesson,
+Assessment *Assessment &With Teacher Prompting/Scaffolding,Without Teacher Prompting/Scaffolding
+Transition Time *Transition &
+Behavior Management *Behavior &Cued,Instruction Stopped,Teaches/Reviews Expectations,Implements Contingency/Reinforcer
+Non-Instructional Activity/Task *Non-Instructional &
+Uncoded Time *Uncoded &
+
 General Content Instruction:
-General Practices (Powhatan) *General Practices (Powhatan) &Discussion,Lecture,Lesson Opener/Closer,Maintaining,Modeling,Homework Review,Guided Practice,Targeted Instruction,Facilitating
 Activates Prior Knowledge *Activates Prior Knowledge &Provides Cue,Relevant,Monitors Understanding,Makes Adjustments
 Anticipatory Set *Anticipatory Set &Provides Cue,Clear and Consistent,Provides Rationale,States Goal
 Closes Lesson *Closes Lesson &Monitors Understanding,Provides Feedback
@@ -39,6 +52,7 @@ Strategy - models use *strategy models &Cues Instruction,Clear Language,Provides
 Strategy - prompts use *Strategy prompts &Cues Instruction,Clear Language,Provides Rationale
 
 Writing Instruction (General):
+Modeling *Modeling &Cue attention,Explain when and why to use skill,Step by step demonstration,Connect to anticipated behavior,Variety of models,Examples and nonexamples,Provide anticipated benefits,Corrective feedback,Note organization and relationships,Monitor understanding,Think aloud,Lively pace,Enthusiasm,Gradual release of responsibility
 Cognitive Strategy Instruction *Cognitive Strategy Instruction &Cues Instruction,Modeling,Think Aloud,Gradual Release of Responsibility,Monitors Understanding,Provides Feedback
 Editing *Editing &Cues Instruction,Modeling,Think Aloud,Gradual Release of Responsibility,Monitors Understanding,Provides Feedback
 Grammar Instruction *Grammar Instruction &Cues Instruction,Modeling,Think Aloud,Gradual Release of Responsibility,Monitors Understanding,Provides Feedback
@@ -124,7 +138,7 @@ Non-instructional activity/task *Non-instructional activity/task &
 Observer uncertain:
 Uncertain *Uncertain &
 
-MEDIA=Diagram/Graph/Map,Object/Manipulative,Graphic Organizer,Picture/CPU,Movie,Text
+MEDIA=Diagram/Graph,Object/Manipulative,Graphic Organizer,Picture/CPU,Movie,Text
 BUTLAB=Deep<br>Q OTR,Rote<br>Q OTR,Chor/Grp<br>Response,Non-Acad<br>OTR,Academic<br>FB,Behavior<br>FB,Generic<br>FB,Precorrect<br>Statement,Student<br>Ask Q,# Student<br>Asking Q,Behavior<br>Redirect,Custom<br>2,Custom<br>3,Custom<br>4
 BUTVAL=Deep Q OTR,Rote Q OTR,Choral Response,Social Behavioral OTR,Academic Specific FB,Behavior Specific FB,Generic FB Statement,Precorrect Statement,Student,Ask Q,Num Student Ask Q,Behavior Redirect,Custom 2,Custom 3,Custom 4
 BUTCAT=OTR,OTR,OTR,OTR,FB,FB,FB,FB,Student Q,Student Q,Behavior Redirect,Custom,Custom,Custom
