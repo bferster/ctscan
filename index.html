@@ -70,7 +70,7 @@
 							margin-top: 2px; margin-left:4px; user-select: none; font-size: 10px; 
 							padding-bottom: 2px; padding-left: 6px; padding-right: 6px; background-color:#27ae60
 							}
-		.ct-dataPanel {		border-radius: 6px; background-color:#eee;padding: 12px; max-width: 600px; margin-left: auto; margin-right: auto; max-height:400px;
+		.ct-dataPanel {		border-radius: 6px; background-color:#eee;padding: 12px; max-width: 600px; margin-left: auto; margin-right: auto; max-height:400px;overflow-y:auto;
 							}
 		.ct-video {			border-radius: 6px; background-color:#eee;padding: 12px; box-shadow: 4px 4px 8px #ccc; width:25%;
 							}
@@ -184,6 +184,7 @@ var curCat=-1;curPrac=-1;												// Current category, practice
 var vocabTopicTerms=[];													// Holds vocab/topic terms
 var kidsInClass=0;														// Number of kids in class
 var pracTime;															// When practice was set
+var realTime,lapsedTime;												// Timing vars
 
 var menus=[];															// Holds menus
 var dataMedia=[];														// Holds media buttons											
@@ -198,6 +199,8 @@ var obsEvents=[];														// Holds events
 var obsData={};															// Obs info
 var assessData=[];														// Hold assessments
 var assessNum=1;														// Save asssess number
+
+
 
 $(document).ready(function() {								           	// ON PAGE LOADED
 	var menu="menus.txt";												// Default menu
@@ -630,10 +633,12 @@ function InitObs() 													// INIT OBSERVATION PANEL
 		inPlay=false;													// Not in play
 		if (mode == "start") {											// Timing
 			inPlay=true;												// In play
+            realTime=(new Date).getTime();                              // Get current tie
+            lapsedTime=curTime;                                         // Save time already lapsed
 			timingInterval=setInterval(function() {						// Start timer
 				var videoNode=document.querySelector('video');			// Point at video
 				if (videoNode) 	curTime=VideoTime();					// Get time from player
-				else			curTime++;								// Advance
+				else            curTime=Math.round(((new Date).getTime()-realTime)/1000)+lapsedTime;    // Advance
 				ShowTime(curTime);										// Add to count and show
 				} ,1000);												// 1fps
 			}
@@ -672,8 +677,8 @@ function QmediaEventHandler(e)										// ON MESSAGE EVENT
 function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 {
 	var i;
-	$("#alertBoxDiv").remove();											// Remove any old ones
-	$("body").append("<div class='qm-unselectable' id='alertBoxDiv'></div>");														
+	$("#alertBoxDiv2").remove();											// Remove any old ones
+	$("body").append("<div class='qm-unselectable' id='alertBoxDiv2'></div>");														
 	var str="<p><img src='img/ctlogo32.png' style='vertical-align:-8px'/>&nbsp;&nbsp;";								
 	str+="<span class='ct-dialogTitle'>What percentage of students are OFF Task?</span><p>";
 	str+="<div style='font-size:12px;margin:14px;text-align:center'><br><br>";
@@ -685,15 +690,15 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 		}
 	str+="<br><div id='tot-999' style='width:120px;background-color:#e67e22;margin-bottom:4px;' class='ct-obsNewPrac'>Skip</div>"
 	str+="</div>";
-	$("#alertBoxDiv").append(str);	
-	$("#alertBoxDiv").dialog({ 	 width:$("#obsPanel").width()+16, height:$("#obsPanel").height()+24 });	
-	$("#alertBoxDiv").dialog("option","position",{ my:"middle", at:"middle", of:obsPanel });
+	$("#alertBoxDiv2").append(str);	
+	$("#alertBoxDiv2").dialog({ 	 width:$("#obsPanel").width()+16, height:$("#obsPanel").height()+24 });	
+	$("#alertBoxDiv2").dialog("option","position",{ my:"middle", at:"middle", of:obsPanel });
 	
 	$("[id^=tot-]").on("click", function(e) {							// ON PERCENTAGE PICK	
 		var id=e.currentTarget.id.substr(4);							// Get id			
 		if (id != 999)													// If not skipping
 			SaveEvent(curTime,"Student status","Percent engaged",100-id);	// Save event
-		$("#alertBoxDiv").remove();  									// Close it
+		$("#alertBoxDiv2").remove();  									// Close it
 		});
 }
 
@@ -811,7 +816,7 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 			str+="<tr style='color:"+col+"' id=oe-"+i+"><td><b>Event</b></td><td style='overflow:hidden;white-space:nowrap'><div style='display:inline-block;width:40px'>"+d[i].time+"</div><b>";
 				str+=d[i].d1+"</b>,"+ShortenString(d[i].d2,20)+","+ShortenString(d[i].d3,20)+","+ShortenString(d[i].d4,20)+","+d[i].d5+"</td></tr>";
 			}	
-		str+="</table>";
+		str+="</table>";												// Close table
 		$("#dataPanel").html(str);										// Add to data panel										
 	
 		$("[id^=od-]").on("click", function(e) {						// ON OBSDATA CLICK					
@@ -975,7 +980,7 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 		if (p3 == undefined)	p3="";
 		if (p4 == undefined)	p4="";
 		if (p5 == undefined)	p5="";
-		trace(time+","+p1+","+p2+","+p3+","+p4+","+p5);						// Show data
+//		trace(time+","+p1+","+p2+","+p3+","+p4+","+p5);						// Show data
 		obsEvents.push({time:time, d1:p1, d2:p2, d3:p3, d4:p4, d5:p5 });	// Save in array
 	}
 
