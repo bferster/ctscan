@@ -195,6 +195,7 @@ var dataLabCols=[];														// Holds OTR button colors
 var dataActs=[];														// Holds media buttons											
 var dataAcad=[];														// Holds academic diciplines
 var dataInSet=[];														// Holds instructional settings
+var dataRes=[];															// Holds research settings
 var obsEvents=[];														// Holds events										
 var obsData={};															// Obs info
 var assessData=[];														// Hold assessments
@@ -235,6 +236,8 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				dataAcad=o.substr(5).split(",");						// Get options
 			else if (o.match(/INSET=/i)) 								// Instructional settings
 				dataInSet=o.substr(6).split(",");						// Get options
+			else if (o.match(/RESONLY=/i)) 								// Research only
+				dataRes=o.substr(8).split(",");							// Get options
 			else if (o.match(/ASSESS=/i)) 								// Assessment
 				assessData.push(o);										// Get pages
 			else if (o.match(/:/)) {									// At new category
@@ -309,8 +312,7 @@ function GetIntroData()												// GET INTRO DATA FROM USER
 	str+="<tr><td>Teacher level:</td><td><select id='intro-level' class='ct-is'><option>Preservice Teacher</option><option>Inservice Teacher</option></select></td></tr>";
 	str+="<tr><td valign='top'>Video&nbsp;source:</td><td><input class='ct-is' id='intro-video' placeholder='URL of video, if not live' type='Text'></input>";
 	str+="<br><input id='intro-locvid' type='file' accept='video/*'/></td></tr>";
-	str+="<tr><td>Research only:</td><td><select id='intro-res' class='ct-is'><option></option><option>Pre-Intervention</option>";
-	str+="<option>Post-Intervention</option><option>Maintenance</option></select></td></tr>";
+	str+="<tr><td>Research only:</td><td><select id='intro-res' class='ct-is'><option></option></select></td></tr>";
 	str+="<tr><td>Remind&nbsp;every:</td><td><select id='intro-tot' class='ct-is'>";
 	str+="<option>0</option><option>.5</option><option>1</option><option>1.5</option><option selected>2</option><option>5</option><option>10</option></select> min(s) students on task</td></tr>";
 	str+="</table><br>"
@@ -359,6 +361,9 @@ function GetIntroData()												// GET INTRO DATA FROM USER
 
 	for (i=0;i<dataInSet.length;++i)
 		$("#intro-setting").append("<option>"+dataInSet[i]+"</option>");
+
+	for (i=0;i<dataRes.length;++i)
+		$("#intro-res").append("<option>"+dataRes[i]+"</option>");
 
 	for (i=0;i<menus.length;++i)
 		$("#intro-cat").append("<option>"+menus[i].cname+"</option>");

@@ -4,6 +4,7 @@ Preview Lesson/Anticipatory Set *Preview &States Goal,States Relevance
 Review Prerequisite Skills *Review Prereq Skills &All Students Involved, Students Complete Task Requiring Skills Use,Evidence of Pre-Identification,Students Demonstrate Understanding
 Modeling/I Do It *I Do It &Demonstrates Skill,Think Aloud,Clear Concise and Consistent Language,Provides Several Models,Involves Students
 Guided Practice/We Do It *We Do It &Clear Language,Telling Prompts,Asking Prompts,Reminding Prompts,Evidence of Fading
+Specially Designed Instruction *Specially Designed Instruction &Content,Grouping,Time,Instructional Practices
 Independent Practice/You Do It *You Do It &Clear Directions,Aligned with Objective,Appropriate Release,Monitors Understanding,Provides Individual Feedback
 Closing *Closing &Brief,Reviews what was Learned,Previews Next Lesson,
 Assessment *Assessment &With Teacher Prompting/Scaffolding,Without Teacher Prompting/Scaffolding
@@ -43,9 +44,9 @@ Demonstration *Demonstration &Cues Instruction,Clear Language,Sequential Present
 Discussion of term *Discussion of term &Appropriate and authentic context,Call on students all over room,Ask open-ended questions,Encourages student talk and use of evidence,Incorporates student responses into discussion 
 Example(s) of term meaning *Example(s) of term meaning &Cues Instruction,Clear Language,Explicit Explanation,Monitors Understanding
 Facilitates student demo/presentation *Facilitates student demo/presentation &Cues Instruction,Clear Language,Provides Feedback
-Morphological parts of word - highlighted *Morphological parts of word - highlighted &Cues Instruction,Clear Language,Think-Aloud,Monitors Understanding
+Morphological parts of word - highlighted *Morphological parts of word - highlighted &Cues Instruction,Clear Language,Monitors Understanding,Defines Word Parts,Reunites Word
 Non-example of term meaning *Non-example of term meaning &Cues Instruction,Clear Language,Distinguishes Similarities,Explicit Explanation,Monitors Understanding
-Semantic relationships *Semantic relationships &Cues Instruction,Clear Language,Monitors Understanding
+Semantic relationships *Semantic relationships &Cues Instruction,Clear Language,Monitors Understanding,Explains Similarities,Explains Differences,Uses Visual Aid
 Strategy - remember definition (explain/intro) *Strategy - remember definition &Cues Instruction,Clear Language,Think-Aloud,Several Examples,Provides Feedback
 Strategy - using morph parts (explain/intro) *Strategy morph &Cues Instruction,Clear Language,Defines Parts then Reunites Word,Think-Aloud,Provides Feedback
 Strategy - models use *strategy models &Cues Instruction,Clear Language,Provides Prompts,Monitors Use,ProvidesFeedback
@@ -139,12 +140,12 @@ Observer uncertain:
 Uncertain *Uncertain &
 
 MEDIA=Diagram/Graph,Object/Manipulative,Graphic Organizer,Picture/CPU,Movie,Text
-BUTLAB=Deep<br>Q OTR,Rote<br>Q OTR,Chor/Grp<br>Response,Non-Acad<br>OTR,Academic<br>FB,Behavior<br>FB,Generic<br>FB,Precorrect<br>Statement,Student<br>Ask Q,# Student<br>Asking Q,Behavior<br>Redirect,Custom<br>2,Custom<br>3,Custom<br>4
-BUTVAL=Deep Q OTR,Rote Q OTR,Choral Response,Social Behavioral OTR,Academic Specific FB,Behavior Specific FB,Generic FB Statement,Precorrect Statement,Student,Ask Q,Num Student Ask Q,Behavior Redirect,Custom 2,Custom 3,Custom 4
+BUTLAB=Deep<br>Q OTR,Rote<br>Q OTR,Chor/Grp<br>Response,Non-Acad<br>OTR,Academic<br>FB,Behavior<br>FB,Generic<br>FB,Precorrect<br>Statement,Student<br>Ask Q,# Student<br>Asking Q,Behavior<br>Redirect,Custom<br>1,Custom<br>2,Custom<br>3
+BUTVAL=Deep Q OTR,Rote Q OTR,Choral Response,Social Behavioral OTR,Academic Specific FB,Behavior Specific FB,Generic FB Statement,Precorrect Statement,Student,Ask Q,Num Student Ask Q,Behavior Redirect,Custom 1,Custom 2,Custom 3
 BUTCAT=OTR,OTR,OTR,OTR,FB,FB,FB,FB,Student Q,Student Q,Behavior Redirect,Custom,Custom,Custom
 BUTCOL=#e67e22,#e67e22,#e67e22,#e67e22,#27ae60,#27ae60,#27ae60,#27ae60,#3db1ff,#3db1ff,#aaaaaa,#aaaaaa,#aaaaaa,#aaaaaa
 STUACT=Answering Qs,Asking Qs,Academic convo w/ peers,Building/Creating,Group Work (Discussion),Group work (Hands On),Group work (Worksheet),Listening,No clear direction,Practicing Skill,Present/share learning,Reading,Researching,Seatwork learning,Taking notes,Transitioning,Writing
 ACAD=CTE,English,Fine Arts,Math,Reading,History,PE,Science,World Languages,Other
 INSET=Self-contained (Academic),Self-contained (Severe/Profound),Co-taught,Inclusive,General Education only
-
+RESONLY=Pre-Intervention-1,Pre-Intervention-2,Pre-Intervention-3,Post-Intervention-1,Post-Intervention-2,Post-Intervention-3,Maintenance
 
