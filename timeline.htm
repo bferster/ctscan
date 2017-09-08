@@ -62,7 +62,7 @@
 	<div style="text-align:center">
 		<div style="float:right;line-height:13px;user-select:none;">
 			<img id="scaleUp"   style="cursor:zoom-in;padding-bottom:2px;" src="img/upbut.gif"><br>
-			<span id="scaleAmt">5</span><br>
+			<span id="scaleAmt">4</span><br>
 			<img id="scaleDown" style="cursor:zoom-out" src="img/downbut.gif"><br>
 		</div>
 		<div class="unselectable">
@@ -114,7 +114,7 @@ var obsEvents=null;															// Points at events
 var maxTime=0;																// Size of timeline
 var svgNS="http://www.w3.org/2000/svg";										// Name space
 var menuFile="menus.txt";													// Memu filename
-var scaleSpan=128;															// Scaling
+var scaleSpan=64;															// Scaling
 var dataMedia=[];															// Holds media buttons											
 var dataLabVals=[];															// Holds OTR button values											
 var dataLabCats=[];															// Holds OTR button categories											
@@ -402,7 +402,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			o=obsEvents[i];													// Point at event
 			if ((o.d1 == "Practice") && (o.d2 == "Vocabulary Instruction")) {	// If a vocab practice
 				str+="<tr><td><b>"+o.d3+"&nbsp;&nbsp;</b></td>";			// Label
-				str+="<td>"+Math.floor(o.d5/60)+":"+(o.d5%60);				// Time
+				str+="<td>"+Timecode(o.d5);									// Time
 				str+="</td><td  style='text-align:center'>"+o.d4+"%";		// Pct marker
 				str+="</td><td  style='text-align:right'>"+Math.round(o.d5/maxTime*100)+"%</td></tr>";// Pct of total
 				if (o.d4 == 100)	all+=(o.d5-0)							// If all used, add to all count
@@ -412,14 +412,25 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		str+="<tr><td colspan='4'><hr></td></tr>";
 		str+="<tr><td><b>Total vocabulary practices used</b></td>";			// # vocabs
 		str+="<td>"+c+"&nbsp;&nbsp</td></tr>";								// #
-		str+="<tr><td><b>Total time when all markers were used&nbsp;&nbsp;</b></td>";		// All 100%ers
-		str+="<td>"+Math.floor(all/60)+":"+(all%60)+"&nbsp;&nbsp</td></tr>";		// time
+		str+="<tr><td><b>Total time when all markers were used&nbsp;&nbsp;</b></td>";	// All 100%ers
+		str+="<td>"+Timecode(all)+"&nbsp;&nbsp</td></tr>";		// time
 		$("#dataPanel").append(str);										// Add to panel	
 	}									
 
+	function Timecode(time)												// FORMAT SECONDS TO TIMECODE
+	{
+		var secs=time%60;													// Get secs
+		if (secs == 0)		secs="00";										// Double 0
+		else if (secs < 10) secs="0"+secs;									// Add leading 0
+		var mins=Math.floor(time/60);										// Get mins
+		if (mins == 0)		mins="00";										// Double 0
+		else if (mins < 10) mins="0"+mins;									// Add leading 0
+		return mins+":"+secs;												// Return timecode
+	}		
+
 	function GetPixFromTime(time)											// GET TIMELINE POSITION FROM TIME
 	{
-		return (time-0)*scaleSpan/60+8;												// Get pixels
+		return (time-0)*scaleSpan/60+8;											// Get pixels
 	}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -501,8 +512,9 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		for (i=0;i<obsEvents.length;++i) 									// For each event
 			if (obsEvents[i].d1 == "Practice")								// If a practice
 				d.push([ obsEvents[i].d3, obsEvents[i].d5-0]);				// Add slice								
+		d=RemoveRedundant(d);												// Remove redundant entries  
 		data.addRows(d);													// Add data
-  		var options={width: w, is3D: true,									// Set options
+		var options={width: w, is3D: true,									// Set options
 		 			 title: "Teacher Time",									// Title
 					 titleTextStyle: { "fontSize": 12, color:"#666" }, 		// Title format
 					 chartArea:{left:"0%",top:"10%", width:"75%",height:"75%"}	//  Sizing
@@ -520,6 +532,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		for (i=0;i<obsEvents.length;++i) 									// For each event
 			if (obsEvents[i].d1 == "Student actions")						// If a student action
 				d.push([ obsEvents[i].d2, obsEvents[i].d5-0 ]);				// Add slice								
+		d=RemoveRedundant(d);												// Remove redundant entries  
 		data.addRows(d);													// Add data
   		var options={width: w, is3D: true, 									// Set options
 		 			 title: "Student Time",									// Title
@@ -539,8 +552,9 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		for (i=0;i<obsEvents.length;++i) 									// For each event
 			if (obsEvents[i].d1 == "Vocab Word")							// If a vocab
 				d.push([ obsEvents[i].d2, obsEvents[i].d5-0 ]);				// Add slice								
+		d=RemoveRedundant(d);												// Remove redundant entries  
 		data.addRows(d);													// Add data
-  		var options={width: w, is3D: true, 									// Set options
+	  	var options={width: w, is3D: true, 									// Set options
 		 			 title: "Vocabulary/Topic Terms ",						// Title
 					 titleTextStyle: { "fontSize": 12, color:"#666" }, 		// Title format
 					 chartArea:{left:"0%",top:"10%", width:"75%",height:"75%"}	//  Sizing
@@ -552,12 +566,13 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 	{
 		var i,d=[];
 		var w=$("#chart1Chart").width()+50;
-		var data=new google.visualization.DataTable();					// Make new table
+		var data=new google.visualization.DataTable();						// Make new table
 		data.addColumn('string', 'Label');									// Add label column
  		data.addColumn('number', 'Time');									// Add time
 		for (i=0;i<obsEvents.length;++i) 									// For each event
 			if (obsEvents[i].d2 == "Model")									// If a model
 				d.push([ obsEvents[i].d3, obsEvents[i].d5-0 ]);				// Add slice								
+		d=RemoveRedundant(d);												// Remove redundant entries  
 		data.addRows(d);													// Add data
   		var options={width: w, is3D: true, 									// Set options
 		 			 title: "Co-teaching Model ",							// Title
@@ -566,6 +581,22 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 	  			};
 		new google.visualization.PieChart(document.getElementById('chart4Chart')).draw(data,options);
 	}
+
+	function RemoveRedundant(data)										// REMOVE REDUNDANT ENTRIES
+	{
+		var i,j;
+		for (i=0;i<data.length;++i) {										// For each slice										
+			for (j=i+1;j<data.length;++j) {									// For each slice til end
+				if (data[i][0] == data[j][0]) {								// A match
+					data[i][1]+=data[j][1];									// Add time to current
+					data.splice(j,1);										// Remove it
+					--j;													// So as not to skip next one
+					}
+				}	
+			}
+		return data;														// Return unique set of slices
+	}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // HELPERS

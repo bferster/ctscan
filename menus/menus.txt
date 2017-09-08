@@ -133,6 +133,20 @@ Teaches/reviews routines/expectations *Teaches/reviews routines/expectations &Ex
 Prompts Self Monitoring *Prompts Self Monitoring &
 Transition time *Transition time &Organized,Clear Directions
 
+Sentence Writing Strategy:
+Pretest *Pretest &Provide Advance Organizer,State Expectations
+Describe-Basic Definitions *Basic Definitions &Stated Expectations,Provided Definitions (5),Used Example Set I,Checked for Understanding
+Describe-Noun Phrases *Noun Phrases &Stated Expectations,Provided Definitions (2),Used Example Set II,Checked for Understanding
+Describe-Verb Phrases *Verb Phrases &Stated Expectations,Provided Definitions (3),Used Example Set III,Checked for Understanding
+Describe-Compound Subjects *Compound Subjects &Stated Expectations,Provided Definitions/Examples (1),Used Example Set IV,Checked for Understanding
+Describe-Compound Verbs *Compound Verbs &Stated Expectations,Provided Definitions/Examples (1),Checked for Understanding,
+Describe-Compound Subjects and Verbs &Compound Subjects and Verbs &Stated Expectations,Provided Definitions/Examples (1),Checked for Understanding
+Describe-PENS Steps *PENS Steps &Stated Expectations,Provided Definitions (2),Used Hands on Activities,Checked for Understanding
+Model *Model &Reviewed Definitions (15),Modeled One Sentence Formula,Used Both Verbal and Nonverbal Cues,Enlisted Student Help
+Verbal Practice *Verbal Practice &Reviewed Definitions (15),Used Memory Strategy,Administered Written Quiz,Administered Oral Quiz
+Controlled Practice/Advanced Practice/Posttest *CP/AP/Posttest &Explained Criteria for Mastery,Practices CP1 Until Mastery,Practiced CP2 Until Mastery,Practiced CP3 Until Mastery,Practiced AP4 Until Mastery,Offered Feedback
+Generalization *Generalization &Provide Rationale,Discussed Strategy Transfer,Solicited Evidence of Transfer
+
 Non-instructional activity:
 Non-instructional activity/task *Non-instructional activity/task &
 
@@ -148,4 +162,3 @@ STUACT=Answering Qs,Asking Qs,Academic convo w/ peers,Building/Creating,Group Wo
 ACAD=CTE,English,Fine Arts,Math,Reading,History,PE,Science,World Languages,Other
 INSET=Self-contained (Academic),Self-contained (Severe/Profound),Co-taught,Inclusive,General Education only
 RESONLY=Pre-Intervention-1,Pre-Intervention-2,Pre-Intervention-3,Post-Intervention-1,Post-Intervention-2,Post-Intervention-3,Maintenance
-

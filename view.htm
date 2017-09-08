@@ -79,15 +79,13 @@
 		</div>	
 			<hr>
 			<div id="showRaw" class="ct-actionBut">View raw data</div>&nbsp;&nbsp;
-			<div id="saveCSV" class="ct-actionBut">Save as CSV file</div>&nbsp;&nbsp;
+			<div id="saveCSV" class="ct-actionBut">Save summary CSV file</div>&nbsp;&nbsp;
 			<div id="showTimeline" class="ct-actionBut">View timeline</div>&nbsp;&nbsp;
 			<div id="showReport" class="ct-actionBut">View Report</div>&nbsp;&nbsp;
 			<div id="showCompare" class="ct-actionBut">Compare</div>
 			<input style="float:right" id="password" type="password" class="ct-is" placeholder="Type password here"/>
  	</div><br>
 	<div id="dataPanel" class="ct-dataPanel">No sessions selected...</div>
-
-
 
 <script>
 
@@ -96,8 +94,33 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 var curJson=null;															// Holds session results
-
+var menuFile="menus.txt";                                          			// Default menu name
+var counters=[];                                                    		// Counter names
+var categories=[];                                                  		// Category names
+ 
 $(document).ready(function() {								           	// ON PAGE LOADED
+
+	var url=window.location.search.substring(1);                        	// Get query string
+    if (url) {                                                          	// If something on command line
+        menuFile=url;                                                   	// Get name
+        if (!menuFile.match(/\.txt/))   menuFile+=".txt";               	// Add ext if not there
+        }
+		
+	$.ajax({ type: "GET", url: "menus/"+menuFile, success: function(text) { // Get menus text tile
+        var i,j,o,cp,cc,subs;
+        text=text.replace(/\n\r/g,"\n");                                    // LFCR -> LF
+        text=text.replace(/\r\n/g,"\n");                                    // CRLF -> LF
+        text=text.replace(/\r/g,"");                                        // Remove CR
+        var lines=text.split("\n");                                         // Spit by line
+        for (i=0;i<lines.length;++i) {                                      // For each line
+            o=lines[i];                                                     // Point at line
+            if (!o) continue;                                               // Skip blanks
+            else if (o.match(/BUTVAL=/i))                                   // A counter
+                counters=o.substr(7).split(",");                            // Get options
+            else if (o.match(/:/))                                          // A category
+                categories.push(o.substr(0,o.length-1));                    // Add cat name 
+            }
+        }});                                                                // On menus loaded
 
 	Date.prototype.toDateInputValue = (function() {							// Set today's date
 			var local=new Date(this);										// Get UTC
@@ -172,21 +195,67 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				}	
 			});													
 
-		$("#saveCSV").on("click", function(e) {								// ON SHOW RAW
-			if (!curJson)													// If no data
-				return;														// Quit	
-				GetTextBox("Save as CSV File","Type name of CSV file to save to","session.csv", function(s) {
-					ExportToCSV(s, [
-						['name','description'],	
-						['david','123'],
-						['jona','""'],
-						['a','b']
-					]);
-				})
-			});
+			$("#saveCSV").on("click", function(e) {                     // ON SAVE CSV
+				var v;
+				if (!curJson)                                              	// If no data
+					return;                                                 // Quit 
+				GetTextBox("Save summary CSV File","Type name of CSV file to save to","summary.csv", function(s) {
+					var o,i,s;
+					var rows=[["SessionId","TeacherId","Group","ObsNum","Grade","Duration","Quality","NumVocabs"]];
+					for (i=0;i<counters.length;++i)                      	// For each counter type
+						rows[0].push(counters[i]);                        	// Add to row
+					for (i=0;i<categories.length;++i)                     	// For each category type
+						rows[0].push(categories[i]);                     	// Add to row
+					for (i=0;i<curJson.length;++i) {                      	// For each session
+						if (!$("#sessId-"+i).prop("checked")) 				// If not checked
+							continue;										// Skip it
+						o=[];                                             	// Make new array for each data line
+						v=curJson[i].research.split("-");					// Get research mode
+						o.push(curJson[i].id);                     			// Add session id
+						o.push(curJson[i].teacherId);                     	// Add teacher id
+						o.push(v[0]);                      					// Add group
+						o.push(v[2] ? v[2] : "");                          	// Add obsNum
+						o.push(curJson[i].grade);                        	// Add grade
+						CalcStats(i,o);                                   	// Get stats from raw data
+						rows.push(o);                                     	// Add data row
+						}
+					ExportToCSV(s,rows);                                    // Save to file
+					})
+				});
+		
+		function CalcStats(num, s)  {                                    // CALCULATE SESSION STATS
+			var i,j,o,c=0,trt=0;
+			var e=$.parseJSON(curJson[num].events);                         // Objectify events
+			for (j=0;j<e.length;++j) {                                      // For each event
+				o=e[j];                                                     // Point at event
+				trt=Math.max(trt,o.time);                                   // Get max time
+				}
+			s.push(trt);                                                    // Add duration to row
+			s.push(1.5);                                                    // Add quality to row
+			for (j=0;j<e.length;++j) {                                 	 	// For each event
+				o=e[j];                                               	  	// Point at event
+				if (o.d1 == "Vocab Word")	++c;							// Add word
+				}
+			s.push(c);                                                 		// Add count to row
+			for (i=0;i<counters.length;++i) {                               // For each counter type        
+				c=0;                                                        // Reset count
+				for (j=0;j<e.length;++j) {                                  // For each event
+					o=e[j];                                                 // Point at event
+					if (o.d3 == counters[i])    ++c;                        // A match, in
+					}
+				s.push(c);                                                  // Add counter to row
+				}
+			for (i=0;i<categories.length;++i)   {                           // For each category type
+				c=0;                                                        // Reset count
+				for (j=0;j<e.length;++j) {                                  // For each event
+					o=e[j];                                                 // Point at event
+					if ((o.d2 == categories[i]) && (o.d1 == "Practice"))    c+=o.d5;    // A match, add to time
+					}
+				s.push(c);                                                  // Add category to row
+				}
+   		 	}
 	}
-
-
+	
 	function ShowRawData(num)											// SHOW RAW DATA
 	{
 		var i,col;
