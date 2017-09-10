@@ -52,7 +52,7 @@
 			<li id="chart3" class="ct-chartBox"><div class="ct-chart" id="chart3Chart"></div><br>Student Actions<br><br></li>
 			<li id="chart4" class="ct-chartBox"><div class="ct-chart" id="chart4Chart"></div><br>Vocab words #<br><br></li>
 			<li id="chart5" class="ct-chartBox"><div class="ct-chart" id="chart5Chart"></div><br>Vocab words time<br><br></li>
-			<li id="chart6" class="ct-chartBox"><div class="ct-chart" id="chart6Chart"></div><br>Categories<br></b><span style='font-weight:normal;font-size:9px;color:#666'>Click to see practices</span><br></li>
+			<li id="chart6" class="ct-chartBox"><div class="ct-chart" id="chart6Chart"></div><br>Categories<br></b><span style='font-weight:normal;font-size:9px;color:#666'>Click segment to see practices</span><br></li>
 			<li id="chart7" class="ct-chartBox"><div class="ct-chart" id="chart7Chart"></div><br><span id="pracName">Practice</span><br><br></li>
 		</ul>
 		Compare with other sessions: <select id="compGrade" class="ct-is"><option>in all grades</option><option>in this grade only</option></select>&nbsp;&nbsp;
@@ -215,11 +215,16 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		var s=[],stats={};													// Holds stats
 		if (!d || !d.length)												// No data
 			return;															// Quit
+		
 		for (i=0;i<d.length;++i) {											// For each session
 			if ((mode == "all") && (d[i].teacherId != id))					// If looking for this teacher's data only
 				continue;													// Not right teacher	
 			else if ((mode == "other") && (id) && (d[i].id != id))			// If only looking for one
 				continue;													// Not right teacher	
+			if (mode != "this")												// All or other
+				if (d[i].events.match(/\*IGNORE\*/))						// Has *IGNORE* tag
+					continue;												// Skip it
+
 			k=s.length;														// Stats index
 			s.push({ events:[], tstatus:[], sactions:[], engaged:0, cats:[], pracs:[] });		// Add session stats object
 			e=$.parseJSON(d[i].events);										// Objectify events
