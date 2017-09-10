@@ -8,7 +8,8 @@
 	<script src="lib/jquery.min.js"></script>
  	<script src="lib/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-  	<link REL="SHORTCUT ICON" HREF="img/favicon.ico">
+	<script src="lib/jquery.ui.touch-punch.min.js"></script>
+	<link REL="SHORTCUT ICON" HREF="img/favicon.ico">
 	<title>CTScan Compare</title>
 
 	<style type="text/css">
@@ -83,7 +84,7 @@ var dataActs=[];															// Holds media buttons
 var dataAcad=[];															// Holds academic diciplines
 var menus=[];																// Holds menus
 var butCts=[];																// Button counts
-var ss,os,ts;																// Stat data
+var ss,os,ts,xs;															// Stat data
 var othersLabel="Othr";														// Others chart label
 var numCharts=7																// Number of charts
 var curCatergory="";														// Currently active category
@@ -181,9 +182,20 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 
 		function showCharts()												// SHOW CHARTS
 		{
+			var i;
+			xs=[];															// Clear
 			ss=CalcStats([curJson],"this",curJson.teacherId);				// Get this session stats
 			ts=CalcStats(allJson,"all",curJson.teacherId);					// Get this teacher's stats
 			os=CalcStats(allJson,"other",$("#compId").val());				// Get all teacher's stats
+
+			if ($("#compId").val() == sessionNum) {							// Showing all of a teacher's sessions
+				for (i=0;i<allJson.length;++i) {							// Look through data
+					if  (allJson[i].teacherId != curJson.teacherId)			// If looking for this teacher's data only
+						continue;											// Not right teacher	
+					xs.push(CalcStats([allJson[i]],"this",curJson.teacherId));	// Add session stats to array
+					}
+				}	
+			
 			LoadingIcon(false);												// Hide loading icon
 			google.charts.load('current', {'packages':['corechart']});		// Load chart library
 			for (i=1;i<=numCharts;++i)										// For each chart
@@ -201,7 +213,6 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		var i,j,t,k=0,o,e;
 		var trt,engNum,engTot;				
 		var s=[],stats={};													// Holds stats
-	
 		if (!d || !d.length)												// No data
 			return;															// Quit
 		for (i=0;i<d.length;++i) {											// For each session
@@ -258,11 +269,14 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			s[k].engaged=(engTot/engNum).toFixed(2)							// Copy average engagement to global
 			}																// Session closure
 		engTot=0;															// Null out
+		stats.id=d[k].id;													// Set id
 		stats.events=[];													// Add array
 		stats.tstatus=[];													// Add array
 		stats.sactions=[];													// Add array
 		stats.cats=[];														// Add array
 		stats.pracs=[];														// Add array
+		if (!s.length)														// No stats
+			return stats;													// Quit
 		for (i=0;i<s.length;++i) {											// For each session
 			engTot+=(s[i].engaged-0);										// Add to engagement tot
 			for (var key in s[i].events) {									// For each event
@@ -329,14 +343,27 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 
     function DrawChart1() 												// DRAW COUNTERS
 	{
+		var t;
 		var data=new google.visualization.DataTable();						// Make new table
-		var t=[ [""],["This"],["All"],[othersLabel] ];						// Base
+		t=[ [""],["This"],["All"],[othersLabel] ];							// Base
 		for (var key in os.events) {										// For each event
 			t[0].push(key);													// Add label
 			t[1].push(ss.events[key] ? ss.events[key]-0 : 0);				// This data
 			t[2].push(ts.events[key] ? ts.events[key]-0 : 0);				// All data
 			t[3].push(os.events[key] ? os.events[key]-0 : 0);				// Others
 			}
+
+		if (xs.length) {													// Comparing teacher sessions
+			t=[ [""]];														// Base
+			for (var key in xs[0].events) 									// For each event
+				t[0].push(key);												// Add label
+			for (i=0;i<xs.length;++i) {										// For each session
+				t.push([xs[i].id]);											// Add id
+				for (var key in xs[i].events)								// For each event
+					t[i+1].push(xs[i].events[key] ? xs[i].events[key]-0 : 0);	// Add data
+				}		
+			}
+	
 		var options=JSON.parse(JSON.stringify(chartOptions));				// Deep copy base options
   		options.isStacked=true;												// Stack		
 		var con=document.getElementById('chart1Chart');						// Get container
@@ -347,11 +374,22 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 
     function DrawChart2() 												// DRAW ENGAGEMENT
 	{
+		var t;
 		var data=new google.visualization.DataTable();						// Make new table
-		var t=[ ["",""],["This"],["All"],[othersLabel] ];					// Base
+		t=[ ["",""],["This"],["All"],[othersLabel] ];						// Base
 		t[1].push(ss.engaged/100);											// This data
 		t[2].push(ts.engaged/100);											// All data
 		t[3].push(os.engaged/100);											// Others
+	
+		if (xs.length) {													// Comparing teacher sessions
+			t=[ [""]];														// Base
+			t[0].push("");													// Add label
+			for (i=0;i<xs.length;++i) {										// For each session
+				t.push([xs[i].id]);											// Add id
+				t[i+1].push(xs[i].engaged/100);								// Add data
+				}		
+			}
+
 		var options=JSON.parse(JSON.stringify(chartOptions));				// Deep copy base options
 		options.vAxis={format:"percent", minValue:0,  maxValue:1};			// Values
 		options.colors=["#27ae60"];											// Color
@@ -363,14 +401,27 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 
   function DrawChart3() 												// DRAW STUDENT ACTIONS
 	{
+		var t;
 		var data=new google.visualization.DataTable();						// Make new table
-		var t=[ [""],["This"],["All"],[othersLabel] ];						// Base
+		t=[ [""],["This"],["All"],[othersLabel] ];							// Base
 		for (var key in os.sactions) {										// For each status
 			t[0].push(key);													// Add label
 			t[1].push(ss.sactions[key] ? ss.sactions[key]-0 : 0);			// This data
 			t[2].push(ts.sactions[key] ? ts.sactions[key]-0 : 0);			// All data
 			t[3].push(os.sactions[key] ? os.sactions[key]-0 : 0);			// Others
 			}
+
+		if (xs.length) {													// Comparing teacher sessions
+			t=[ [""]];														// Base
+			for (var key in xs[0].sactions) 								// For each 
+				t[0].push(key);												// Add label
+			for (i=0;i<xs.length;++i) {										// For each session
+				t.push([xs[i].id]);											// Add id
+				for (var key in xs[i].sactions)								// For each event
+					t[i+1].push(xs[i].sactions[key] ? xs[i].sactions[key]-0 : 0);	// Add data
+				}		
+			}
+	
 		var options=JSON.parse(JSON.stringify(chartOptions));				// Deep copy base options
    		options.isStacked=true;												// Stack		
 		var con=document.getElementById('chart3Chart');						// Get container
@@ -381,11 +432,22 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 
 	function DrawChart4() 												// DRAW VOCAB WORDS
 	{
+		var t;
 		var data=new google.visualization.DataTable();						// Make new table
-		var t=[ ["",""],["This"],["All"],[othersLabel] ];					// Base
+		t=[ ["",""],["This"],["All"],[othersLabel] ];						// Base
 		t[1].push(ss.vocabNum-0);											// This data
 		t[2].push(ts.vocabNum-0);											// All data
 		t[3].push(os.vocabNum-0);											// Others
+
+		if (xs.length) {													// Comparing teacher sessions
+			t=[ [""]];														// Base
+			t[0].push("");													// Add label
+			for (i=0;i<xs.length;++i) {										// For each session
+				t.push([xs[i].id]);											// Add id
+				t[i+1].push(xs[i].vocabNum-0);								// Add data
+				}		
+			}
+
 		var options=JSON.parse(JSON.stringify(chartOptions));				// Deep copy base options
 		var con=document.getElementById('chart4Chart');						// Get container
 		if (!con)	return;													// Quit if not there
@@ -395,11 +457,22 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 
  	function DrawChart5() 												// DRAW VOCAB TIME
 	{
+		var t;
 		var data=new google.visualization.DataTable();						// Make new table
-		var t=[ ["",""],["This"],["All"],[othersLabel] ];					// Base
+		t=[ ["",""],["This"],["All"],[othersLabel] ];						// Base
 		t[1].push(ss.vocabTime-0);											// This data
 		t[2].push(ts.vocabTime-0);											// All data
 		t[3].push(os.vocabTime-0);											// Others
+	
+		if (xs.length) {													// Comparing teacher sessions
+			t=[ [""]];														// Base
+			t[0].push("");													// Add label
+			for (i=0;i<xs.length;++i) {										// For each session
+				t.push([xs[i].id]);											// Add id
+				t[i+1].push(xs[i].vocabTime-0);								// Add data
+				}		
+			}
+
 		var options=JSON.parse(JSON.stringify(chartOptions));				// Deep copy base options
 		var con=document.getElementById('chart5Chart');						// Get container
 		if (!con)	return;													// Quit if not there
@@ -409,14 +482,27 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 
 	function DrawChart6() 												// DRAW CATEGORIES 
 	{
+		var t;
 		var data=new google.visualization.DataTable();						// Make new table
-		var t=[ [""],["This"],["All"],[othersLabel] ];						// Base
+		t=[ [""],["This"],["All"],[othersLabel] ];							// Base
 		for (var key in os.cats) {											// For each event
 			t[0].push(key);													// Add label
 			t[1].push(ss.cats[key] ? ss.cats[key]-0 : 0);					// This data
 			t[2].push(ts.cats[key] ? ts.cats[key]-0 : 0);					// All data
 			t[3].push(os.cats[key] ? os.cats[key]-0 : 0);					// Others
 			}
+
+		if (xs.length) {													// Comparing teacher sessions
+			t=[ [""]];														// Base
+			for (var key in xs[0].cats) 									// For each 
+				t[0].push(key);												// Add label
+			for (i=0;i<xs.length;++i) {										// For each session
+				t.push([xs[i].id]);											// Add id
+				for (var key in xs[i].cats)									// For each
+					t[i+1].push(xs[i].cats[key] ? xs[i].cats[key]-0 : 0);	// Add data
+				}		
+			}
+
 		var options=JSON.parse(JSON.stringify(chartOptions));				// Deep copy base options
   		options.isStacked=true;												// Stack		
 		var con=document.getElementById('chart6Chart');						// Get container
@@ -435,10 +521,11 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			});
 		}
 
-	  function DrawChart7() 												// DRAW PRACTICES 
-		{
+	function DrawChart7() 												// DRAW PRACTICES 
+	{
+		var t;
 		var data=new google.visualization.DataTable();						// Make new table
-		var t=[ [""],["This"],["All"],[othersLabel] ];						// Base
+		t=[ [""],["This"],["All"],[othersLabel] ];							// Base
 		for (var key in os.pracs) {											// For each practice
 			if (os.pracs[key].split('~')[0] != curCategory)					// Not currently active category
 				continue;													// Skip it
@@ -447,7 +534,22 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			t[2].push(ts.pracs[key] ? ts.pracs[key].split('~')[1]-0 : 0);	// All data
 			t[3].push(os.pracs[key] ? os.pracs[key].split('~')[1]-0 : 0);	// Others
 			}
-		var options=JSON.parse(JSON.stringify(chartOptions));				// Deep copy base options
+	
+		if (xs.length) {													// Comparing teacher sessions
+			t=[ [""]];														// Base
+			for (var key in xs[0].pracs) 									// For each 
+				if (xs[0].pracs[key].split('~')[0] == curCategory)			// In active category
+					t[0].push(key);											// Add label
+			for (i=0;i<xs.length;++i) {										// For each session
+				t.push([xs[i].id]);											// Add id
+				for (var key in xs[i].pracs) {								// For each
+					if (xs[i].pracs[key].split('~')[0] == curCategory)		// In active category
+						t[i+1].push(xs[i].pracs[key] ? xs[i].pracs[key].split('~')[1]-0 : 0);	// Add data
+					}
+				}		
+			}
+
+	var options=JSON.parse(JSON.stringify(chartOptions));				// Deep copy base options
   		options.isStacked=true;												// Stack		
 		var con=document.getElementById('chart7Chart');						// Get container
 		if (!con)	return;													// Quit if not there
