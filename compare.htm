@@ -52,8 +52,8 @@
 			<li id="chart3" class="ct-chartBox"><div class="ct-chart" id="chart3Chart"></div><br>Student Actions<br><br></li>
 			<li id="chart4" class="ct-chartBox"><div class="ct-chart" id="chart4Chart"></div><br>Vocab words #<br><br></li>
 			<li id="chart5" class="ct-chartBox"><div class="ct-chart" id="chart5Chart"></div><br>Vocab words time<br><br></li>
-			<li id="chart6" class="ct-chartBox"><div class="ct-chart" id="chart6Chart"></div><br>Categories<br></b><span style='font-weight:normal;font-size:9px;color:#666'>Click segment to see practices</span><br></li>
-			<li id="chart7" class="ct-chartBox"><div class="ct-chart" id="chart7Chart"></div><br><span id="pracName">Practice</span><br><br></li>
+			<li id="chart6" class="ct-chartBox"><div class="ct-chart" id="chart6Chart"></div><br>Categories<br></b><span style='font-weight:normal;font-size:9px;color:#666;vertical-align:5px;'>Click segment to see practices</span><br></li>
+			<li id="chart7" class="ct-chartBox"><div class="ct-chart" id="chart7Chart"></div><br>Practices<br><span id="pracName" style='font-weight:normal;font-size:9px;color:#666;vertical-align:5px;'>practices</span><br></li>
 		</ul>
 		Compare with other sessions: <select id="compGrade" class="ct-is"><option>in all grades</option><option>in this grade only</option></select>&nbsp;&nbsp;
 		<select id="compSubject" class="ct-is"><option>for all subjects</option><option>for this subject only</option></select>&nbsp;&nbsp;
@@ -520,7 +520,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				return;														// Quit
 			var c=chart.getSelection()[0].column;							// Get section
 			curCategory=t[0][c];											// Set category
-			$("#pracName").text(ShortenString(curCategory,25));				// Show name
+			$("#pracName").text(ShortenString(curCategory,35));				// Show name
 			DrawChart7();													// Update chart
 			Sound("click");													// Click sound	
 			});
