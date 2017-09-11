@@ -775,6 +775,7 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 		$("#obsPanel").animate({ opacity:1 },400);						// Show end panel
 	
 		$("#saveDB").on("click", function() {							// ON SAVE TO DB
+			$("#saveDB").remove();										// Remove save button
 			SaveData();													// Save to DB
 		}	);
 
@@ -905,11 +906,10 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 				if (isNaN(d)) {											// Error
 					Sound("delete");									// Delete sound
 					trace(d);											// Show error
+					AlertBox("NOT saved! Save as a CSV","");			// Alert					}
 					}
-				else{
+				else
 					AlertBox("Successfully saved!","");					// Alert
-					$("#saveDB").remove();								// Remove save button
-					}
 				},
 			error:function(xhr,status,error) { trace(error) },			// Show error
 			});		
