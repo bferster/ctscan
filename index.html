@@ -200,8 +200,7 @@ var obsEvents=[];														// Holds events
 var obsData={};															// Obs info
 var assessData=[];														// Hold assessments
 var assessNum=1;														// Save asssess number
-
-
+var activeData=false;													// No data collected yet
 
 $(document).ready(function() {								           	// ON PAGE LOADED
 	var menu="menus.txt";												// Default menu
@@ -211,6 +210,13 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		if (!menu.match(/\.txt/))	menu+=".txt";						// Add ext if not there
 		}
 	obsData.template=menu;												// Save template name
+
+	if (window.location.hostname != "localhost")						// Not when debugging
+		window.onbeforeunload=function(e) {                         	// If unloading page
+			if (activeData)                                             // If there's active data
+				return "Are you sure?";  								// Confirm
+			};
+
 	$.ajax({ type: "GET", url: "menus/"+menu, success: function(text){ // Get menus text tile
 		var i,j,o,cp,cc,subs;
 		text=text.replace(/\n\r/g,"\n");								// LFCR -> LF
@@ -682,7 +688,8 @@ function QmediaEventHandler(e)										// ON MESSAGE EVENT
 function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 {
 	var i;
-	$("#alertBoxDiv2").remove();											// Remove any old ones
+	$("#studentAction").val($("#studentAction").val());            	 	// Close menu if open (to counter engagement popup issue)
+	$("#alertBoxDiv2").remove();										// Remove any old ones
 	$("body").append("<div class='qm-unselectable' id='alertBoxDiv2'></div>");														
 	var str="<p><img src='img/ctlogo32.png' style='vertical-align:-8px'/>&nbsp;&nbsp;";								
 	str+="<span class='ct-dialogTitle'>What percentage of students are OFF Task?</span><p>";
@@ -776,11 +783,13 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 	
 		$("#saveDB").on("click", function() {							// ON SAVE TO DB
 			$("#saveDB").remove();										// Remove save button
+			activeData=false;											// Inhibit unload warnding
 			SaveData();													// Save to DB
 		}	);
 
 		$("#saveCSV").on("click", function() {							// ON SAVE TO DISK
 			SaveCSV();													// Save to DB
+			activeData=false;											// Inhibit unload warning
 		}	);
 	}
 
@@ -980,12 +989,12 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 		}
 
 	
-	function SaveEvent(time, p1, p2, p3, p4, p5)
+	function SaveEvent(time, p1, p2, p3, p4, p5)						// SAVE AN EVENT TO MEMORY
 	{
-		if (p3 == undefined)	p3="";
+		if (p3 == undefined)	p3="";										// fill with blanks
 		if (p4 == undefined)	p4="";
 		if (p5 == undefined)	p5="";
-//		trace(time+","+p1+","+p2+","+p3+","+p4+","+p5);						// Show data
+		activeData=true;													// Enable unload warning
 		obsEvents.push({time:time, d1:p1, d2:p2, d3:p3, d4:p4, d5:p5 });	// Save in array
 	}
 
