@@ -461,6 +461,7 @@ function InitObs() 													// INIT OBSERVATION PANEL
 
 	$("#obsNewCat").on("click", function(e) {							// ON CHANGE CATEGORY
 		var i;
+		pracTime=-curTime;                                              // Save time and flag
 		$("#alertBoxDiv").remove();										// Remove any old ones
 		$("body").append("<div class='qm-unselectable' id='alertBoxDiv'></div>");														
 		var str="<p><img src='img/ctlogo32.png' style='vertical-align:-8px'/>&nbsp;&nbsp;";								
@@ -506,7 +507,8 @@ function InitObs() 													// INIT OBSERVATION PANEL
 			var id=e.currentTarget.id.substr(4);						// Get id			
 			curPrac=id;													// Set current practice
 			$("#obsConfirmPrac").css("display","inline-block");			// Hide
-			pracTime=curTime;											// Save time
+			if (pracTime < 0)   pracTime=Math.abs(pracTime);            // Use category start, and unflag
+            else                pracTime=curTime;                       // Save time
 			str+="<div style='display:inline-block;margin-bottom:4px;margin-top:4px'>"+menus[curCat].prac[curPrac].pname+"</div><br>";
 			str+="<div id='0' class='ct-obsPracSubs'>&bull;&nbsp;None</div>";
 			for (i=0;i<menus[curCat].prac[id].subs.length;++i) {
@@ -521,7 +523,7 @@ function InitObs() 													// INIT OBSERVATION PANEL
 					Sound("delete");									// Delete sound
 					ShowPopup(e.clientX+16,e.clientY+16,"Please confirm practice first!");
 					return;
-					}												// Quit
+					}													// Quit
 				var id=e.currentTarget.id-1;							// Get id			
 				var sub=menus[curCat].prac[curPrac].subs[id];			// Get sub
 				var n=menus[curCat].prac[curPrac].subs.length;			// Number of subs
@@ -551,7 +553,7 @@ function InitObs() 													// INIT OBSERVATION PANEL
 		var j;
 		if ((curCat < 0) || (curPrac < 0))								// No category and practice yet											
 			return;														// Quit
-		SaveEvent(pracTime,"Practice",menus[curCat].cname,menus[curCat].prac[curPrac].pname);	// Save event
+		SaveEvent(Math.abs(pracTime),"Practice",menus[curCat].cname,menus[curCat].prac[curPrac].pname);	// Save event
 		$(this).css("display","none");									// Hide
 		Sound("click");													// Click sound	
 		});
@@ -688,7 +690,7 @@ function QmediaEventHandler(e)										// ON MESSAGE EVENT
 function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 {
 	var i;
-	$("#studentAction").val($("#studentAction").val());            	 	// Close menu if open (to counter engagement popup issue)
+	$("select").each(function() { $(this).hide(0);  }); 				// Hide all selects
 	$("#alertBoxDiv2").remove();										// Remove any old ones
 	$("body").append("<div class='qm-unselectable' id='alertBoxDiv2'></div>");														
 	var str="<p><img src='img/ctlogo32.png' style='vertical-align:-8px'/>&nbsp;&nbsp;";								
@@ -710,6 +712,7 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 		var id=e.currentTarget.id.substr(4);							// Get id			
 		if (id != 999)													// If not skipping
 			SaveEvent(curTime,"Student status","Percent engaged",100-id);	// Save event
+		$("select").each(function() { $(this).show(0);  }); 			// Show all selects
 		$("#alertBoxDiv2").remove();  									// Close it
 		});
 }
