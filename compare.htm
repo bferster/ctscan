@@ -542,23 +542,25 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			t[2].push(ts.pracs[key] ? ts.pracs[key].split('~')[1]-0 : 0);	// All data
 			t[3].push(os.pracs[key] ? os.pracs[key].split('~')[1]-0 : 0);	// Others
 			}
-	
 		if (xs.length) {													// Comparing teacher sessions
 			t=[ [""]];														// Base
-			for (var key in xs[0].pracs) 									// For each 
-				if (xs[0].pracs[key].split('~')[0] == curCategory)			// In active category
-					t[0].push(key);											// Add label
 			for (i=0;i<xs.length;++i) {										// For each session
-				t.push([xs[i].id]);											// Add id
-				for (var key in xs[i].pracs) {								// For each
+				t[i+1]=[xs[i].id];											// Add id
+				for (var key in xs[i].pracs) {								// For each category
 					if (xs[i].pracs[key].split('~')[0] == curCategory)		// In active category
-						t[i+1].push(xs[i].pracs[key] ? xs[i].pracs[key].split('~')[1]-0 : 0);	// Add data
+						k=findKey(key,t[0]);								// If not there already
+					t[i+1][k]=xs[i].pracs[key] ? xs[i].pracs[key].split('~')[1]-0 : 0;	// Add data
 					}
 				}		
+			if (t[0].length < 2) {											// No data
+				t[0][1]="x";												// Dummy header
+				for (i=1;i<t.length;++i)									// For each session
+					t[i][1]=0;												// Make dummy column
+				}
 			t=normalizeTable(t);											// Normalize table
 			}
 
-	var options=JSON.parse(JSON.stringify(chartOptions));				// Deep copy base options
+		var options=JSON.parse(JSON.stringify(chartOptions));				// Deep copy base options
   		options.isStacked=true;												// Stack		
 		var con=document.getElementById('chart7Chart');						// Get container
 		if (!con)	return;													// Quit if not there
@@ -566,7 +568,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
   		chart.draw(google.visualization.arrayToDataTable(t),options);		// Draw it
   	}
 
-// CHART HELPERS
+///// CHART HELPERS /////
 
 	function findKey(key, labs)											// FIND INDEX OF KEY IN LABELS
 	{
@@ -582,6 +584,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 	{
 		var i,k;
 		for (i=1;i<t.length;++i) {											// For each data row
+			t[i].length=t[0].length;										// Cap data cols to header
 			for (k=0;k<t[0].length;++k) 									// For each segment
 				if (!t[i][k]) 	t[i][k]=0;									// If undefined, set it to 0
 			}	
