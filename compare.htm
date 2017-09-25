@@ -348,7 +348,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 
     function DrawChart1() 												// DRAW COUNTERS
 	{
-		var t;
+		var t,i,j,k;
 		var data=new google.visualization.DataTable();						// Make new table
 		t=[ [""],["This"],["All"],[othersLabel] ];							// Base
 		for (var key in os.events) {										// For each event
@@ -360,15 +360,16 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 
 		if (xs.length) {													// Comparing teacher sessions
 			t=[ [""]];														// Base
-			for (var key in xs[0].events) 									// For each event
-				t[0].push(key);												// Add label
 			for (i=0;i<xs.length;++i) {										// For each session
-				t.push([xs[i].id]);											// Add id
-				for (var key in xs[i].events)								// For each event
-					t[i+1].push(xs[i].events[key] ? xs[i].events[key]-0 : 0);	// Add data
+				t[i+1]=[xs[i].id];											// Add id
+				for (var key in xs[i].events) {								// For each event
+					k=findKey(key,t[0]);									// If not there already
+					t[i+1][k]=xs[i].events[key] ? xs[i].events[key]-0 : 0;	// Add data
+					}
 				}		
+			t=normalizeTable(t);											// Normalize table
 			}
-	
+		
 		var options=JSON.parse(JSON.stringify(chartOptions));				// Deep copy base options
   		options.isStacked=true;												// Stack		
 		var con=document.getElementById('chart1Chart');						// Get container
@@ -406,7 +407,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 
   function DrawChart3() 												// DRAW STUDENT ACTIONS
 	{
-		var t;
+		var t,i,k;
 		var data=new google.visualization.DataTable();						// Make new table
 		t=[ [""],["This"],["All"],[othersLabel] ];							// Base
 		for (var key in os.sactions) {										// For each status
@@ -415,18 +416,19 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			t[2].push(ts.sactions[key] ? ts.sactions[key]-0 : 0);			// All data
 			t[3].push(os.sactions[key] ? os.sactions[key]-0 : 0);			// Others
 			}
-
+		
 		if (xs.length) {													// Comparing teacher sessions
 			t=[ [""]];														// Base
-			for (var key in xs[0].sactions) 								// For each 
-				t[0].push(key);												// Add label
 			for (i=0;i<xs.length;++i) {										// For each session
-				t.push([xs[i].id]);											// Add id
-				for (var key in xs[i].sactions)								// For each event
-					t[i+1].push(xs[i].sactions[key] ? xs[i].sactions[key]-0 : 0);	// Add data
+				t[i+1]=[xs[i].id];											// Add id
+				for (var key in xs[i].sactions) {							// For each action
+					k=findKey(key,t[0]);									// If not there already
+					t[i+1][k]=xs[i].sactions[key] ? xs[i].sactions[key]-0 : 0;	// Add data
+					}
 				}		
+			normalizeTable(t);												// Normalize table to have same num cols as header
 			}
-	
+
 		var options=JSON.parse(JSON.stringify(chartOptions));				// Deep copy base options
    		options.isStacked=true;												// Stack		
 		var con=document.getElementById('chart3Chart');						// Get container
@@ -499,15 +501,16 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 
 		if (xs.length) {													// Comparing teacher sessions
 			t=[ [""]];														// Base
-			for (var key in xs[0].cats) 									// For each 
-				t[0].push(key);												// Add label
 			for (i=0;i<xs.length;++i) {										// For each session
-				t.push([xs[i].id]);											// Add id
-				for (var key in xs[i].cats)									// For each
-					t[i+1].push(xs[i].cats[key] ? xs[i].cats[key]-0 : 0);	// Add data
+				t[i+1]=[xs[i].id];											// Add id
+				for (var key in xs[i].cats) {								// For each category
+					k=findKey(key,t[0]);									// If not there already
+					t[i+1][k]=xs[i].cats[key] ? xs[i].cats[key]-0 : 0;		// Add data
+					}
 				}		
+			t=normalizeTable(t);											// Normalize table
 			}
-
+	
 		var options=JSON.parse(JSON.stringify(chartOptions));				// Deep copy base options
   		options.isStacked=true;												// Stack		
 		var con=document.getElementById('chart6Chart');						// Get container
@@ -552,6 +555,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 						t[i+1].push(xs[i].pracs[key] ? xs[i].pracs[key].split('~')[1]-0 : 0);	// Add data
 					}
 				}		
+			t=normalizeTable(t);											// Normalize table
 			}
 
 	var options=JSON.parse(JSON.stringify(chartOptions));				// Deep copy base options
@@ -561,6 +565,29 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 	   	var chart=new google.visualization.ColumnChart(con);				// Alloc chart
   		chart.draw(google.visualization.arrayToDataTable(t),options);		// Draw it
   	}
+
+// CHART HELPERS
+
+	function findKey(key, labs)											// FIND INDEX OF KEY IN LABELS
+	{
+		var i;
+		for (i=0;i<labs.length;++i) 										// For each existing label
+			if (key == labs[i])												// If it exists
+				return i;													// Return index
+		labs.push(key);														// Add it
+		return labs.length-1;												// Return index
+	}
+
+	function normalizeTable(t)											// MAKE DATA ROW HAVE SAME # COLS AS HEDER
+	{
+		var i,k;
+		for (i=1;i<t.length;++i) {											// For each data row
+			for (k=0;k<t[0].length;++k) 									// For each segment
+				if (!t[i][k]) 	t[i][k]=0;									// If undefined, set it to 0
+			}	
+		return t;															// Return normalized table
+	}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // HELPERS
