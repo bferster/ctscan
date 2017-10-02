@@ -176,7 +176,7 @@
 // MAIN 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-var curTime=0;															// Saves time in task
+var curTime=0;															// Saves time during observations
 var timingInterval=null,totInterval=null;								// Timing interval
 var totTiming=0;														// Time on task timing
 var inPlay=false;														// Play flag
@@ -377,7 +377,7 @@ function GetIntroData()												// GET INTRO DATA FROM USER
 
 function InitObs() 													// INIT OBSERVATION PANEL
 {
-	var i,j;
+	var i,j; 
 	for (i=1;i<=dataMedia.length;++i) {									// For each media
 		$("#ml-"+i).text(dataMedia[i-1]) 								// Set label
 	
