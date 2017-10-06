@@ -71,8 +71,8 @@
 					<td nowrap><select id="viewDateComp" class="ct-is" style="height:19px;vertical-align:-2px;margin-right:-3px;"><option></option><option selected>=</option><option>!=</option><option><</option><option><=</option><option>></option><option>>=</option></select>
 					<input id="viewDate" class="ct-is"style="height:17px" type="date"/></td>
 					<td><input id="viewTid" class="ct-is" style="width:80px"/></td>
-					<td><select id="ResType" class="ct-is"><option></option><option>Pre-Intervention</option>";
-						<option>Post-Intervention</option><option>Maintenance</option><option>Old version</option></select></td>
+					<td><select id="viewRes" class="ct-is"><option></option><option>Pre-Intervention</option>";
+						<option>Post-Intervention</option><option>Maintenance</option></select></td>
 					<td><input id="viewSid" class="ct-is" style="width:30px"/></td></tr>
 				<tr><td colspan='8'><hr></td></tr>
 			</table>
@@ -151,7 +151,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		$("#viewSid").on("change", function(e) {							// ON SESSSION ID CHANGE
 			GetObservations("sid");											// Show matching observations
 			});													
-		$("#ResType").on("change", function(e) {							// ON RESEARCH CHANGE
+		$("#viewRes").on("change", function(e) {							// ON RESEARCH CHANGE
 			GetObservations("res");											// Show matching observations
 			});													
 		$("#password").on("change", function(e) {							// ON PASSWORD CHANGE
@@ -291,7 +291,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		var now=$("#viewDate").val();										// Get date
 		var tid=$("#viewTid").val();										// Get teacher id
 		var sid=$("#viewSid").val();										// Get session id
-		var res=$("#ResType").val();										// Get research type
+		var res=$("#viewRes").val();										// Get research type
 		var dc=$("#viewDateComp").val();									// Get date comparator
 		var pass=$("#password").val();										// Get password
 
@@ -307,7 +307,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		if (tid)															// If an tid set
 			q+=" AND teacherId LIKE '%"+tid+"%'";							// Add to query				
 		if (res)															// If a res set
-			q+=" AND research = '"+res+"'";									// Add to query				
+			q+=" AND research LIKE '%"+res+"%'";							// Add to query				
 		if (pass && (pass != "7001"))										// If a password set and not magic one
 			q+=" AND password = '"+pass+"'";								// Add to query				
 		else if (!pass)														// If no password, show all blank ones
