@@ -178,6 +178,17 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 					}
 			Sound("click");													// Click sound	
 			});													
+
+		$("#showReport").on("click", function(e) {							// ON REPORT
+				if (!curJson)												// If no data
+					return;													// Quit	
+				for (i=0;i<curJson.length;++i) 								// For each session
+					if ($("#sessId-"+i).prop("checked")) {					// If checked
+						window.open("reportmaker.htm?"+curJson[i].id,"_blank")	// Open tab
+						break;
+					}
+			Sound("click");													// Click sound	
+			});													
 		$("#showRaw").on("click", function(e) {								// ON SHOW RAW
 			if (!curJson)													// If no data
 				return;														// Quit	
@@ -282,7 +293,6 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		str+="</table><hr>";
 		$("#dataPanel").append(str);										// Add to data panel										
 	}
-
 
 	function GetObservations()											// GET SELECTED OBSERVATIONS FROM DB
 	{
