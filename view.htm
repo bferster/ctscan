@@ -215,8 +215,6 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 					var rows=[["SessionId","TeacherId","Group","ObsNum","Grade","Duration","Quality","NumVocabs"]];
 					for (i=0;i<counters.length;++i)                      	// For each counter type
 						rows[0].push(counters[i]);                        	// Add to row
-					for (i=0;i<categories.length;++i)                     	// For each category type
-						rows[0].push(categories[i]);                     	// Add to row
 					for (i=0;i<curJson.length;++i) {                      	// For each session
 						if (!$("#sessId-"+i).prop("checked")) 				// If not checked
 							continue;										// Skip it
@@ -255,14 +253,6 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 					if (o.d3 == counters[i])    ++c;                        // A match, in
 					}
 				s.push(c);                                                  // Add counter to row
-				}
-			for (i=0;i<categories.length;++i)   {                           // For each category type
-				c=0;                                                        // Reset count
-				for (j=0;j<e.length;++j) {                                  // For each event
-					o=e[j];                                                 // Point at event
-					if ((o.d2 == categories[i]) && (o.d1 == "Practice"))    c+=o.d5;    // A match, add to time
-					}
-				s.push(c);                                                  // Add category to row
 				}
    		 	}
 	}
