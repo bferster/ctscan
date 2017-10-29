@@ -54,11 +54,11 @@
 				<tr><td colspan="3"><textarea class='editBox' id='par1'></textarea></td></tr>
 				<tr style='background-color:#ddd'>
 					<td style='padding-left:12px;width:100px'><b>Practices</b></td>
-					<td style='padding-left:12px;width:200px'><b>What you did</b></td>
+					<td style='padding-left:12px;width:400px'><b>What you did</b></td>
 					<td style='padding-left:12px;width:1000px'><b>Comments</b></td>
 				</tr>
 				<tr>
-					<td style='padding-left:12px;'><b>Opportunities to Respond (OTRs)s</b></td>
+					<td style='padding-left:12px;'><b>Opportunities to Respond (OTRs)</b></td>
 					<td style='padding-left:12px' id='did1'></td>
 					<td id='com1'></td>
 				</tr>
@@ -70,15 +70,25 @@
 				</tr>
 				<tr><td colspan="3"><hr></td></tr>				
 				<tr>
-					<td style='padding-left:12px'><b>The Big Picture</b></td>
+					<td style='padding-left:12px'><b>Vocabulary Instruction</b></td>
 					<td style='padding-left:12px' id='did3'></td>
 					<td id='com3'></td>
 				</tr>
 				<tr><td colspan="3"><hr></td></tr>				
 				<tr>
-					<td style='padding-left:12px'><b>One Big Thing</b></td>
+					<td style='padding-left:12px'><b>Non Instructional activities</b></td>
 					<td style='padding-left:12px' id='did4'></td>
 					<td id='com4'></td>
+				</tr>
+				<tr><td colspan="3"><hr></td></tr>				
+				<tr>
+					<td colspan="2" style='padding-left:12px;vertical-align: middle'><b>The Big Picture</b></td>
+					<td id='com5'></td>
+				</tr>
+				<tr><td colspan="3"><hr></td></tr>				
+				<tr>
+					<td colspan="2" style='padding-left:12px;vertical-align: middle'><b>One Big Thing</b></td>
+					<td id='com6'></td>
 				</tr>
 				<tr><td colspan="3"><hr></td></tr>				
 				<tr><td colspan="3"><b>Link to CT Scan Data Timeline:</b><br><span id='timeLink'></span><br><br></td></tr>
@@ -86,7 +96,6 @@
 		</div><br>	
 		<div id="emailReport" class="ct-actionBut">Email report to teacher</div>&nbsp;&nbsp;
 		<input style="float:right" id="password" type="password" class="ct-is" placeholder="Type password here"/>
-	
 	</div>
 
 <script>
@@ -113,71 +122,105 @@
 
 	function Init(data)														// INIT REPORTER
 	{
+		var i;
 		data=$.parseJSON(data)[0];												// Objectify result
 		var stats=CalcStats(data);												// Get this session stats
 		trace(stats)
-		var str="Dear Ms. Teacher "+data.teacherId+",\n\n";				
+		var str="Dear Teacher "+data.teacherId+",\n\n";				
 		str+="Thank you for being part of our project and welcoming our team into your classroom. Immediately below is a table noting your strengths, targeted areas for improvement, and action steps for becoming even more awesome.  Pay special attention to the One Big Thing (last row of the table).  We think improving the One Big Thing will have a big payoff for your students.\n\n";
-		str+="Below the table is a link to a graph presenting descriptive data from your lesson. If you have any questions about the graphs or the feedback in this email, please email Alex Miller (aam2ab@virginia.edu). Please do not share or discuss this feedback with other teachers or observers until the conclusion of the study.";
+		str+="Below the table is a link to a graph presenting descriptive data from your lesson. If you have any questions about the graphs or the feedback in this email, please email **NAME** (**EMAIL**).";
 		$("#par1").val(str);
 		$("#par1").width($("#reportPanel").width()-56);
 		$("#par1").height($("#par1")[0].scrollHeight-24);
 		$("#par1").on("input", function() { $("#par1").height($("#par1")[0].scrollHeight-24); });
 
-		str=(stats["Rote Q OTR"] ? stats["Rote Q OTR"] : "0") +" rote<br>";
-		str+=(stats["Choral Response"] ? stats["Choral Response"] : "0") +" choral<br>";
-		str+=(stats["Deep Q OTR"] ? stats["Deep Q OTR"] : "0") +" deep<br>";
-		str+=(stats["Num Student Ask Q"] ? stats["Num Student Ask Q"] : "0") +" student Q's<br>";
-
+		str=(stats.events["Rote Q OTR"] ? stats.events["Rote Q OTR"] : "0") +" rote<br>";
+		str+=(stats.events["Choral Response"] ? stats.events["Choral Response"] : "0") +" choral<br>";
+		str+=(stats.events["Deep Q OTR"] ? stats.events["Deep Q OTR"] : "0") +" deep<br>";
+		str+=(stats.events["Num Student Ask Q"] ? stats.events["Num Student Ask Q"] : "0") +" student Q's<br>";
 		$("#did1").html(str);
 		str="<textarea class='editBox' id='com1box'></textarea><br>";
 		str+=MakeSelect("com1sel",false,["Choose response","What we noticed","Option two","Option three"]);
 		$("#com1").html(str);
 		$("#com1sel").on("change", function() { 
-			var i=$(this).prop("selectedIndex");
+			i=$(this).prop("selectedIndex");
 			$("#com1box").height(24);
 			if (i)	$("#com1box").val(com1s[i-1])	
 			$("#com1box").height($("#com1box")[0].scrollHeight-24);
 			});
 		$("#com1box").on("input", function() {  $("#com1box").height($("#com1box")[0].scrollHeight-24); });
 
-		str=(stats["Generic FB Statement"] ? stats["Generic FB Statement"] : "0") +" generic<br>";
-		str+=(stats["Academic Specific FB"] ? stats["Academic Specific FB"] : "0") +" academic<br>";
-		str+=(stats["Behavior Specific FB"] ? stats["Behavior Specific FB"] : "0") +" behavioral<br>";
-		
+		str=(stats.events["Generic FB Statement"] ? stats.events["Generic FB Statement"] : "0") +" generic<br>";
+		str+=(stats.events["Academic Specific FB"] ? stats.events["Academic Specific FB"] : "0") +" academic<br>";
+		str+=(stats.events["Behavior Specific FB"] ? stats.events["Behavior Specific FB"] : "0") +" behavioral<br>";
 		$("#did2").html(str);
 		str="<textarea class='editBox' id='com2box'></textarea><br>";
 		str+=MakeSelect("com2sel",false,["Choose response","What we noticed","Option two","Option three"]);
 		$("#com2").html(str);
 			$("#com2sel").on("change", function() { 
-			var i=$(this).prop("selectedIndex");
+			i=$(this).prop("selectedIndex");
 			$("#com2box").height(24);
 			if (i)	$("#com2box").val(com2s[i-1])	
 			$("#com2box").height($("#com2box")[0].scrollHeight-24);
 			});
 		$("#com2box").on("input", function() { $("#com2box").height($("#com2box")[0].scrollHeight-24); });
 
+		str="";
+		for (key in stats.vocabs) 
+			str+=key+"<br>"
+		
+		$("#did3").html(str);
 		str="<textarea class='editBox' id='com3box'></textarea><br>";
-		str+=MakeSelect("com3sel",false,["Choose response","Option one","Option two","Option three"]);
+		str+=MakeSelect("com3sel",false,["Choose response","What we noticed","Option two","Option three"]);
 		$("#com3").html(str);
-		$("#com3sel").on("change", function() { 
-			var i=$(this).prop("selectedIndex");
+			$("#com3sel").on("change", function() { 
+			i=$(this).prop("selectedIndex");
 			$("#com3box").height(24);
 			if (i)	$("#com3box").val(com3s[i-1])	
-			$("#com3ox").height($("#com3box")[0].scrollHeight-24);
+			$("#com3box").height($("#com3box")[0].scrollHeight-24);
 			});
 		$("#com3box").on("input", function() { $("#com3box").height($("#com3box")[0].scrollHeight-24); });
 
+		str="";
+		for (key in stats.nons) 
+			str+=Math.round(stats.nons[key]*100)+"% "+key+"<br>"
+	
+		$("#did4").html(str);
 		str="<textarea class='editBox' id='com4box'></textarea><br>";
-		str+=MakeSelect("com4sel",false,["Choose response","Option one","Option two","Option three"]);
+		str+=MakeSelect("com4sel",false,["Choose response","What we noticed","Option two","Option three"]);
 		$("#com4").html(str);
-		$("#com4sel").on("change", function() { 
-			var i=$(this).prop("selectedIndex");
+			$("#com4sel").on("change", function() { 
+			i=$(this).prop("selectedIndex");
 			$("#com4box").height(24);
 			if (i)	$("#com4box").val(com4s[i-1])	
 			$("#com4box").height($("#com4box")[0].scrollHeight-24);
 			});
 		$("#com4box").on("input", function() { $("#com4box").height($("#com4box")[0].scrollHeight-24); });
+
+
+
+
+		str="<textarea class='editBox' id='com5box'></textarea><br>";
+		str+=MakeSelect("com5sel",false,["Choose response","Option one","Option two","Option three"]);
+		$("#com5").html(str);
+		$("#com5sel").on("change", function() { 
+			i=$(this).prop("selectedIndex");
+			$("#com5box").height(24);
+			if (i)	$("#com5box").val(com5s[i-1])	
+			$("#com5ox").height($("#com5box")[0].scrollHeight-24);
+			});
+		$("#com5box").on("input", function() { $("#com5box").height($("#com5box")[0].scrollHeight-24); });
+
+		str="<textarea class='editBox' id='com6box'></textarea><br>";
+		str+=MakeSelect("com6sel",false,["Choose response","Option one","Option two","Option three"]);
+		$("#com6").html(str);
+		$("#com6sel").on("change", function() { 
+			i=$(this).prop("selectedIndex");
+			$("#com6box").height(24);
+			if (i)	$("#com6box").val(com6s[i-1])	
+			$("#com6box").height($("#com6box")[0].scrollHeight-24);
+			});
+		$("#com6box").on("input", function() { $("#com6box").height($("#com6box")[0].scrollHeight-24); });
 
 		$("#sessionInfo").text(data.date+" | "+data.subject+" | "+data.research);
 		$("#timeLink").html("www.classroomteachingscan.com/ctscan/timeline.htm?"+sessionId);
@@ -190,18 +233,38 @@
 
 	function CalcStats(data)										// CALC STATS
 	{
-		var i,o,stats=[];
+		var i,o,stats={},trt=0;
 		var e=$.parseJSON(data.events);										// Objectify events
+		stats.events=[];													// Init events array
+		stats.vocabs=[];													// Init vocabs array
+		stats.nons=[];														// Init non instruction array
+		for (i=0;i<e.length;++i) 											// For each event
+			trt=Math.max(trt,e[i].time);									// Get max time
 		for (i=0;i<e.length;++i) {											// For each event
 			o=e[i];
 			if (o.d1 == "Event") {											// If an OTR type event
-				if (stats[o.d3])		stats[o.d3]++;						// Add to count
-				else					stats[o.d3]=1;						// Add event type
+				if (stats.events[o.d3])		stats.events[o.d3]++;			// Add to count
+				else						stats.events[o.d3]=1;			// Add event type
+				}
+			if ((o.d1 == "Practice") && (o.d2 == "Vocabulary Instruction")){// If a vocab practice
+				if (stats.vocabs[o.d3])		stats.vocabs[o.d3]+=o.d5/trt;	// Add to count
+				else						stats.vocabs[o.d3]=o.d5/trt;	// Add just this one
+				}
+			if (o.d1 == "Student actions")	{
+				if (o.d2 == "Transitioning") {								// If  transitioning
+					if (stats.nons[o.d2])	stats.nons[o.d2]+=o.d5/trt;		// Add to count
+					else					stats.nons[o.d2]=o.d5/trt;		// Add just this one
+					}
+				if (o.d2 == "No clear direction") {							// If no direction
+					if (stats.nons[o.d2])	stats.nons[o.d2]+=o.d5/trt;		// Add to count
+					else					stats.nons[o.d2]=o.d5/trt;		// Add just this one
+					}
 				}
 			}
 		return stats;														// Return stats
 	}
 
+			
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // HELPERS
@@ -241,6 +304,13 @@
 			console.log(msg);
 	}
 
+	function ShortenString(str, len)									// SHORTEN A STRING TO LENGTH
+	{
+		if (str && str.length > len)										// Too long
+			str=str.substr(0,(len-3)/2)+"..."+str.slice((len-3)/-2);		// Shorten	
+		return str;															// Return string
+	}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // TEMPLATE
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -264,6 +334,18 @@
 		];
 
 	var com4s=[
+		"This is the first option",
+		"This is the second option",
+		"And a third"
+		];
+
+	var com5s=[
+		"This is the first option",
+		"This is the second option",
+		"And a third"
+		];
+
+	var com6s=[
 		"This is the first option",
 		"This is the second option",
 		"And a third"
