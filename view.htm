@@ -97,6 +97,7 @@ var curJson=null;															// Holds session results
 var menuFile="menus.txt";                                          			// Default menu name
 var counters=[];                                                    		// Counter names
 var categories=[];                                                  		// Category names
+var qType=0;																// Assume Michael's QVI calculation
  
 $(document).ready(function() {								           	// ON PAGE LOADED
 
@@ -225,26 +226,28 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 						o.push(v[0]);                      					// Add group
 						o.push(v[2] ? v[2] : "");                          	// Add obsNum
 						o.push(curJson[i].grade);                        	// Add grade
-						CalcStats(i,o);                                   	// Get stats from raw data
+						CalcStats(i,o, qType);                                // Get stats from raw data
 						rows.push(o);                                     	// Add data row
 						}
 					ExportToCSV(s,rows);                                    // Save to file
 					})
 				});
 		
-		function CalcStats(num, s)  {                                    // CALCULATE SESSION STATS
-			var i,j,o,c=0,trt=0;
+		function CalcStats(num, s, qType)  {                           // CALCULATE SESSION STATS
+			var i,j,o,c=0,trt=0,quality=0;
 			var e=$.parseJSON(curJson[num].events);                         // Objectify events
 			for (j=0;j<e.length;++j) {                                      // For each event
 				o=e[j];                                                     // Point at event
 				trt=Math.max(trt,o.time);                                   // Get max time
 				}
 			s.push(trt);                                                    // Add duration to row
-			s.push(1.5);                                                    // Add quality to row
 			for (j=0;j<e.length;++j) {                                 	 	// For each event
 				o=e[j];                                               	  	// Point at event
+				if (o.d1 == "Practice") 									// Add to quality
+					quality+=((o.d4/100)+1)*(o.d5/trt);						// Calc PVI
 				if (o.d1 == "Vocab Word")	++c;							// Add word
 				}
+			s.push(quality.toFixed(2));										// Add quality to row
 			s.push(c);                                                 		// Add count to row
 			for (i=0;i<counters.length;++i) {                               // For each counter type        
 				c=0;                                                        // Reset count
