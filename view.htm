@@ -243,8 +243,8 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			s.push(trt);                                                    // Add duration to row
 			for (j=0;j<e.length;++j) {                                 	 	// For each event
 				o=e[j];                                               	  	// Point at event
-				if (o.d1 == "Practice") 									// Add to quality
-					quality+=((o.d4/100)+1)*(o.d5/trt);						// Calc PVI
+				if ((o.d1 == "Practice") && (o.d2 == "Vocabulary Instruction")) // Add to quality
+					quality+=((o.d4/100)+1)*(o.d5/trt),trace(o,trt);		// Calc PVI
 				if (o.d1 == "Vocab Word")	++c;							// Add word
 				}
 			s.push(quality.toFixed(2));										// Add quality to row
