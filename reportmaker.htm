@@ -19,6 +19,9 @@
 		.ct-reportPanel {	background-color:#ddd; border-radius: 6px; margin-top: 24px; padding: 12px; max-width:920px;
 							margin-left: auto; margin-right: auto; text-align: left;
 							}
+		.ct-reportOutput {	margin-top:12px; padding: 12px; max-width:800px; border: 1px solid #ddd;
+							margin-left: auto; margin-right: auto; text-align: left;
+							}
 		.ct-is 	{			border-radius:4px; padding-left:8px; border: 1px solid #999; margin-bottom: 3px;
 							}
 		.ct-but {			cursor: pointer; color:#fff; 
@@ -94,9 +97,10 @@
 				<tr><td colspan="3"><b>Link to CT Scan Data Timeline:</b><br><span id='timeLink'></span><br><br></td></tr>
 			</table>
 		</div><br>	
-		<div id="emailReport" class="ct-actionBut">Email report to teacher</div>&nbsp;&nbsp;
+		<div id="createReport" class="ct-actionBut">Create report</div>&nbsp;&nbsp;
 		<input style="float:right" id="password" type="password" class="ct-is" placeholder="Type password here"/>
 	</div>
+	<br><div id='reportOutput' class='ct-reportOutput'></div>
 
 <script>
 
@@ -106,7 +110,10 @@
 		var url=window.location.search.substring(1);                        // Get query string
 		if (url)	sessionId=url-0;										// If a session spec'd, get it	
 		GetSessionData(sessionId, Init);									// Get session data
-
+		
+		$("#createReport").on("click", function() {							// ON CREATE REPORT
+			$("#reportOutput").html(CreateReport());						// Get and show it
+			});
 	});		
 
 
@@ -197,9 +204,6 @@
 			});
 		$("#com4box").on("input", function() { $("#com4box").height($("#com4box")[0].scrollHeight-24); });
 
-
-
-
 		str="<textarea class='editBox' id='com5box'></textarea><br>";
 		str+=MakeSelect("com5sel",false,["Choose response","Option one","Option two","Option three"]);
 		$("#com5").html(str);
@@ -225,6 +229,49 @@
 		$("#sessionInfo").text(data.date+" | "+data.subject+" | "+data.research);
 		$("#timeLink").html("www.classroomteachingscan.com/ctscan/timeline.htm?"+sessionId);
 		}
+
+
+	function CreateReport()
+	{
+		var str=$("#par1").val().replace(/\n/g,"<br>");
+		str+="<br><br><table>"	
+		str+="<tr style='background-color:#ddd;padding:bottom:12px;'>";
+		str+="<td style='padding-left:12px;width:100px'><b>Practices</b></td>"
+		str+="<td style='padding-left:12px;width:400px'><b>What you did</b></td>"
+		str+="<td style='padding-left:12px;width:1000px'><b>Comments</b></td>"
+			
+		str+="<tr><td style='padding-left:12px'><b>Vocabulary Instruction</b></td>"
+		str+="<td style='padding-left:12px'>"+$("#did3").html()+"</td><td>";
+		str+=$("#com3box").val().replace(/\n/g,"<br>")+"</td></tr>";
+		str+="<tr><td colspan='3'><hr></td></tr>";				
+
+		str+="<tr><td style='padding-left:12px'><b>Opportunities to Respond (OTRs)</b></td>"
+		str+="<td style='padding-left:12px'>"+$("#did1").html()+"</td><td>";
+		str+=$("#com1box").val().replace(/\n/g,"<br>")+"</td></tr>";
+		str+="<tr><td colspan='3'><hr></td></tr>";				
+
+		str+="<tr><td style='padding-left:12px'><b>Feedback Statements (FB)</b></td>"
+		str+="<td style='padding-left:12px'>"+$("#did2").html()+"</td><td>";
+		str+=$("#com2box").val().replace(/\n/g,"<br>")+"</td></tr>";
+		str+="<tr><td colspan='3'><hr></td></tr>";				
+
+		str+="<tr><td style='padding-left:12px'><b>Non Instructional activities</b></td>"
+		str+="<td style='padding-left:12px'>"+$("#did4").html()+"</td><td>";
+		str+=$("#com4box").val().replace(/\n/g,"<br>")+"</td></tr>";
+		str+="<tr><td colspan='3'><hr></td></tr>";				
+
+		str+="<tr><td colspan='2' style='padding-left:12px'><b>The Big Picture</b></td><td>"
+		str+=$("#com5box").val().replace(/\n/g,"<br>")+"</td></tr>";
+		str+="<tr><td colspan='3'><hr></td></tr>";				
+
+		str+="<tr><td colspan='2' style='padding-left:12px'><b>One Big Thing</b></td><td>"
+		str+=$("#com6box").val().replace(/\n/g,"<br>")+"</td></tr>";
+		str+="<tr><td colspan='3'><hr></td></tr>";				
+		str+="</table>"	
+		str+="<br><b>Link to CT Scan Data Timeline:</b><br>www.classroomteachingscan.com/ctscan/timeline.htm?"+sessionId+"<br>";
+		return str;
+	}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // STATS
