@@ -102,10 +102,14 @@ var qType=0;																// Assume Michael's QVI calculation
 $(document).ready(function() {								           	// ON PAGE LOADED
 
 	var url=window.location.search.substring(1);                        	// Get query string
-    if (url) {                                                          	// If something on command line
+	if (url && url.match(/&*john/i)) {										// If tagged for John Romig
+			qType=1;														// QMI vs QVI
+			url=url.replace(/&*john/i,"");									// Remove tag
+			}
+	if (url) {                                                          	// If something on command line
         menuFile=url;                                                   	// Get name
         if (!menuFile.match(/\.txt/))   menuFile+=".txt";               	// Add ext if not there
-        }
+	    }
 		
 	$.ajax({ type: "GET", url: "menus/"+menuFile, success: function(text) { // Get menus text tile
         var i,j,o,cp,cc,subs;
@@ -243,8 +247,14 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			s.push(trt);                                                    // Add duration to row
 			for (j=0;j<e.length;++j) {                                 	 	// For each event
 				o=e[j];                                               	  	// Point at event
-				if ((o.d1 == "Practice") && (o.d2 == "Vocabulary Instruction")) // Add to quality
-					quality+=((o.d4/100)+1)*(o.d5/trt),trace(o,trt);		// Calc PVI
+				if (qType == 1) {											// QMI
+					if ((o.d1 == "Practice") && (o.d2 == "Writing Instruction (General)") && (o.d3 == "Modeling")) // Add to quality
+						quality+=((o.d4/100)+1)*(o.d5/trt);					// Calc QMI
+					}			
+				else{														// QVI
+					if ((o.d1 == "Practice") && (o.d2 == "Vocabulary Instruction")) // Add to quality
+						quality+=((o.d4/100)+1)*(o.d5/trt);					// Calc QVI
+					}
 				if (o.d1 == "Vocab Word")	++c;							// Add word
 				}
 			s.push(quality.toFixed(2));										// Add quality to row
