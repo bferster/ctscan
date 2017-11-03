@@ -412,9 +412,9 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		t=[ [""],["This"],["All"],[othersLabel] ];							// Base
 		for (var key in os.sactions) {										// For each status
 			t[0].push(key);													// Add label
-			t[1].push(ss.sactions[key] ? ss.sactions[key]-0 : 0);			// This data
-			t[2].push(ts.sactions[key] ? ts.sactions[key]-0 : 0);			// All data
-			t[3].push(os.sactions[key] ? os.sactions[key]-0 : 0);			// Others
+			t[1].push(ss.sactions[key] ? ss.sactions[key]/60 : 0);			// This data
+			t[2].push(ts.sactions[key] ? ts.sactions[key]/60 : 0);			// All data
+			t[3].push(os.sactions[key] ? os.sactions[key]/60 : 0);			// Others
 			}
 		
 		if (xs.length) {													// Comparing teacher sessions
@@ -467,9 +467,9 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		var t;
 		var data=new google.visualization.DataTable();						// Make new table
 		t=[ ["",""],["This"],["All"],[othersLabel] ];						// Base
-		t[1].push(ss.vocabTime-0);											// This data
-		t[2].push(ts.vocabTime-0);											// All data
-		t[3].push(os.vocabTime-0);											// Others
+		t[1].push(ss.vocabTime/60);											// This data
+		t[2].push(ts.vocabTime/60);											// All data
+		t[3].push(os.vocabTime/60);											// Others
 	
 		if (xs.length) {													// Comparing teacher sessions
 			t=[ [""]];														// Base
@@ -494,9 +494,9 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		t=[ [""],["This"],["All"],[othersLabel] ];							// Base
 		for (var key in os.cats) {											// For each event
 			t[0].push(key);													// Add label
-			t[1].push(ss.cats[key] ? ss.cats[key]-0 : 0);					// This data
-			t[2].push(ts.cats[key] ? ts.cats[key]-0 : 0);					// All data
-			t[3].push(os.cats[key] ? os.cats[key]-0 : 0);					// Others
+			t[1].push(ss.cats[key] ? ss.cats[key]/60 : 0);					// This data
+			t[2].push(ts.cats[key] ? ts.cats[key]/60 : 0);					// All data
+			t[3].push(os.cats[key] ? os.cats[key]/60 : 0);					// Others
 			}
 
 		if (xs.length) {													// Comparing teacher sessions
@@ -538,9 +538,9 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			if (os.pracs[key].split('~')[0] != curCategory)					// Not currently active category
 				continue;													// Skip it
 			t[0].push(key);													// Add label
-			t[1].push(ss.pracs[key] ? ss.pracs[key].split('~')[1]-0 : 0);	// This data
-			t[2].push(ts.pracs[key] ? ts.pracs[key].split('~')[1]-0 : 0);	// All data
-			t[3].push(os.pracs[key] ? os.pracs[key].split('~')[1]-0 : 0);	// Others
+			t[1].push(ss.pracs[key] ? ss.pracs[key].split('~')[1]/60 : 0);	// This data
+			t[2].push(ts.pracs[key] ? ts.pracs[key].split('~')[1]/60 : 0);	// All data
+			t[3].push(os.pracs[key] ? os.pracs[key].split('~')[1]/60 : 0);	// Others
 			}
 		if (xs.length) {													// Comparing teacher sessions
 			t=[ [""]];														// Base
