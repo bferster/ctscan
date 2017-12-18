@@ -61,7 +61,7 @@
 					<td style='padding-left:12px;width:1000px'><b>Comments</b></td>
 				</tr>
 				<tr>
-					<td style='padding-left:12px'><b>Vocabulary Instruction</b></td>
+					<td id='pracs' style='padding-left:12px'></td>
 					<td style='padding-left:12px' id='did3'></td>
 					<td id='com3'></td>
 				</tr>
@@ -105,11 +105,29 @@
 <script>
 
 	var sessionId=28;
+	var practices=["Vocabulary Instruction"];
+	var menuFile="menus.txt";                                          		// Default menu name
+	var curJson=null;														// Holds session results
+	var myPracs=[];															// List of possible practices
 
 	$(document).ready(function() {								          // ON PAGE LOADED
 		var url=window.location.search.substring(1);                        // Get query string
 		if (url)	sessionId=url-0;										// If a session spec'd, get it	
-		GetSessionData(sessionId, Init);									// Get session data
+
+		$.ajax({ type: "GET", url: "menus/"+menuFile, success: function(text) { // Get menus text tile
+			var i,j,o,cp,cc,subs;
+			text=text.replace(/\n\r/g,"\n");								// LFCR -> LF
+			text=text.replace(/\r\n/g,"\n");								// CRLF -> LF
+			text=text.replace(/\r/g,"");									// Remove CR
+			var lines=text.split("\n");										// Spit by line
+			for (i=0;i<lines.length;++i) {									// For each line
+				o=lines[i];													// Point at line
+				if (!o)	continue;											// Skip blanks
+				if (o.match(/:/)) 											// At new category
+					myPracs.push(o.substr(0,o.length-1));					// Add option
+				}
+			GetSessionData(sessionId, Init);								// Get session data
+		}});
 		
 		$("#createReport").on("click", function() {							// ON CREATE REPORT
 			$("#reportOutput").html(CreateReport());						// Get and show it
@@ -122,17 +140,22 @@
 		var dat={ q: "id = ~"+id+"~" };											// Query
 		var url="//classroomteachingscan.com/ctscan/query.php";					// Target
 		$.ajax({ url:url,dataType:'text',type:"GET",crossDomain:true,data:dat,  // Get data
-			success:function(d) { callback(d) },								// Run callback				
+			success:function(d) { curJson=d; callback(d) },						// Run callback				
 			error:function(xhr,status,error) { trace(error) },					// Show error
 			});		
 	}
 
-	function Init(data)														// INIT REPORTER
+	function Init(data, firstTime)											// INIT REPORT MAKER
 	{
 		var i;
 		data=$.parseJSON(data)[0];												// Objectify result
+		if (!firstTime) {
+			str="<span style='vertical-align:-0px'>"+data.date+" | "+data.subject+" | "+data.research+"</span><span style='float:right'>Practice to show: ";
+			str+=MakeSelect("myPracs",0,myPracs)+"</span>";
+			$("#sessionInfo").html(str);
+			$("#myPracs").val("Vocabulary Instruction");
+			}		
 		var stats=CalcStats(data);												// Get this session stats
-		trace(stats)
 		var str="Dear Teacher "+data.teacherId+",\n\n";				
 		str+="Thank you for being part of our project and welcoming our team into your classroom. Immediately below is a table noting your strengths, targeted areas for improvement, and action steps for becoming even more awesome.  Pay special attention to the One Big Thing (last row of the table).  We think improving the One Big Thing will have a big payoff for your students.\n\n";
 		str+="Below the table is a link to a graph presenting descriptive data from your lesson. If you have any questions about the graphs or the feedback in this email, please email **NAME** (**EMAIL**).";
@@ -141,13 +164,16 @@
 		$("#par1").height($("#par1")[0].scrollHeight-24);
 		$("#par1").on("input", function() { $("#par1").height($("#par1")[0].scrollHeight-24); });
 
+		// OTR
+
 		str=(stats.events["Rote Q OTR"] ? stats.events["Rote Q OTR"] : "0") +" rote<br>";
 		str+=(stats.events["Choral Response"] ? stats.events["Choral Response"] : "0") +" choral<br>";
 		str+=(stats.events["Deep Q OTR"] ? stats.events["Deep Q OTR"] : "0") +" deep<br>";
 		str+=(stats.events["Num Student Ask Q"] ? stats.events["Num Student Ask Q"] : "0") +" student Q's<br>";
 		$("#did1").html(str);
 		str="<textarea class='editBox' id='com1box'></textarea><br>";
-		str+=MakeSelect("com1sel",false,["Choose response","What we noticed","Option two","Option three"]);
+		str+=MakeSelect("com1sel",false,["Choose response","What we noticed","Option two","Option three"])+"&nbsp;&nbsp;";
+		str+=MakeSelect("com1bsel",false,["Add thought","Stock phrase 1","Stock phrase 2" ,"Stock phrase 3"]);
 		$("#com1").html(str);
 		$("#com1sel").on("change", function() { 
 			i=$(this).prop("selectedIndex");
@@ -155,46 +181,85 @@
 			if (i)	$("#com1box").val(com1s[i-1])	
 			$("#com1box").height($("#com1box")[0].scrollHeight-24);
 			});
+		$("#com1bsel").on("change", function() { 
+			i=$(this).prop("selectedIndex");
+			$("#com1box").height(24);
+			if (i)	$("#com1box").val($("#com1box").val()+"\n"+com1bs[i-1]);	
+			$("#com1box").height($("#com1box")[0].scrollHeight-24);
+			});
 		$("#com1box").on("input", function() {  $("#com1box").height($("#com1box")[0].scrollHeight-24); });
+
+		// FB
 
 		str=(stats.events["Generic FB Statement"] ? stats.events["Generic FB Statement"] : "0") +" generic<br>";
 		str+=(stats.events["Academic Specific FB"] ? stats.events["Academic Specific FB"] : "0") +" academic<br>";
 		str+=(stats.events["Behavior Specific FB"] ? stats.events["Behavior Specific FB"] : "0") +" behavioral<br>";
 		$("#did2").html(str);
 		str="<textarea class='editBox' id='com2box'></textarea><br>";
-		str+=MakeSelect("com2sel",false,["Choose response","What we noticed","Option two","Option three"]);
+		str+=MakeSelect("com2sel",false,["Choose response","What we noticed","Option two","Option three"])+"&nbsp;&nbsp;";
+		str+=MakeSelect("com2bsel",false,["Add thought","Stock phrase 1","Stock phrase 2" ,"Stock phrase 3"]);
 		$("#com2").html(str);
-			$("#com2sel").on("change", function() { 
+		$("#com2sel").on("change", function() { 
 			i=$(this).prop("selectedIndex");
 			$("#com2box").height(24);
 			if (i)	$("#com2box").val(com2s[i-1])	
 			$("#com2box").height($("#com2box")[0].scrollHeight-24);
 			});
+		$("#com2bsel").on("change", function() { 
+			i=$(this).prop("selectedIndex");
+			$("#com2box").height(24);
+			if (i)	$("#com2box").val($("#com2box").val()+"\n"+com2bs[i-1]);	
+			$("#com2box").height($("#com2box")[0].scrollHeight-24);
+			});
 		$("#com2box").on("input", function() { $("#com2box").height($("#com2box")[0].scrollHeight-24); });
 
+		// Vocab
+
+		str="<b>";
+		for (i=0;i<practices.length;++i) 
+			str+=practices[i]+"<br><br>";
+		$("#pracs").html(str.substr(0,str.length-8)+"</b>");	
 		str="";
 		for (key in stats.vocabs) 
-			str+=key+"<br>"
-		
+			str+=key+"<br>";
+		if (stats.vocabWords.length) {
+			str+="<b><br>Words/Topics used:</b><br><i>";
+			for (i=0;i<stats.vocabWords.length;++i) 
+				str+=stats.vocabWords[i]+", ";
+			str=str.substr(0,str.length-2)+"</i>";
+			}
+
+
 		$("#did3").html(str);
 		str="<textarea class='editBox' id='com3box'></textarea><br>";
-		str+=MakeSelect("com3sel",false,["Choose response","What we noticed","Option two","Option three"]);
+		str+=MakeSelect("com3sel",false,["Choose response","What we noticed","Option two","Option three"])+"&nbsp;&nbsp;";
+		str+=MakeSelect("com3bsel",false,["Add thought","Stock phrase 1","Stock phrase 2" ,"Stock phrase 3"]);
 		$("#com3").html(str);
-			$("#com3sel").on("change", function() { 
+		
+		$("#com3sel").on("change", function() { 
 			i=$(this).prop("selectedIndex");
 			$("#com3box").height(24);
 			if (i)	$("#com3box").val(com3s[i-1])	
 			$("#com3box").height($("#com3box")[0].scrollHeight-24);
 			});
+		$("#com3bsel").on("change", function() { 
+			i=$(this).prop("selectedIndex");
+			$("#com3box").height(24);
+			if (i)	$("#com3box").val($("#com3box").val()+"\n"+com3bs[i-1]);	
+			$("#com3box").height($("#com3box")[0].scrollHeight-24);
+			});
+
 		$("#com3box").on("input", function() { $("#com3box").height($("#com3box")[0].scrollHeight-24); });
+
+		// Non Instruction
 
 		str="";
 		for (key in stats.nons) 
 			str+=Math.round(stats.nons[key]*100)+"% "+key+"<br>"
-	
 		$("#did4").html(str);
 		str="<textarea class='editBox' id='com4box'></textarea><br>";
-		str+=MakeSelect("com4sel",false,["Choose response","What we noticed","Option two","Option three"]);
+		str+=MakeSelect("com4sel",false,["Choose response","What we noticed","Option two","Option three"])+"&nbsp;&nbsp;";
+		str+=MakeSelect("com4bsel",false,["Add thought","Stock phrase 1","Stock phrase 2" ,"Stock phrase 3"]);
 		$("#com4").html(str);
 			$("#com4sel").on("change", function() { 
 			i=$(this).prop("selectedIndex");
@@ -202,10 +267,19 @@
 			if (i)	$("#com4box").val(com4s[i-1])	
 			$("#com4box").height($("#com4box")[0].scrollHeight-24);
 			});
+		$("#com4bsel").on("change", function() { 
+			i=$(this).prop("selectedIndex");
+			$("#com4box").height(24);
+			if (i)	$("#com4box").val($("#com4box").val()+"\n"+com4bs[i-1]);	
+			$("#com4box").height($("#com4box")[0].scrollHeight-24);
+			});
 		$("#com4box").on("input", function() { $("#com4box").height($("#com4box")[0].scrollHeight-24); });
 
+		// Big Picture
+
 		str="<textarea class='editBox' id='com5box'></textarea><br>";
-		str+=MakeSelect("com5sel",false,["Choose response","Option one","Option two","Option three"]);
+		str+=MakeSelect("com5sel",false,["Choose response","Option one","Option two","Option three"])+"&nbsp;&nbsp;";
+		str+=MakeSelect("com5bsel",false,["Add thought","Stock phrase 1","Stock phrase 2" ,"Stock phrase 3"]);
 		$("#com5").html(str);
 		$("#com5sel").on("change", function() { 
 			i=$(this).prop("selectedIndex");
@@ -213,10 +287,20 @@
 			if (i)	$("#com5box").val(com5s[i-1])	
 			$("#com5ox").height($("#com5box")[0].scrollHeight-24);
 			});
+		$("#com5bsel").on("change", function() { 
+			i=$(this).prop("selectedIndex");
+			$("#com5box").height(24);
+			if (i)	$("#com5box").val($("#com5box").val()+"\n"+com5bs[i-1]);	
+			$("#com5box").height($("#com5box")[0].scrollHeight-24);
+			});
+
 		$("#com5box").on("input", function() { $("#com5box").height($("#com5box")[0].scrollHeight-24); });
 
+		// One big thing
+
 		str="<textarea class='editBox' id='com6box'></textarea><br>";
-		str+=MakeSelect("com6sel",false,["Choose response","Option one","Option two","Option three"]);
+		str+=MakeSelect("com6sel",false,["Choose response","Option one","Option two","Option three"])+"&nbsp;&nbsp;";
+		str+=MakeSelect("com6bsel",false,["Add thought","Stock phrase 1","Stock phrase 2" ,"Stock phrase 3"]);
 		$("#com6").html(str);
 		$("#com6sel").on("change", function() { 
 			i=$(this).prop("selectedIndex");
@@ -224,23 +308,38 @@
 			if (i)	$("#com6box").val(com6s[i-1])	
 			$("#com6box").height($("#com6box")[0].scrollHeight-24);
 			});
+		$("#com6bsel").on("change", function() { 
+			i=$(this).prop("selectedIndex");
+			$("#com6box").height(24);
+			if (i)	$("#com6box").val($("#com6box").val()+"\n"+com6bs[i-1]);	
+			$("#com6box").height($("#com6box")[0].scrollHeight-24);
+			});
 		$("#com6box").on("input", function() { $("#com6box").height($("#com6box")[0].scrollHeight-24); });
 
-		$("#sessionInfo").text(data.date+" | "+data.subject+" | "+data.research);
+		$("#myPracs").on("change", function() { 
+			practices=[$("#myPracs").val()];
+			Init(curJson,true);
+			});
+
 		$("#timeLink").html("www.classroomteachingscan.com/ctscan/timeline.htm?"+sessionId);
 		}
 
 
 	function CreateReport()
 	{
+		var i, pracs=""
 		var str=$("#par1").val().replace(/\n/g,"<br>");
 		str+="<br><br><table>"	
 		str+="<tr style='background-color:#ddd;padding:bottom:12px;'>";
 		str+="<td style='padding-left:12px;width:100px'><b>Practices</b></td>"
 		str+="<td style='padding-left:12px;width:400px'><b>What you did</b></td>"
 		str+="<td style='padding-left:12px;width:1000px'><b>Comments</b></td>"
-			
-		str+="<tr><td style='padding-left:12px'><b>Vocabulary Instruction</b></td>"
+
+		for (i=0;i<practices.length;++i) 
+			pracs+=practices[i]+"<br><br>";
+		pracs=pracs.substr(0,pracs.length-8);	
+	
+		str+="<tr><td style='padding-left:12px'><b>"+pracs+"</b></td>"
 		str+="<td style='padding-left:12px'>"+$("#did3").html()+"</td><td>";
 		str+=$("#com3box").val().replace(/\n/g,"<br>")+"</td></tr>";
 		str+="<tr><td colspan='3'><hr></td></tr>";				
@@ -285,6 +384,7 @@
 		stats.events=[];													// Init events array
 		stats.vocabs=[];													// Init vocabs array
 		stats.nons=[];														// Init non instruction array
+		stats.vocabWords=[];												// Init vocab words array
 		for (i=0;i<e.length;++i) 											// For each event
 			trt=Math.max(trt,e[i].time);									// Get max time
 		for (i=0;i<e.length;++i) {											// For each event
@@ -293,7 +393,9 @@
 				if (stats.events[o.d3])		stats.events[o.d3]++;			// Add to count
 				else						stats.events[o.d3]=1;			// Add event type
 				}
-			if ((o.d1 == "Practice") && (o.d2 == "Vocabulary Instruction")){// If a vocab practice
+			if (o.d1 == "Vocab Word") 										// If vocab word
+				stats.vocabWords.push(o.d2);								// Add to list
+			if ((o.d1 == "Practice") && (o.d2 == $("#myPracs").val())){		// If matches current practice
 				if (stats.vocabs[o.d3])		stats.vocabs[o.d3]+=o.d5/trt;	// Add to count
 				else						stats.vocabs[o.d3]=o.d5/trt;	// Add just this one
 				}
@@ -358,9 +460,22 @@
 		return str;															// Return string
 	}
 
+	function Timecode(time)												// FORMAT SECONDS TO TIMECODE
+	{
+		var secs=time%60;													// Get secs
+		if (secs == 0)		secs="00";										// Double 0
+		else if (secs < 10) secs="0"+secs;									// Add leading 0
+		var mins=Math.floor(time/60);										// Get mins
+		if (mins == 0)		mins="00";										// Double 0
+		else if (mins < 10) mins="0"+mins;									// Add leading 0
+		return mins+":"+secs;												// Return timecode
+	}		
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // TEMPLATE
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// OTR
 
 	var com1s=[
 		"We noticed you asking 30 questions during our observation, at a rate of .5 questions per minute. Almost all of those questions were asked between minutes ten and twenty of the observation. In addition to you asking questions, your students also asked questions. They asked two questions that we heard. During our observation, you asked 28 rote questions, 1 choral response questions, and 1 higher-level questions. One way to make your practice even stronger would be to ask more questions, especially more complex questions that emphasize critical thinking, as discussed in Video 6",
@@ -368,11 +483,27 @@
 		"And a third"
 		];
 
-		var com2s=[
+	var com1bs=[
+		"Stock one - OTR",
+		"Stock two",
+		"Stock three"
+		];
+
+// FB
+
+	var com2s=[
 		"During the observation, we noticed you giving 30 feedback statements to students, at a rate of .5 per minute. As giving students feedback is so important, we recommend looking at the student assessment section of Videos 2, 3, 4 or 5 to get ideas on ways to give even more feedback. Most of that feedback was given during one ten minute section of the observation. We heard 28 generic feedback statements such as “Good job.” We heard two specific academic feedback statements where you either built on the student’s response or gave detailed feedback. Academic feedback statements are a great way to keep students engaged and motivated. To learn more, check out Video 6 at about 5:42. We noticed that you gave no behavioral feedback statements and that the percentage of students engaged in the lesson fluctuated between 75% and 100% with lower engagement for the first ten minutes of the observation and higher engagement towards the end.",
 		"This is the second option",
 		"And a third"
 		];
+
+	var com2bs=[
+		"Stock one - FB",
+		"Stock two",
+		"Stock three"
+		];
+
+// Vocab
 
 	var com3s=[
 		"This is the first option",
@@ -380,11 +511,27 @@
 		"And a third"
 		];
 
+	var com3bs=[
+		"Stock one - Vocab",
+		"Stock two",
+		"Stock three"
+		];
+
+// Non-instructional
+
 	var com4s=[
 		"This is the first option",
 		"This is the second option",
 		"And a third"
 		];
+
+	var com4bs=[
+		"Stock one - Non Instruct",
+		"Stock two",
+		"Stock three"
+		];
+
+// Big Picture
 
 	var com5s=[
 		"This is the first option",
@@ -392,10 +539,24 @@
 		"And a third"
 		];
 
+	var com5bs=[								
+		"Stock one - Big Picture",
+		"Stock two",
+		"Stock three"
+		];
+
+// One big thing
+
 	var com6s=[
 		"This is the first option",
 		"This is the second option",
 		"And a third"
+		];
+
+	var com6bs=[								
+		"Stock one - Big Thing",
+		"Stock two",
+		"Stock three"
 		];
 
 
