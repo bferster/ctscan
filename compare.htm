@@ -57,7 +57,7 @@
 		</ul>
 		Compare with other sessions: <select id="compGrade" class="ct-is"><option>in all grades</option><option>in this grade only</option></select>&nbsp;&nbsp;
 		<select id="compSubject" class="ct-is"><option>for all subjects</option><option>for this subject only</option></select>&nbsp;&nbsp;
-		<select id="compSetting" class="ct-is"><option>in all settings</option><option>in this setting only.</option></select>&nbsp;
+		<select id="compSetting" class="ct-is"><option>in all settings</option><option>in this setting only</option><option>for all their obs</option></select>&nbsp;
         or just this Id:&nbsp;<input id="compId" class="ct-is" style="width:30px"/></td></tr>
 	</div>
 	<div id="dataPanel" class="ct-dataPanel"></div>
@@ -188,7 +188,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			ts=CalcStats(allJson,"all",curJson.teacherId);					// Get this teacher's stats
 			os=CalcStats(allJson,"other",$("#compId").val());				// Get all teacher's stats
 
-			if ($("#compId").val() == sessionNum) {							// Showing all of a teacher's sessions
+			if ($("#compSetting").val() == "for all their obs") {			// Showing all of a teacher's sessions
 				for (i=0;i<allJson.length;++i) {							// Look through data
 					if  (allJson[i].teacherId != curJson.teacherId)			// If looking for this teacher's data only
 						continue;											// Not right teacher	
@@ -280,6 +280,8 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		stats.sactions=[];													// Add array
 		stats.cats=[];														// Add array
 		stats.pracs=[];														// Add array
+		stats.vocabNum=0;													// Reset
+		stats.vocabTime=0;													// Reset
 		if (!s.length)														// No stats
 			return stats;													// Quit
 		for (i=0;i<s.length;++i) {											// For each session
@@ -300,6 +302,8 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				stats.cats[key]=s[i].cats[key];								// Add to stats
 			for (var key in s[i].pracs)										// For each practice
 				stats.pracs[key]=s[i].pracs[key];							// Add to stats
+			stats.vocabNum+=s[i].vocabNum;									// Add to vocab count
+			stats.vocabTime+=s[i].vocabTime;								// Add tovocab time count
 			}
 		for (var key in stats.events) 										// For each event
 			stats.events[key]=(stats.events[key]/s.length).toFixed(2);		// Average each event
@@ -307,9 +311,9 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			stats.tstatus[key]=(stats.tstatus[key]/s.length).toFixed(2);	// Average
 		for (var key in stats.sactions) 									// For each action
 			stats.sactions[key]=(stats.sactions[key]/s.length).toFixed(2);	// Average
-		stats.engaged=(engTot/s.length).toFixed(2)							// Average engagement 
-		stats.vocabNum=(s[k].vocabNum/s.length).toFixed(2)					// Average words 
-		stats.vocabTime=(s[k].vocabTime/s.length).toFixed(2)				// Average words 
+		stats.engaged=(engTot/s.length).toFixed(2)							// Average 
+		stats.vocabNum=(stats.vocabNum/s.length).toFixed(2)					// Average 
+		stats.vocabTime=(stats.vocabTime/s.length).toFixed(2)				// Average
 		return stats;														// Return stats
 	}
 
