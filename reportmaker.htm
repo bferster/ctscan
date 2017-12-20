@@ -148,7 +148,7 @@
 
 	function Init(data, firstTime)											// INIT REPORT MAKER
 	{
-		var i,v,str2;
+		var i;
 		data=$.parseJSON(data)[0];												// Objectify result
 		if (!firstTime) {
 			str="<span style='vertical-align:-0px'>"+data.date+" | "+data.subject+" | "+data.research+"</span><span style='float:right'>Practice to show: ";
@@ -229,18 +229,10 @@
 				str+=stats.vocabWords[i]+", ";
 			str=str.substr(0,str.length-2)+"</i>";
 			}
-		v=["Add thought","Stock phrase 1","Stock phrase 2" ,"Stock phrase 3"]
-		if (stats.markers) {
-			v.push("Implementation markers");
-			str2="\nImplementation markers used: ";
-			for (i=0;i<stats.markers.length;++i)
-				str2+=stats.markers[i]+", ";
-			com3bs.push(str2.substr(0,str2.length-2)+".");
-			}
 		$("#did3").html(str);
 		str="<textarea class='editBox' id='com3box'></textarea><br>";
 		str+=MakeSelect("com3sel",false,["Choose response","What we noticed","Option two","Option three"])+"&nbsp;&nbsp;";
-		str+=MakeSelect("com3bsel",false,v);
+		str+=MakeSelect("com3bsel",false,["Add thought","Stock phrase 1","Stock phrase 2" ,"Stock phrase 3"]);
 		$("#com3").html(str);
 		
 		$("#com3sel").on("change", function() { 
@@ -392,7 +384,6 @@
 		stats.vocabs=[];													// Init vocabs array
 		stats.nons=[];														// Init non instruction array
 		stats.vocabWords=[];												// Init vocab words array
-		stats.markers=[];													// Init markers array
 		for (i=0;i<e.length;++i) 											// For each event
 			trt=Math.max(trt,e[i].time);									// Get max time
 		for (i=0;i<e.length;++i) {											// For each event
@@ -406,13 +397,6 @@
 			if ((o.d1 == "Practice") && (o.d2 == $("#myPracs").val())){		// If matches current practice
 				if (stats.vocabs[o.d3])		stats.vocabs[o.d3]+=o.d5/trt;	// Add to count
 				else						stats.vocabs[o.d3]=o.d5/trt;	// Add just this one
-				}
-			if ((o.d1 == "Teacher actions") && (o.d2 == $("#myPracs").val())) {	// If marker and it matches current practice
-				for (j=0;j<stats.markers.length;++j) 						// Search thru existing markers
-					if (stats.markers[j] == o.d3)							// If in
-						break;												// Quit
-				if (j == stats.markers.length)								// Didn't find one
-					stats.markers.push(o.d3);								// Add to markers
 				}
 			if (o.d1 == "Student actions")	{
 				if (o.d2 == "Transitioning") {								// If  transitioning
