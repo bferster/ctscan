@@ -402,7 +402,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			trt=Math.max(trt,obsEvents[i].time);							// Get max time
 		for (i=0;i<obsEvents.length;++i) {									// For each event
 			o=obsEvents[i];													// Point at event
-			if ((o.d1 == "Practice") && ((o.d2 == "Vocabulary Instruction") || (o.d2 == "Math Vocab"))) { // If a vocab practice
+			if ((o.d1 == "Practice") && ((o.d2 == "Vocabulary Instruction") || (o.d2 == "Explicit Mathematics Vocabulary Instruction"))) { // If a vocab practice
 				str+="<tr><td><b>"+o.d3+"&nbsp;&nbsp;</b></td>";			// Label
 				str+="<td>"+Timecode(o.d5);									// Time
 				str+="</td><td  style='text-align:center'>"+o.d4+"%";		// Pct marker
