@@ -742,7 +742,7 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 				obsEvents[j].d5=now1-obsEvents[j].time;					// Add time	
 				now1=obsEvents[j].time;									// New now
 				}
-			else if (obsEvents[j].d1 == "Vocab Word") {					// Found a vocab
+			else if ((obsEvents[j].d1 == "Vocab Word") || (obsEvents[j].d1 == "Math Vocab")) {	// Found a vocab
 				if (!obsEvents[j].d5) 									// If not ended
 					obsEvents[j].d5=curTime-obsEvents[j].time;			// End it
 				}
