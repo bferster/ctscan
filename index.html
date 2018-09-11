@@ -103,14 +103,14 @@
 		<div style="font-size:14px;font-weight:normal">
 			Michael J. Kennedy<br>Wendy J. Rodgers, and John E. Romig<br><br>
 			<b>Curry School of Education<br>University of Virginia</b>
-			<br>&copy; 2017<br><br>
+			<br>&copy; 2017-2018<br><br>
 			<div id="startIt" class="ct-obsNewPrac">Click to continue</div><br><br>
  			<p style="font-size:12px;line-height:130%">
 			Thank you to our colleagues who provided guidance,<br>helped develop, and/or piloted the CT Scan:<br><br>
 				Bill Gressick, Barron Associates (www.barron-associates.com), Kat D. Alves, Longwood University, 
 				John Wills Lloyd, University of Virginia, Hannah Morris Mathews, University of Virginia, Peggy Weiss, George Mason University, Mary Brownell, University of Florida,  
 				Bill Ferster, University of Virginia.
-				<br><br>v2.0
+				<br><br>v2.1
 				</p>
 		</div>
 	</div>
@@ -519,29 +519,31 @@ function InitObs() 													// INIT OBSERVATION PANEL
 		$("#obsPracText").html(str);
 		
 		$(".ct-obsPracSubs").on("click", function(e) {					// CLICK ON PRACTICE SUB
+
 				if ($("#obsConfirmPrac").css("display") != "none") {	// If not confirmed yet
 					Sound("delete");									// Delete sound
 					ShowPopup(e.clientX+16,e.clientY+16,"Please confirm practice first!");
 					return;
 					}													// Quit
 				var id=e.currentTarget.id-1;							// Get id			
+				if (id < 0)												// The none option
+					return;												// Quit
 				var sub=menus[curCat].prac[curPrac].subs[id];			// Get sub
 				var n=menus[curCat].prac[curPrac].subs.length;			// Number of subs
 				sub=sub ? sub : "";										// If undefines, null
-				if ($(this).css("font-weight") == "bold") {				// Already set
+				if ($(this).css("font-weight") > 400) {					// Already set
 					Sound("delete");									// Delete sound	
-					$(this).css({ color:"#000","font-weight":"normal"});// Un-highlight it
+					$(this).css({ color:"#000","font-weight":400});		// Un-highlight it
 					for (var j=obsEvents.length-1;j>=0;--j) {			// Search backwards
 						if ((obsEvents[j].d3 == menus[curCat].prac[curPrac].pname) && (obsEvents[j].d4 == sub)) {	// Found last
 							obsEvents.splice(j,1);						// Remove it from list
-							trace("---> REMOVED sub-practice <----");	// Removed
 							return;										// Quit
 							}
 						}
 					}
-			$(this).css({ color:"#009900","font-weight":"bold"});	// Highlight it
+			$(this).css({ color:"#009900","font-weight":700});			// Highlight it
 			SaveEvent(curTime,"Teacher actions",menus[curCat].cname,menus[curCat].prac[curPrac].pname,sub,n);	// Save event
-			Sound("click");											// Click sound	
+			Sound("click");												// Click sound	
 			});
 
 			$("#alertBoxDiv").remove();  								// Close it
@@ -742,7 +744,7 @@ function GetTimeOnTask()											// ASK USER FOR TIME ON TASK
 				obsEvents[j].d5=now1-obsEvents[j].time;					// Add time	
 				now1=obsEvents[j].time;									// New now
 				}
-			else if ((obsEvents[j].d1 == "Vocab Word") || (obsEvents[j].d1 == "Math Vocab")) {	// Found a vocab
+			else if (obsEvents[j].d1 == "Vocab Word") {					// Found a vocab
 				if (!obsEvents[j].d5) 									// If not ended
 					obsEvents[j].d5=curTime-obsEvents[j].time;			// End it
 				}
