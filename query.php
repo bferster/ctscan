@@ -13,7 +13,7 @@ $query="SELECT * FROM sessions WHERE ".$q; 				// Make query string
 if (strstr($q,"SELECT"))								// If already has a SELECT
 	$query=$q;											// Use it whole
 $result=mysqli_query($link, $query);					// Run query
-$myArray=null;
+$myArray="";
 
 if ($result == false)									// Bad query
 	print(mysqli_error($link));							// Show error 

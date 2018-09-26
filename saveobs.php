@@ -7,8 +7,12 @@ header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Max-Age: 1000');
 require_once('config.php');
 			
-	$ver=0;														// Version number									
+	$ver=0;														// Version number	
+	$teacherId=""; 	$obs="";  $email=""; $grade="";				// Init vars																	
 	$teacherId=$_REQUEST['teacherId'];							// Get data					
+	$subject="";  $numStudents="";	$date="";  $block="";
+	$setting="";  $level="";  $video="";  $remind=""; $stats="";
+	$research="";  $template=""; $events="";  $password="";
 	$obs=$_REQUEST['obs'];									
 	$email=$_REQUEST['email'];									
 	$grade=$_REQUEST['grade'];									
