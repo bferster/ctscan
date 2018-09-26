@@ -294,6 +294,16 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				DrawText(x,y+11,"#fff",12,o[i].d2,"middle");				// Draw word
 				vpos=(vpos+1)%4;											// Next pos
 				}
+			else if (o[i].d1 == "Note") {                                   // Note 
+                y=406;                                                      // Position                                     
+                DrawBox(start-4,y,start+11,y+15,"#999","",0,8);            	// Draw dot
+                p=DrawText(start,y+11,"#fff",12,"n","left");            	// Draw n
+                p.setAttribute("id","note-"+i);                             // Id
+                $("#note-"+i).on("click", function(e) {                     // On click
+                    var id=e.target.id.substr(5)-0;                         // Get id
+                    ShowPopup(e.clientX+8,e.clientY+16,obsEvents[id].d2);   // Show note
+                    });
+                }
 			else if (o[i].d1 == "Practice") {								// Practice	
 				DrawBox(start,5,end,489,"","#e74c3c",1,0);					// Draw box
 				j=100;														// Assume full width
@@ -302,7 +312,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				else if (end-start < 128)	j=10;
 				else if (end-start < 192)	j=20;
 				DrawText(x,22,"#e74c3c",12,ShortenString(o[i].d2,j),"middle").setAttribute("font-weight","bold");
-				str=o[i].d3+" ("+o[i].d4+"%)";								// Add % sub-practices completed
+				str=o[i].d3+" ("+Math.min(o[i].d4,100)+"%)";				// Add % sub-practices completed
 				p=DrawText(x,40,"#e74c3c",12,ShortenString(str,j),"middle")
 				p.setAttribute("font-weight","normal");						// Normal
 				p.setAttribute("id","pra-"+i);								// Id
