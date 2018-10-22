@@ -71,7 +71,8 @@
 		</div>	
 		<div style="text-align:right;font-size:12px;width:150px;float:left;margin-top:8px;padding-right:10px;line-height:20px;font-weight:bold;user-select:none;">
 			<span style="color:#e74c3c;line-height:45px">Practice</span><br>
-			<span style="color:#888">Student Actions</span><br><br>
+			<span style="color:#a49a2a">Student Actions</span><br>
+			<span style="color:#8888ff">Talking to</span><br><br>
 			<span style="color:#e67e22" id="evt-0">OTR</span><br>
 			<span style="color:#e67e22" id="evt-1">Feedback</span><br>
 			<span style="color:#e67e22" id="evt-2">Questions</span><br>
@@ -249,7 +250,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 	{
 		var vpos=0;
 		var x=8,y;
-		var h=530;															
+		var h=550;															
 		var i,j,o,p,xs,ys,start,end,str;
 		var mins=Math.ceil(maxTime/60);										// Number of minutes to show
 		$("#timePanel").height(h);											// Set panel height
@@ -259,15 +260,15 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 		if (w > $("#timePanel").width())									// If no scroller
 			h-=18;															// Reduce height
 		for (i=0;i<5;++i) {													// For each engagement line
-			y=i*16+425;														// Set height
+			y=i*16+445;														// Set height
 			DrawLine([x,w],[y,y],"#ccc",.5);								// Draw it
 			}
 		ys=[5, h-23 ];														// Line ys
 		DrawLine([x,w],[5,5],"#ccc",.5);									// Top line
 		DrawLine([x,w],[55,55],"#ccc",.5);									// Actions separator
-		DrawLine([x,w],[75,75],"#ccc",.5);									// OTR
-		DrawLine([x,w],[195,195],"#ccc",.5);								// Vocab
-		DrawLine([x,w],[275,275],"#ccc",.5);								// Media
+		DrawLine([x,w],[95,95],"#ccc",.5);									// OTR
+		DrawLine([x,w],[215,215],"#ccc",.5);								// Vocab
+		DrawLine([x,w],[295,295],"#ccc",.5);								// Media
 
 		for (i=0;i<=mins;++i) {												// For each minute
 			xs=[x,x];														// Xs
@@ -285,17 +286,17 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			x=start+(end-start)/2;											// Center
 			if (o[i].d2 == "Percent engaged") {								// Engagement	
 				xs.push(GetPixFromTime(o[i].time));							// X pos
-				ys.push((100-o[i].d3)/100*60+427);							// Y pos
+				ys.push((100-o[i].d3)/100*60+447);							// Y pos
 				}
 	
 			else if (o[i].d1 == "Vocab Word") {								// Vocab	
-				y=(vpos*19)+199;											// Position 									
+				y=(vpos*19)+219;											// Position 									
 				DrawBox(start,y,end,y+15,"#3db1ff","",0,8);					// Draw bar
 				DrawText(x,y+11,"#fff",12,o[i].d2,"middle");				// Draw word
 				vpos=(vpos+1)%4;											// Next pos
 				}
 			else if (o[i].d1 == "Note") {                                   // Note 
-                y=406;                                                      // Position                                     
+                y=426;                                                      // Position                                     
                 DrawBox(start-4,y,start+11,y+15,"#999","",0,8);            	// Draw dot
                 p=DrawText(start,y+11,"#fff",12,"n","left");            	// Draw n
                 p.setAttribute("id","note-"+i);                             // Id
@@ -305,7 +306,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
                     });
                 }
 			else if (o[i].d1 == "Practice") {								// Practice	
-				DrawBox(start,5,end,489,"","#e74c3c",1,0);					// Draw box
+				DrawBox(start,5,end,509,"","#e74c3c",1,0);					// Draw box
 				j=100;														// Assume full width
 				if (end-start < 16)			j=0;							// Shrink if smaller box
 				else if (end-start < 64)	j=5;
@@ -347,13 +348,17 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 	
 				}
 			else if (o[i].d1 == "Student actions") {						// Student actions	
-				DrawBox(start,57,end,73,"#999","#fff",1.5,3);				// Draw bar
-				DrawText(x,68,"#fff",12,o[i].d2,"middle");					// Draw action
+				DrawBox(start,58,end,74,"#c8bc34","#fff",1.5,3);				// Draw bar
+				DrawText(x,69,"#fff",12,o[i].d2,"middle");					// Draw action
+				}
+			else if ((o[i].d1 == "Teacher status") && (o[i].d2 == "Grouping")) { // Teacher talking to
+				DrawBox(start,76,end,92,"#8888ff","#fff",1.5,3);			// Draw bar
+				DrawText(x,87,"#fff",12,o[i].d3,"middle");					// Draw action
 				}
 			else if (o[i].d1 == "Event") {									// Events	
 				for (j=0;j<dataLabCats.length;++j)							// For each media type
 					if (o[i].d2 == dataLabCats[j]) {						// Matches
-						y=100+(j*20);										// Set pos
+						y=120+(j*20);										// Set pos
 						break;												// Quit
 						}
 				p=DrawBox(start,y,start+8,y+8,"#e67e22","",0,8);			// Draw circle
@@ -367,7 +372,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			else if (o[i].d1 == "Visual Aid") {								// Visual Aid	
 				for (j=0;j<dataMedia.length;++j)							// For each media type
 					if (o[i].d2 == dataMedia[j]) {							// Matches
-						y=290+(j*20);										// Set pos
+						y=310+(j*20);										// Set pos
 						DrawBox(start,y,end,y+5,"#27ae60","",0,5);			// Draw bar
 						break;												// Quit
 						}
