@@ -207,39 +207,50 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				}								
 			for (i=0;i<curJson.length;++i) {								// For each session
 				if ($("#sessId-"+i).prop("checked")) 						// If checked
-					ShowRawData(i);											// Show raw data
+					QueryEvent(curJson[i].id, function(d) {					// Get data with events
+						ShowRawData(d);										// Show raw
+						});
 				}	
 			});													
 
 			$("#saveCSV").on("click", function(e) {                     // ON SAVE CSV
-				var v;
+				var v,n=0;
 				if (!curJson)                                              	// If no data
 					return;                                                 // Quit 
-				GetTextBox("Save summary CSV File","Type name of CSV file to save to","summary.csv", function(s) {
-					var o,i,s;
-					var rows=[["SessionId","TeacherId","Group","ObsNum","Grade","Duration","Quality","NumVocabs"]];
-					for (i=0;i<counters.length;++i)                      	// For each counter type
-						rows[0].push(counters[i]);                        	// Add to row
-					for (i=0;i<curJson.length;++i) {                      	// For each session
-						if (!$("#sessId-"+i).prop("checked")) 				// If not checked
-							continue;										// Skip it
-						o=[];                                             	// Make new array for each data line
-						v=curJson[i].research.split("-");					// Get research mode
-						o.push(curJson[i].id);                     			// Add session id
-						o.push(curJson[i].teacherId);                     	// Add teacher id
-						o.push(v[0]);                      					// Add group
-						o.push(v[2] ? v[2] : "");                          	// Add obsNum
-						o.push(curJson[i].grade);                        	// Add grade
-						CalcStats(i,o, qType);                                // Get stats from raw data
-						rows.push(o);                                     	// Add data row
-						}
-					ExportToCSV(s,rows);                                    // Save to file
-					})
-				});
-		
-		function CalcStats(num, s, qType)  {                           // CALCULATE SESSION STATS
+				var d=[];
+				for (i=0;i<curJson.length;++i) {                      		// For each session
+					if (!$("#sessId-"+i).prop("checked")) 					// If not checked
+						continue;											// Skip it
+					++n;													// Add to number loading
+					QueryEvent(curJson[i].id, function(data) {				// Get data with events
+						--n;												// One less to laod
+						d.push($.parseJSON(data)[0]);						// Add to array
+						if (!n) 											// If all loaded
+							GetTextBox("Save summary CSV File","Type name of CSV file to save to","summary.csv", function(s) {
+								var o,i;
+								var rows=[["SessionId","TeacherId","Group","ObsNum","Grade","Duration","Quality","NumVocabs"]];
+								for (i=0;i<counters.length;++i)              // For each counter type
+									rows[0].push(counters[i]);               // Add to row
+								for (i=0;i<d.length;++i) {                   // For each session
+									o=[];                                    // Make new array for each data line
+									v=d[i].research.split("-");				 // Get research mode
+									o.push(d[i].id);                     	 // Add session id
+									o.push(d[i].teacherId);                  // Add teacher id
+									o.push(v[0]);                      		 // Add group
+									o.push(v[2] ? v[2] : "");                // Add obsNum
+									o.push(d[i].grade);                      // Add grade
+									CalcStats(o,qType,d[i]);                 // Get stats from raw data
+									rows.push(o);                            // Add data row
+									}
+								ExportToCSV(s,rows);                         // Save to file
+								});
+							});
+					}
+			});
+
+		function CalcStats(s, qType, data) {                          	// CALCULATE SESSION STATS
 			var i,j,o,c=0,trt=0,quality=0;
-			var e=$.parseJSON(curJson[num].events);                         // Objectify events
+			var e=$.parseJSON(data.events);                      			// Objectify events
 			for (j=0;j<e.length;++j) {                                      // For each event
 				o=e[j];                                                     // Point at event
 				trt=Math.max(trt,o.time);                                   // Get max time
@@ -270,24 +281,25 @@ $(document).ready(function() {								           	// ON PAGE LOADED
    		 	}
 	}
 	
-	function ShowRawData(num)											// SHOW RAW DATA
+	function ShowRawData(data)											// SHOW RAW DATA
 	{
 		var i,col;
+		data=$.parseJSON(data);												// Objectify result
 		var str="<table>"
-		str+="<tr id='od-name'><td><b>Observer</b></td><td>"+curJson[num].obs+"<td></tr>";
-		str+="<tr id='od-email'><td><b>Email</b></td><td>"+curJson[num].email+"<td></tr>";
-		str+="<tr id='od-tid'><td><b>Teacher&nbsp;Id&nbsp;&nbsp</b></td><td>"+curJson[num].teacherId+"<td></tr>";
-		str+="<tr id='od-grade'><td><b>Grade</b></td><td>"+curJson[num].grade+"<td></tr>";
-		str+="<tr id='od-subject'><td><b>Subject:</b></td><td>"+curJson[num].subject+"<td></tr>";
-		str+="<tr id='od-date'><td><b>Date</b></td><td>"+curJson[num].date+"<td></tr>";
-		str+="<tr id='od-block'><td><b>Block</b></td><td>"+curJson[num].block+"<td></tr>";
-		str+="<tr id='od-setting'><td><b>Setting</b></td><td>"+curJson[num].setting+"<td></tr>";
-		str+="<tr id='od-video'><td><b>Video</b></td><td>"+curJson[num].video+"<td></tr>";
-		str+="<tr><td><b>Reminder</b></td><td>"+curJson[num].remind+"<td></tr>";
-		str+="<tr><td><b>Research</b></td><td>"+curJson[num].research+"<td></tr>";
-		str+="<tr><td><b>Template</b></td><td>"+curJson[num].template+"<td></tr>";
+		str+="<tr id='od-name'><td><b>Observer</b></td><td>"+data[0].obs+"<td></tr>";
+		str+="<tr id='od-email'><td><b>Email</b></td><td>"+data[0].email+"<td></tr>";
+		str+="<tr id='od-tid'><td><b>Teacher&nbsp;Id&nbsp;&nbsp</b></td><td>"+data[0].teacherId+"<td></tr>";
+		str+="<tr id='od-grade'><td><b>Grade</b></td><td>"+data[0].grade+"<td></tr>";
+		str+="<tr id='od-subject'><td><b>Subject:</b></td><td>"+data[0].subject+"<td></tr>";
+		str+="<tr id='od-date'><td><b>Date</b></td><td>"+data[0].date+"<td></tr>";
+		str+="<tr id='od-block'><td><b>Block</b></td><td>"+data[0].block+"<td></tr>";
+		str+="<tr id='od-setting'><td><b>Setting</b></td><td>"+data[0].setting+"<td></tr>";
+		str+="<tr id='od-video'><td><b>Video</b></td><td>"+data[0].video+"<td></tr>";
+		str+="<tr><td><b>Reminder</b></td><td>"+data[0].remind+"<td></tr>";
+		str+="<tr><td><b>Research</b></td><td>"+data[0].research+"<td></tr>";
+		str+="<tr><td><b>Template</b></td><td>"+data[0].template+"<td></tr>";
 		str+"<br>";
-		var d=$.parseJSON(curJson[num].events);								// Objectify
+		var d=$.parseJSON(data[0].events);									// Objectify events
 		for (i=0;i<d.length;++i) {											// For each event
 			col=(d[i].d1 == "Practice") ? "#990000" : "#000";				// Color practices 
 			str+="<tr style='color:"+col+"' id=oe-"+i+"><td><b>Event</b></td><td style='overflow:hidden;white-space:nowrap'><div style='display:inline-block;width:40px'>"+d[i].time+"</div><b>";
@@ -405,7 +417,18 @@ function ExportToCSV(filename, rows) {
 
 	function Query(query, callback) 
 	{
-		var dat={ q:query.replace(/'/g,"~") };
+		var dat={ q:query.replace(/'/g,"~") };							// GET SESSION WITHOUT EVENTS
+		var url="//classroomteachingscan.com/ctscan/query.php?e=no";		// Target with no events flag
+
+		$.ajax({ url:url,dataType:'text',type:"GET",crossDomain:true,data:dat,  // Get data
+			success:function(d) { callback(d) },							// Run callback				
+			error:function(xhr,status,error) { trace(error) },				// Show error
+			});		
+	}
+
+	function QueryEvent(id, callback) 									// GET SESSION WITH EVENTS
+	{
+		var dat={ q:q="id = ~"+id+"~ ORDER BY date DESC" };					// Data
 		var url="//classroomteachingscan.com/ctscan/query.php";				// Target
 
 		$.ajax({ url:url,dataType:'text',type:"GET",crossDomain:true,data:dat,  // Get data
@@ -413,7 +436,7 @@ function ExportToCSV(filename, rows) {
 			error:function(xhr,status,error) { trace(error) },				// Show error
 			});		
 	}
-		
+
 	function GetTextBox(title, content, def, callback)					// GET TEXT LINE BOX
 	{
 		$("#alertBoxDiv").remove();											// Remove any old ones
