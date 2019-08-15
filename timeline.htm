@@ -76,7 +76,7 @@
 			<span style="color:#e67e22" id="evt-0">OTR</span><br>
 			<span style="color:#e67e22" id="evt-1">Feedback</span><br>
 			<span style="color:#e67e22" id="evt-2">Behavior</span><br>
-			<span style="color:#e67e22" id="evt-3">Question</span><br>
+			<span style="color:#e67e22" id="evt-3">Questions</span><br>
 			<span style="color:#e67e22" id="evt-4">Custom</span><br><br><br>
 			<span style="color:#3db1ff;line-height:30px">Vocab or Topic</span><br><br><br>
 			<span style="color:#27ae60" id="med-0">Diagram/Graphic/Map</span><br>
@@ -119,11 +119,11 @@ var menuFile="menus.txt";													// Memu filename
 var scaleSpan=256;															// Scaling
 var dataMedia=[];															// Holds media buttons											
 var dataLabVals=[];															// Holds OTR button values											
-var dataLabCats=[];															// Holds OTR button categories											
 var dataActs=[];															// Holds media buttons											
 var dataAcad=[];															// Holds academic diciplines
 var menus=[];																// Holds menus
 var butCts=[];																// Button counts
+var eventCats=["OTR","Feedback","Behavior","Student Q","Custom"]				// Event categories
 
 $(document).ready(function() {								           	// ON PAGE LOADED
 
@@ -168,8 +168,6 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				dataLabVals=o.substr(7).split(",");							// Get options
 			else if (o.match(/BUTLAB=/i)) 									// OTR button label
 				dataLabs=o.substr(7).split(",");							// Get options
-			else if (o.match(/BUTCAT=/i)) 									// OTR button category
-				dataLabCats=o.substr(7).split(",");							// Get options
 			else if (o.match(/STUACT=/i)) 									// Student actions
 				dataActs=o.substr(7).split(",");							// Get options
 			else if (o.match(/ACAD=/i)) 									// Disciplines
@@ -193,14 +191,9 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			}
 		for (i=0;i<dataMedia.length;++i)									// For each media
 			$("#med-"+i).html(dataMedia[i]);								// Set label
-
-		var v=[dataLabCats[0]];
-		for (i=1;i<dataLabCats.length;++i)									// For each event category
-			if (dataLabCats[i] != v[v.length-1]) 							// Get a unique one
-				v.push(dataLabCats[i])										// Add to array
-		dataLabCats=v;														// Copy array
-		for (i=0;i<dataLabCats.length;++i)									// For each event category
-			$("#evt-"+i).html(dataLabCats[i]);								// Set label
+		
+		for (i=0;i<eventCats.length;++i)									// For each event category
+			$("#evt-"+i).html(eventCats[i]);								// Set label
 	
 		Query("id = '"+sessionNum+"'", function(d) { 						// Send query
 			if (!d || d == "null")											// No hits													
@@ -357,8 +350,8 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 				DrawText(x,87,"#fff",12,o[i].d3,"middle");					// Draw action
 				}
 			else if (o[i].d1 == "Event") {									// Events	
-				for (j=0;j<dataLabCats.length;++j)							// For each media type
-					if (o[i].d2 == dataLabCats[j]) {						// Matches
+				for (j=0;j<eventCats.length;++j)							// For each event type
+					if (o[i].d2 == eventCats[j]) {							// Matches
 						y=120+(j*20);										// Set pos
 						break;												// Quit
 						}
@@ -379,7 +372,8 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 						}
 				}
 			}
-		DrawLine(xs,ys,"#ccc",5).setAttribute("stroke-dasharray","5,5");	// Draw engagement line
+		if (xs && xs.length)												// If data
+			DrawLine(xs,ys,"#ccc",5).setAttribute("stroke-dasharray","5,5"); // Draw engagement line
 	}
 
 	function ShowData()													// SHOW DATA
