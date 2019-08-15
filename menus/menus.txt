@@ -1,3 +1,48 @@
+General Content Instruction:
+Activates Prior Knowledge *Activates Prior Knowledge &Provides Cue,Relevant,Monitors Understanding,Makes Adjustments,Provides Feedback
+Anticipatory Set *Anticipatory Set &Provides Cue,Clear and Consistent,Provides Rationale,States Goal
+Closes Lesson *Closes Lesson &Monitors Understanding,Provides Feedback
+Demonstration *Demonstration &Organized,Logical Sequence,Students Engaged,Monitors Understanding
+Discussion *Discussion &Authentic,Planned Questions,Calls on Range of Students,Students Give Evidence,Uptake of Student Responses,Provides Feedback
+Explains Instructional Activity *Explains Instructional Activity &Clear and Consistent,Chunked Appropriately,Clear Target,Prompts Strategy Use
+Facilitates Student Demonstration/Presentation *Facilitates Student Demonstration/Presentation &Provides Feedback,Questioning,Smooth Transitions
+Facilitates Group Work *Facilitates Group Work &Clear Directions,Individual Participation/Responsibility,Appropriate Instructional Level,Monitors Students,Provides Feedback,Debriefs
+Facilitates Independent Practice or Fluency Activity *Facilitates Independent Practice or Fluency Activity &Clear Directions,Goal/Rationale Provided,Appropriate Instructional Level,Monitors Understanding,Provides Feedback,Makes Adjustments as Needed
+Guided Practice *Guided Practice &Organized,Consistent,Frequent Monitoring,Provides Feedback,Requires Student Success
+Homework Review *Homework Review &Confirms Student Completion,Confirms Student Understanding,Provides Feedback
+Instruction on a New Topic *Instruction on a New Topic &Clear and Consistent,Makes Connections,Repeats Essential Info,Gives Examples and Non-Examples,Modeling,Think Aloud,Scaffolds,Monitors Understanding,Provides Feedback
+Instruction on a Cognitive Strategy *Instruction on a Cognitive Strategy &Repeats Essential Info,Specifies Situations for Use,Models,Thinks Aloud,Uses Scaffolds,Provides Feedback
+Reads from Book or Passage *Reads from Book or Passage &Checks for Understanding,Refers to Text Supports,Scaffolds for Students,Provides Feedback
+Reviews Previously Learned Material *Reviews Previously Learned Material &Students Participate,Monitors Understanding,Provides Feedback
+
+Classroom Management:
+Implements contingency or reinforcer *Implements contingency or reinforcer &Good Behavior Game,Reinforcement Tickets,Specific Praise
+Teaches or ReTeaches Expectations *Teaches/Reviews Expectations &Expectations Posted,Expectations Observable,Expectations Measurable,Expectations Positively Stated,Expectations Understandable,Expectations Always Applicable,Teacher Provides Positive Feedback,Teacher Uses Examples and Non-Examples,Teacher Confirms Understanding
+Prompts Self Monitoring *Prompts Self Monitoring &Routine in Place,Student Reinforced
+Active Supervision *Active Supervision &Moving Around Room,Providing Feedback,Prompting Students
+Transition time *Transition time &Organized,Clear Directions
+
+Vocabulary Instruction:
+Analogy *Analogy &Cues Instruction,Clear Language,Analogy is Relevant,Confirms Understanding,Provides Feedback 
+Application - prompt student to apply *Application - prompt student to apply &Cues Instruction,Clear Language,Provides Feedback
+Asks to state definition *Asks to state definition &Cues Instruction,Clear Language,Requires Interpretation,Provides Feedback
+Connection made to other content *Connection made to other content &Cues Instruction,Clear Language,Strong Relevance,Understood by Students,Monitors Understanding
+Context to define - teacher provided *Context to define - teacher provided &Cues Instruction,Clear Language,Explicit Identification of Cues,Think-Aloud
+Context - prompt student to use *Context - prompt student to use &Cues Instruction,Clear Language,Direct Context,Monitors Understanding,Provides Feedback
+Definition - formal *Definition - formal &Cues Instruction,Clear Language,Explicitly Explains Parts of Definition,Confirms Understanding,Provides Feedback
+Definition - Student-friendly *Definition - student friendly &Cues Instruction,Reviews Background Knowledge,Clear Language,Uses Images,Monitors Understanding
+Demonstration *Demonstration &Cues Instruction,Clear Language,Sequential Presentation,Think-Aloud,Chunked Appropriately,Confirms Understanding,Provides Feedback
+Discussion of term *Discussion of term &Appropriate and authentic context,Call on students all over room,Ask open-ended questions,Encourages student talk and use of evidence,Incorporates student responses into discussion 
+Example(s) of term meaning *Example(s) of term meaning &Cues Instruction,Clear Language,Explicit Explanation,Uses Images,Monitors Understanding,Provides Feedback
+Facilitates student demo/presentation *Facilitates student demo/presentation &Cues Instruction,Clear Language,Provides Feedback
+Morphological parts of word - highlighted *Morphological parts of word - highlighted &Cues Instruction,Clear Language,Monitors Understanding,Defines Word Parts,Reunites Word,Confirms Understanding
+Non-example of term meaning *Non-example of term meaning &Cues Instruction,Clear Language,Distinguishes Similarities,Explicit Explanation,Uses Images,Monitors Understanding,Provides Feedback
+Semantic relationships *Semantic relationships &Cues Instruction,Clear Language,Monitors Understanding,Explains Similarities,Explains Differences,Uses Visual Aid,Provides Feedback
+Strategy - remember definition (explain/intro) *Strategy - remember definition &Cues Instruction,Clear Language,Think-Aloud,Several Examples,Provides Feedback
+Strategy - using morph parts (explain/intro) *Strategy morph &Cues Instruction,Clear Language,Defines Parts then Reunites Word,Think-Aloud,Provides Feedback
+Strategy - models use *strategy models &Cues Instruction,Clear Language,Provides Prompts,Monitors Use,ProvidesFeedback
+Strategy - prompts use *Strategy prompts &Cues Instruction,Clear Language,Provides Rationale
+
 Explicit Instruction:
 Gain Student Attention *Gain Attention &Ritualized,Quick Student Response,Students Engaged with Teacher
 Preview Lesson/Anticipatory Set *Preview &States Goal,States Relevance
@@ -13,47 +58,34 @@ Behavior Management *Behavior &Cued,Instruction Stopped,Teaches/Reviews Expectat
 Non-Instructional Activity/Task *Non-Instructional &
 Uncoded Time *Uncoded &
 
-General Content Instruction:
-Activates Prior Knowledge *Activates Prior Knowledge &Provides Cue,Relevant,Monitors Understanding,Makes Adjustments
-Anticipatory Set *Anticipatory Set &Provides Cue,Clear and Consistent,Provides Rationale,States Goal
-Closes Lesson *Closes Lesson &Monitors Understanding,Provides Feedback
-Demonstration *Demonstration &Organized,Logical Sequence,Students Engaged,Monitors Understanding
-Discussion *Discussion &Authentic,Planned Questions,Calls on Range of Students,Students Give Evidence,Uptake of Student Responses
-Explains Instructional Activity *Explains Instructional Activity &Clear and Consistent,Chunked Appropriately,Clear Target,Prompts Strategy Use
-Facilitates Student Demonstration/Presentation *Facilitates Student Demonstration/Presentation &Provides Feedback,Questioning,Smooth Transitions
-Facilitates Group Work *Facilitates Group Work &Clear Directions,Individual Participation/Responsibility,Appropriate Instructional Level,Monitors Students,Provides Feedback,Debriefs
-Facilitates Independent Practice or Fluency Activity *Facilitates Independent Practice or Fluency Activity &Clear Directions,Goal/Rationale Provided,Appropriate Instructional Level,Monitors Understanding,Provides Feedback,Makes Adjustments as Needed
-Guided Practice *Guided Practice &Organized,Consistent,Frequent Monitoring,Provides Feedback,Requires Student Success
-Homework Review *Homework Review &Confirms Student Completion,Confirms Student Understanding
-Instruction on a New Topic *Instruction on a New Topic &Clear and Consistent,Makes Connections,Repeats Essential Info,Gives Examples and Non-Examples,Modeling,Think Aloud,Scaffolds,Monitors Understanding
-Instruction on a Cognitive Strategy *Instruction on a Cognitive Strategy &Repeats Essential Info,Specifies Situations for Use,Models,Thinks Aloud,Uses Scaffolds
-Reads from Book or Passage *Reads from Book or Passage &Checks for Understanding,Refers to Text Supports,Scaffolds for Students
-Reviews Previously Learned Material *Reviews Previously Learned Material &Students Participate,Monitors Understanding,Provides Feedback
+Explicit Strategy Instruction:
+Introduction/Review Phase *Introduction/Review Phase &Evaluate existing skills/approach,Describe need for strategy,Provide rationale for using strategy,Introduce and describe strategy steps,Compare strategy to other approaches,Set goal for use,Student understanding confirmed 
+Modeling and Guided Practice Phase *Modeling and Guided Practice Phase &Teacher demonstrates use of strategy,Teacher thinks aloud using strategy,Students demonstrate knowledge of strategy,Confirm student fluency with steps,Provide feedback on student practice 
+Independent Practice Phase *Independent Practice Phase &Students have many opportunities to practice,Reteaching occurs (as needed),Level of practice problems appropriate,Teacher scaffolding faded ,Discuss generalization,Set goals,Teacher provides feedback
 
-Vocabulary Instruction:
-Alternate meanings *Alternate meanings &Cues Instruction,Clear Language,Differentiates Contexts
-Analogy *Analogy &Cues Instruction,Clear Language,Extended Comparison 
-Application - prompt student to apply *Application - prompt student to apply &Cues Instruction,Clear Language,Strong Relevance,Provides Feedback
-Asks to state definition *Asks to state definition &Cues Instruction,Clear Language,Requires Interpretation,Provides Feedback
-Connection made to other content *Connection made to other content &Cues Instruction,Clear Language,Strong Relevance,Understood by Students,Monitors Understanding
-Context to define - teacher provided *Context to define - teacher provided &Cues Instruction,Clear Language,Explicit Identification of Cues,Think-Aloud
-Context - prompt student to use *Context - prompt student to use &Cues Instruction,Clear Language,Direct Context,Monitors Understanding,Provides Feedback
-Definition - formal *Definition - formal &Cues Instruction,Clear Language,Explicitly Explains Parts of Definition
-Definition - Student-friendly *Definition - student friendly &Cues Instruction,Clear Language,Monitors Understanding
-Demonstration *Demonstration &Cues Instruction,Clear Language,Sequential Presentation,Think-Aloud,Chunked Appropriately
-Discussion of term *Discussion of term &Appropriate and authentic context,Call on students all over room,Ask open-ended questions,Encourages student talk and use of evidence,Incorporates student responses into discussion 
-Example(s) of term meaning *Example(s) of term meaning &Cues Instruction,Clear Language,Explicit Explanation,Monitors Understanding
-Facilitates student demo/presentation *Facilitates student demo/presentation &Cues Instruction,Clear Language,Provides Feedback
-Morphological parts of word - highlighted *Morphological parts of word - highlighted &Cues Instruction,Clear Language,Monitors Understanding,Defines Word Parts,Reunites Word
-Non-example of term meaning *Non-example of term meaning &Cues Instruction,Clear Language,Distinguishes Similarities,Explicit Explanation,Monitors Understanding
-Semantic relationships *Semantic relationships &Cues Instruction,Clear Language,Monitors Understanding,Explains Similarities,Explains Differences,Uses Visual Aid
-Strategy - remember definition (explain/intro) *Strategy - remember definition &Cues Instruction,Clear Language,Think-Aloud,Several Examples,Provides Feedback
-Strategy - using morph parts (explain/intro) *Strategy morph &Cues Instruction,Clear Language,Defines Parts then Reunites Word,Think-Aloud,Provides Feedback
-Strategy - models use *strategy models &Cues Instruction,Clear Language,Provides Prompts,Monitors Use,ProvidesFeedback
-Strategy - prompts use *Strategy prompts &Cues Instruction,Clear Language,Provides Rationale
+Teaching Students With Autism or Intellectual Disability:
+Using Visual Schedule *Using Visual Schedule &Explicit Language,Student Responds,Feedback Provided,PECS Implemented,Language is Clear
+Reinforcement Chart Used *Reinforcement Chart Used &Teacher Introduces System,Reinforcer is Logical,PECS Used
+PECS Used for Communication *PECS Used for Communication &Explicit Language,Options Limited,Feedback Provided,Student Responds,PECS Integrated with Lesson,Language is Clear
+Social Stories *Social Stories &Explicit Language,Student Responds,Feedback Provided,Teacher Models,Student Practices,Images Used,Story Linked to Area of Clear Need,Language is Clear
+Video Modeling *Video Modeling &Video is Based on Task Analysis of Skill,Teacher Models,Student Practices,Feedback Provided,Video Linked to Clear Area of Need,Language is Clear
+
+Explicit Mathematics Vocabulary Instruction:
+Student-Friendly Definition *Student-Friendly Definition &Cue Instruction,Clear Language,Review Background Knowledge,Use Images,Anticipate Misconceptions,Repeat Essential Information,Monitor Understanding
+Examples *Examples &Cue Instruction,Clear Language,Use Images or Visual Representation,Explicit Explanations or Connections,Anticipate Misconceptions,Monitor Understanding
+Non-Examples *Non-Examples &Cue Instruction,Clear Language,Use Images or Visual Representation,Explicit Explanations,Make Clear Connections,Anticipate Misconceptions,Monitor Understanding
+Morphological Approach *Morphological Approach &Cue Instruction,Clear Language,Define All Parts of Term,Use Images,Reunite Parts and Definition,Monitor Understanding
+Semantic Relationships *Semantic Features and Relationships &Cue Instruction,Clear Language,Explain Similarities Among Words,Explain Differences Between Words,Model Correct Usage of Terms,Use Images,Monitor Understanding
+Facilitate Academic Discussion *Facilitate Academic Discussion &Establish Context and Relevance,Use Appropriate Context,Clear Language,Activate Prior Knowledge,Include Students All Over Room,Give Corrective Feedback,Provide Generative Topics or Questions,Model and Encourage Precise Mathematical Language
+
+Observing/Assessing Students:
+Data collection *Data collection &
+Prompts/scaffolds *Prompts &
+Grading *Grading &
+Proctoring *Proctoring &
 
 Writing Instruction (General):
-Modeling *Modeling &Cue attention,Explain when and why to use skill,Step by step demonstration,Connect to anticipated behavior,Variety of models,Examples and nonexamples,Provide anticipated benefits,Corrective feedback,Note organization and relationships,Monitor understanding,Think aloud,Lively pace,Enthusiasm,Gradual release of responsibility
+Modeling *Modeling &Cue attention,Explain when to use skill,Step by step demonstration,Connect to anticipated behavior,Variety of models,Examples and Non-Examples,Provide anticipated benefits,Corrective feedback,Note organization and relationships,Monitor understanding,Think aloud,Lively pace,Enthusiasm,Gradual release of responsibility
 Cognitive Strategy Instruction *Cognitive Strategy Instruction &Cues Instruction,Modeling,Think Aloud,Gradual Release of Responsibility,Monitors Understanding,Provides Feedback
 Editing *Editing &Cues Instruction,Modeling,Think Aloud,Gradual Release of Responsibility,Monitors Understanding,Provides Feedback
 Grammar Instruction *Grammar Instruction &Cues Instruction,Modeling,Think Aloud,Gradual Release of Responsibility,Monitors Understanding,Provides Feedback
@@ -74,6 +106,10 @@ Model It *Model It &Think Aloud w/Plan,Think Aloud w/Writing,Model Add Ideas Dur
 Memorize It *Memorize It &
 Support It *Support It &
 Independent Performance *Independent Performance &
+
+Mathematics Instruction:
+Reviews Homework *Reviews Homework &Clear Language,Appropriate Instructional Level,Visual Supports,Student Participation
+Explicit Instruction on New Concept *Explicit Instruction on New Concept &Adjusts as Needed,Purposeful Sequence,Modeling,Provides Feedback
 
 Phonics Instruction:
 Alphabet activities *Alphabet &
@@ -120,31 +156,18 @@ Teaches Story Structure *Teaches Story Structure &
 Summarizes *Summarizes &Summary is Clear,Confirms Learning
 Teaches Text Features *Teaches Text Features &Confirms Learning,Highlights Multiple Elements
 
-Observing/Assessing Students:
-Data collection *Data collection &
-Feedback *Feedback &
-Prompts/scaffolds *Prompts &
-Grading *Grading &
-Proctoring *Proctoring &
-
-Classroom Management:
-Implements contingency or reinforcer *Implements contingency or reinforcer &Good Behavior Game,Reinforcement Tickets,Specific Praise
-Teaches/reviews routines/expectations *Teaches/reviews routines/expectations &Expectations Clear,Positive Language,Positive Language
-Prompts Self Monitoring *Prompts Self Monitoring &
-Transition time *Transition time &Organized,Clear Directions
-
 Sentence Writing Strategy:
-Pretest *Pretest &Provide Advance Organizer,State Expectations
+Pretest *Pretest &Provided Advance Organizer,Stated Expectations
 Describe-Basic Definitions *Basic Definitions &Stated Expectations,Provided Definitions (5),Used Example Set I,Checked for Understanding
 Describe-Noun Phrases *Noun Phrases &Stated Expectations,Provided Definitions (2),Used Example Set II,Checked for Understanding
 Describe-Verb Phrases *Verb Phrases &Stated Expectations,Provided Definitions (3),Used Example Set III,Checked for Understanding
 Describe-Compound Subjects *Compound Subjects &Stated Expectations,Provided Definitions/Examples (1),Used Example Set IV,Checked for Understanding
-Describe-Compound Verbs *Compound Verbs &Stated Expectations,Provided Definitions/Examples (1),Checked for Understanding,
-Describe-Compound Subjects and Verbs &Compound Subjects and Verbs &Stated Expectations,Provided Definitions/Examples (1),Checked for Understanding
+Describe-Compound Verbs *Compound Verbs &Stated Expectations,Provided Definitions/Examples (1),Used Example Set V,Checked for Understanding
+Describe-Compound Subjects and Verbs *Describe-Compound Subjects and Verbs &Compound Subjects and Verbs,Stated Expectations,Provided Definitions/Examples (1),Used Example Set VI,Checked for Understanding
 Describe-PENS Steps *PENS Steps &Stated Expectations,Provided Definitions (2),Used Hands on Activities,Checked for Understanding
 Model *Model &Reviewed Definitions (15),Modeled One Sentence Formula,Used Both Verbal and Nonverbal Cues,Enlisted Student Help
 Verbal Practice *Verbal Practice &Reviewed Definitions (15),Used Memory Strategy,Administered Written Quiz,Administered Oral Quiz
-Controlled Practice/Advanced Practice/Posttest *CP/AP/Posttest &Explained Criteria for Mastery,Practices CP1 Until Mastery,Practiced CP2 Until Mastery,Practiced CP3 Until Mastery,Practiced AP4 Until Mastery,Offered Feedback
+Controlled Practice/Advanced Practice/Posttest *CP/AP/Posttest &Explained Criteria for Mastery,Practiced CP1 Until Mastery,Practiced CP2 Until Mastery,Practiced CP3 Until Mastery,Practiced AP4 Until Mastery,Offered Feedback
 Generalization *Generalization &Provide Rationale,Discussed Strategy Transfer,Solicited Evidence of Transfer
 
 Non-instructional activity:
@@ -154,11 +177,11 @@ Observer uncertain:
 Uncertain *Uncertain &
 
 MEDIA=Diagram/Graph,Object/Manipulative,Graphic Organizer,Picture/CPU,Movie,Text
-BUTLAB=Deep<br>Q OTR,Rote<br>Q OTR,Chor/Grp<br>Response,Non-Acad<br>OTR,Academic<br>FB,Behavior<br>FB,Generic<br>FB,Precorrect<br>Statement,Student<br>Ask Q,# Student<br>Asking Q,Behavior<br>Redirect,Custom<br>1,Custom<br>2,Custom<br>3
-BUTVAL=Deep Q OTR,Rote Q OTR,Choral Response,Social Behavioral OTR,Academic Specific FB,Behavior Specific FB,Generic FB Statement,Precorrect Statement,Student Ask Q,Num Student Ask Q,Behavior Redirect,Custom 1,Custom 2,Custom 3
-BUTCAT=OTR,OTR,OTR,OTR,FB,FB,FB,FB,Student Q,Student Q,Behavior Redirect,Custom,Custom,Custom
-BUTCOL=#e67e22,#e67e22,#e67e22,#e67e22,#27ae60,#27ae60,#27ae60,#27ae60,#3db1ff,#3db1ff,#aaaaaa,#aaaaaa,#aaaaaa,#aaaaaa
+BUTLAB=Deep<br>Q OTR,Rote<br>Q OTR,Chor/Grp<br>Response,Non-Acad<br>OTR,FB Acad<br>Specific,FB Behav<br>Specific,Generic<br>FB,Prompt<br>Precorrect,Behavior<br>Redirect,Error<br>Correction,Student<br>Ask Q,# Student<br>Asking Q,Custom<br>1,Custom<br>2
+BUTVAL=Deep Q OTR,Rote Q OTR,Choral Response,Non Academic OTR,Academic Specific FB,Behavior Specific FB,Generic FB Statement,Prompt or Precorrect Statement,Behavior Redirect,Error Correction,Student Ask Q,Num Student Ask Q,Custom 1,Custom 2
+BUTCAT=OTR,OTR,OTR,OTR,FB,FB,FB,Behavior,Behavior,Behavior,Student Q,Student Q,Custom,Custom
+BUTCOL=#e67e22,#e67e22,#e67e22,#e67e22,#27ae60,#27ae60,#27ae60,#3db1ff,#3db1ff,#3db1ff,#a94d23,##a94d23,#aaaaaa,#aaaaaa
 STUACT=Answering Qs,Asking Qs,Academic convo w/ peers,Building/Creating,Group Work (Discussion),Group work (Hands On),Group work (Worksheet),Listening,No clear direction,Practicing Skill,Present/share learning,Reading,Researching,Seatwork learning,Taking notes,Transitioning,Writing
-ACAD=CTE,English,Fine Arts,Math,Reading,History,PE,Science,World Languages,Other
+ACAD=English,Math,Reading,History,PE,Science,World Languages,Other
 INSET=Self-contained (Academic),Self-contained (Severe/Profound),Co-taught,Inclusive,General Education only
-RESONLY=Pre-Intervention-1,Pre-Intervention-2,Pre-Intervention-3,Post-Intervention-1,Post-Intervention-2,Post-Intervention-3,Maintenance
+RESONLY=Baseline,Intervention 1,Intervention 2,Maintenance
