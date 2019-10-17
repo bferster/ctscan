@@ -342,7 +342,7 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 	
 				}
 			else if (o[i].d1 == "Student actions") {						// Student actions	
-				DrawBox(start,58,end,74,"#c8bc34","#fff",1.5,3);				// Draw bar
+				DrawBox(start,58,end,74,"#c8bc34","#fff",1.5,3);			// Draw bar
 				DrawText(x,69,"#fff",12,o[i].d2,"middle");					// Draw action
 				}
 			else if ((o[i].d1 == "Teacher status") && (o[i].d2 == "Grouping")) { // Teacher talking to
@@ -366,9 +366,9 @@ $(document).ready(function() {								           	// ON PAGE LOADED
 			else if (o[i].d1 == "Visual Aid") {								// Visual Aid	
 				for (j=0;j<dataMedia.length;++j)							// For each media type
 					if (o[i].d2 == dataMedia[j]) {							// Matches
-						y=310+(j*20);										// Set pos
+						y=330+(j*20);										// Set pos
 						DrawBox(start,y,end,y+5,"#27ae60","",0,5);			// Draw bar
-						break;												// Quit
+						break;												// Quit looking through media types
 						}
 				}
 			}

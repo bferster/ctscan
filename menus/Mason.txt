@@ -1,0 +1,33 @@
+General Content Instruction:
+Setting the Stage *Setting the Stage &Goal Setting/Provide Objective,Relate Activity to Prior Lessons,Activate Prior Knowledge,Vocabulary
+Modeling *Modeling &Demonstrates Activity,Thinks Aloud While Modeling,Provides Example of Activity
+Scaffolding *Scaffolding &Peer Support,Teacher-Student Feedback
+Feedback *Feedback &Peer Feedback,Teacher Feedback,Lesson Closure/Summary
+Field Notes *Field Notes &Record Field Notes Below
+
+Writing - Note-Taking:
+Setting the Stage *Setting the Stage &Goal Setting/Provide Objective,Relate Activity to Prior Lessons,Activate Prior Knowledge,Vocabulary
+Modeling *Modeling &Demonstrate Writing Notes,Thinks Aloud While Modeling How to Write Notes,Provides an Example Model of Note-Taking
+Scaffolding *Scaffolding &Teacher-Student Support,Peer Support
+Feedback *Feedback &Peer Feedback,Teacher Feedback,Lesson Closure/Summary
+Field Notes *Field Notes &Record Field Notes Below
+
+Writing - Constructed Response:
+Setting the Stage *Setting the Stage &Goal Setting/Provide Objective,Relate Activity to Prior Lessons,Activate Prior Knowledge,Vocabulary
+Modeling *Modeling &Demonstrate Writing A Paper,Thinks Aloud While Modeling How to Write Paper,Provides Example of Writing
+Scaffolding *Scaffolding &Teacher-Student Support,Peer Support
+Feedback *Feedback &Peer Feedback,Teacher Feedback,Lesson Closure/Summary
+Field Notes *Field Notes &Record Field Notes Below
+
+Classroom Management:
+Field Notes *Type Field Notes Below Relevant to CM &Type Notes Below
+
+MEDIA=Reading,Writing,Discussion/Lecture,,,
+BUTLAB=Deep,Rote,,,Specific,,General,,,,,,, 
+BUTVAL=Deep Q OTR,Rote Q OTR,Choral OTR,Non Academic OTR,Academic Specific FB,Behavior Specific FB,Generic FB Statement,Prompt or Precorrect Statement,Behavior Redirect,Error Correction,Student Ask Q,Num Student Ask Q,Custom 1,Custom 2
+BUTCAT=OTR,OTR,OTR,OTR,FB,FB,FB,Behavior,Behavior,Behavior,Student Q,Student Q,Custom,Custom
+BUTCOL=#e67e22,#e67e22,#e67e22,#e67e22,#27ae60,#27ae60,#27ae60,#3db1ff,#3db1ff,#3db1ff,#a94d23,##a94d23,#aaaaaa,#aaaaaa
+STUACT=Reading,Writing,Reading/Writing,Discussion/Listening
+ACAD=English,Math,Reading,History,PE,Science,World Languages,Other
+INSET=Self-contained (Academic),Self-contained (Severe/Profound),Co-taught,Inclusive,General Education only
+RESONLY=Baseline,Intervention 1,Intervention 2,Maintenance
